@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Socios y tienda · CD Ortuella</title>
+<meta name="description" content="Hazte socio del CD Ortuella, compra la camiseta del 75 aniversario y patrocina al club.">
+<!-- Mientras la web esté en pruebas, que no salga en Google -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="img/escudo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Big+Shoulders+Display:wght@700;800;900&display=swap">
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body data-page="socios">
+<div id="cabecera"></div>
+<main>
+<section class="page-hero">
+  <div class="wrap">
+    <div class="crumbs"><a href="./">Inicio</a> / Socios y tienda</div>
+    <h1>Hazte socio</h1>
+    <p>Cada carnet y cada bufanda ayudan a que el Ortuella siga adelante.</p>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap support">
+    <div class="card-socio">
+      <h3>Carnet de socio</h3>
+      <div class="price" id="socioPrice"></div>
+      <p class="socio-other" id="socioOther"></p>
+      <ul>
+        <li>Apoyas al primer equipo y a toda la cantera.</li>
+        <li>Formas parte de la vida del club.</li>
+      </ul>
+      <a class="btn" href="contacto.html">Quiero hacerme socio</a>
+    </div>
+    <div id="tienda">
+      <h3 class="mini">Tienda del club</h3>
+      <div class="shop" id="shopList"></div>
+      <p class="source">Para comprar, pásate por la oficina del club o escríbenos por redes sociales.</p>
+    </div>
+  </div>
+</section>
+
+<section class="block alt" id="patrocina">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="kicker">Empresas</span><h2>Patrocinadores</h2></div>
+      <p>Gracias a quienes apoyan al Ortuella. ¿Tienes un negocio en la zona? Hay sitio para ti.</p>
+    </div>
+    <div class="sponsor-row" id="sponsorList"></div>
+    <div class="helpers" id="helpersList"></div>
+  </div>
+</section>
+</main>
+<div id="pie"></div>
+<script src="datos.js"></script>
+<script src="datos-federacion.js"></script>
+<script src="comun.js"></script>
+<script>
+(function () {
+  var X = window.CDO, C = X.C, esc = X.esc;
+  document.getElementById("socioPrice").innerHTML = esc(C.socio.precio) + "<small>" + esc(C.socio.periodo) + "</small>";
+  document.getElementById("socioOther").textContent = (C.socio.otros || []).map(function (o) { return o[0] + ": " + o[1] + " " + C.socio.periodo; }).join(" · ");
+  document.getElementById("shopList").innerHTML = C.tienda.map(function (it) {
+    var icon = /bufanda/i.test(it.nombre) ? "scarf" : "shirt";
+    return '<div class="item"><div class="ph">' + (it.foto ? '<img src="' + esc(it.foto) + '" alt="" loading="lazy">' : '<svg aria-hidden="true" viewBox="0 0 48 48"><use href="#' + icon + '"/></svg>') + '</div><div class="t"><b>' + esc(it.nombre) + "</b><small>" + (it.precio ? esc(it.precio) : "Precio por confirmar") + "</small></div></div>";
+  }).join("");
+  var slots = C.patrocinadores.map(function (s) { return '<div class="logo">' + (s.logo ? '<img src="' + esc(s.logo) + '" alt="' + esc(s.nombre) + '">' : esc(s.nombre)) + "</div>"; });
+  while (slots.length < 4) slots.push('<a class="free" href="contacto.html"><div>¿Tu negocio aquí?<br>Patrocina al Ortuella</div></a>');
+  document.getElementById("sponsorList").innerHTML = slots.join("");
+  document.getElementById("helpersList").innerHTML = "<strong>Con el apoyo de:</strong>" + C.colaboradores.map(function (c) { return "<span>" + esc(c) + "</span>"; }).join("");
+})();
+</script>
+</body>
+</html>

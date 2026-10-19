@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CD Ortuella</title>
+<meta name="description" content="Club Deportivo Ortuella: partidos, resultados, clasificaciones, noticias y equipos. Desde 1949 en Otxartaga Berri.">
+<!-- Mientras la web esté en pruebas, que no salga en Google -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="img/escudo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Big+Shoulders+Display:wght@700;800;900&display=swap">
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body data-page="index">
+<div id="cabecera"></div>
+<main>
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">Otxartaga Berri · Ortuella · Desde 1949</span>
+      <h1>Club Deportivo <span>Ortuella</span></h1>
+      <p class="lead">Más de 75 años de fútbol en Ortuella. Primer equipo, filial y cantera, todos de azul y blanco.</p>
+      <div class="btns">
+        <a class="btn" href="partidos.html">Partidos y resultados</a>
+        <a class="btn ghost" href="socios.html">Hazte socio</a>
+      </div>
+    </div>
+    <div class="next" id="nextMatches" aria-label="Próximos partidos"></div>
+  </div>
+</section>
+
+<div class="strip" aria-label="Últimos resultados"><div class="wrap" id="strip"></div></div>
+
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="kicker">Temporada <span class="season"></span></span><h2>Cómo vamos</h2></div>
+      <a class="more" href="partidos.html">Todos los partidos</a>
+    </div>
+    <div class="home-grid" id="standings"></div>
+    <p class="source" id="source"></p>
+  </div>
+</section>
+
+<section class="block alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="kicker">Actualidad</span><h2>Noticias</h2></div>
+      <a class="more" href="noticias.html">Todas las noticias</a>
+    </div>
+    <div class="news" id="newsList"></div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="kicker">Apoya al club</span><h2>Ser del Ortuella</h2></div>
+    </div>
+    <div class="quick" id="quick"></div>
+  </div>
+</section>
+
+<section class="block dark">
+  <div class="wrap ig-band">
+    <div><span class="kicker">@cdortuella</span><h2>Síguenos en Instagram</h2><p>Fotos de los partidos, convocatorias y todo lo que pasa en Otxartaga.</p></div>
+    <a class="btn" href="https://www.instagram.com/cdortuella/" target="_blank" rel="noopener">Abrir Instagram</a>
+  </div>
+</section>
+</main>
+<div id="pie"></div>
+<script src="datos.js"></script>
+<script src="datos-federacion.js"></script>
+<script src="comun.js"></script>
+<script>
+(function () {
+  var X = window.CDO, C = X.C, esc = X.esc;
+  // Próximo partido del Senior A y del Senior B
+  document.getElementById("nextMatches").innerHTML = ["primer", "b"].map(function (id) { var t = X.team(id); return t ? X.matchCard(t) : ""; }).join("");
+  document.getElementById("strip").innerHTML = X.resultsStrip();
+
+  // Clasificación resumida del Senior A y del Senior B
+  document.getElementById("standings").innerHTML = ["primer", "b"].map(function (id) {
+    var t = X.team(id); if (!t) return "";
+    var r = X.ourRow(t), last = X.played(t).slice(-1)[0];
+    return '<div class="panel"><h3>' + X.APODO[id] + '</h3><div class="sub">' + esc(t.categoria) + (r ? " · <b>" + r.pos + "º con " + r.pts + " puntos</b>" : "") + "</div>" +
+      '<div class="table-scroll"><table>' + X.TABLE_HEAD + "<tbody>" + X.tableRows(t, true) + "</tbody></table></div>" +
+      '<div class="panel-foot">' + (last ? "Último: " + esc(last.local) + " <b>" + last.gl + "-" + last.gv + "</b> " + esc(last.visitante) + " · " : "") +
+      '<a class="more" href="equipos.html#' + X.SLUG[id] + '">Ver equipo</a></div></div>';
+  }).join("");
+  document.getElementById("source").innerHTML = X.sourceNote();
+
+  document.getElementById("newsList").innerHTML = C.noticias.slice(0, 4).map(X.newsCard).join("");
+
+  // Avisos: socio, tienda e inscripciones
+  var price = function (name) { var it = (C.tienda || []).filter(function (x) { return x.nombre.indexOf(name) === 0; })[0]; return it && it.precio ? it.precio : ""; };
+  document.getElementById("quick").innerHTML = [
+    ["socios.html", "Hazte socio", C.socio.precio + " " + C.socio.periodo + ". Apoya al primer equipo y a la cantera."],
+    ["socios.html#tienda", "Camiseta 75 aniversario", price("Camiseta") + ". Edición especial por los 75 años del club."],
+    ["socios.html#tienda", "Bufanda del club", price("Bufanda") + ". Azul y blanca, para la grada de Otxartaga."],
+    ["contacto.html", "Juega en el Ortuella", "Inscripciones abiertas para la temporada. Llama al 696 51 24 69."]
+  ].map(function (q) { return '<a href="' + q[0] + '"><b>' + q[1] + "</b><span>" + esc(q[2]) + "</span></a>"; }).join("");
+})();
+</script>
+</body>
+</html>

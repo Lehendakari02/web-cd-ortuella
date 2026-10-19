@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Otxartaga Berri · CD Ortuella</title>
+<meta name="description" content="Campo de fútbol Otxartaga Berri, en Ortuella: cómo llegar, aforo y entradas.">
+<!-- Mientras la web esté en pruebas, que no salga en Google -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="img/escudo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Big+Shoulders+Display:wght@700;800;900&display=swap">
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body data-page="campo">
+<div id="cabecera"></div>
+<main>
+<section class="page-hero" style="--hero-img:url('img/campo.jpg')">
+  <div class="wrap">
+    <div class="crumbs"><a href="./">Inicio</a> / Club / Otxartaga Berri</div>
+    <h1>Otxartaga Berri</h1>
+    <p>Nuestra casa desde 1984, en la Avenida de la Estación de Ortuella.</p>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap club-grid">
+    <div class="ground">
+      <img src="img/campo.jpg" alt="Campo de Otxartaga Berri con la tribuna y los montes al fondo">
+      <div class="facts">
+        <div><b class="num">100×60</b><small>metros</small></div>
+        <div><b class="num">512</b><small>asientos en grada</small></div>
+        <div><b>1984</b><small>inaugurado</small></div>
+      </div>
+      <p>Hierba artificial renovada en 2018. Aforo máximo en partidos: 644 personas.</p>
+    </div>
+    <div class="prose">
+      <h3 style="margin-top:0">Cómo llegar</h3>
+      <p><strong>Dirección:</strong> Avenida de la Estación s/n, 48530 Ortuella (Bizkaia).</p>
+      <p><a href="https://www.google.com/maps/search/?api=1&query=Campo+de+f%C3%BAtbol+Otxartaga+Ortuella" target="_blank" rel="noopener">Abrir en Google Maps</a>.</p>
+      <h3>Entradas</h3>
+      <div class="tickets" id="ticketList"></div>
+      <p class="source">Precios de la web antigua, pendientes de confirmar.</p>
+      <h3>La tribuna</h3>
+      <img src="img/entrada.jpg" alt="Entrada al campo de Otxartaga Berri" style="border-radius:6px;display:block;width:100%;max-width:100%;aspect-ratio:16/9;object-fit:cover">
+    </div>
+  </div>
+</section>
+</main>
+<div id="pie"></div>
+<script src="datos.js"></script>
+<script src="datos-federacion.js"></script>
+<script src="comun.js"></script>
+<script>
+document.getElementById("ticketList").innerHTML = (window.CDO.C.entradas || []).map(function (e) { return "<div><small>" + window.CDO.esc(e[0]) + "</small><b>" + window.CDO.esc(e[1]) + "</b></div>"; }).join("");
+</script>
+</body>
+</html>

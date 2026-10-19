@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Noticias · CD Ortuella</title>
+<meta name="description" content="Noticias del CD Ortuella: primer equipo, fútbol base y vida del club.">
+<!-- Mientras la web esté en pruebas, que no salga en Google -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="img/escudo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Big+Shoulders+Display:wght@700;800;900&display=swap">
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body data-page="noticias">
+<div id="cabecera"></div>
+<main>
+<section class="page-hero" style="--hero-img:url('img/campo.jpg')">
+  <div class="wrap">
+    <div class="crumbs"><a href="./">Inicio</a> / Noticias</div>
+    <h1>Noticias</h1>
+    <p>Lo último del club, del primer equipo y del fútbol base.</p>
+  </div>
+</section>
+
+<section class="block alt">
+  <div class="wrap"><div class="news" id="newsList"></div></div>
+</section>
+</main>
+<div id="pie"></div>
+<script src="datos.js"></script>
+<script src="datos-federacion.js"></script>
+<script src="comun.js"></script>
+<script>
+document.getElementById("newsList").innerHTML = window.CDO.C.noticias.map(window.CDO.newsCard).join("");
+</script>
+</body>
+</html>

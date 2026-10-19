@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Partidos · CD Ortuella</title>
+<meta name="description" content="Próximos partidos y resultados de todos los equipos del CD Ortuella.">
+<!-- Mientras la web esté en pruebas, que no salga en Google -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="img/escudo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Big+Shoulders+Display:wght@700;800;900&display=swap">
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body data-page="partidos">
+<div id="cabecera"></div>
+<main>
+<section class="page-hero">
+  <div class="wrap">
+    <div class="crumbs"><a href="./">Inicio</a> / Partidos</div>
+    <h1>Partidos</h1>
+    <p>Próximos partidos y resultados de todos nuestros equipos. Se actualizan solos con los datos de la Federación.</p>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="kicker">Temporada <span class="season"></span></span><h2 id="listTitle">Próximos partidos</h2></div>
+      <div class="tabs" role="tablist" style="border:0;padding:0">
+        <button role="tab" id="tabNext" aria-selected="true">Próximos</button>
+        <button role="tab" id="tabRes" aria-selected="false">Resultados</button>
+      </div>
+    </div>
+    <div class="agenda" id="agenda"></div>
+    <p class="source" id="source"></p>
+  </div>
+</section>
+</main>
+<div id="pie"></div>
+<script src="datos.js"></script>
+<script src="datos-federacion.js"></script>
+<script src="comun.js"></script>
+<script>
+(function () {
+  var X = window.CDO, F = X.F, esc = X.esc;
+  var DIAL = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+  var MESL = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+  var today = new Date(); today.setHours(0, 0, 0, 0);
+  var showResults = location.hash === "#resultados";
+
+  function render() {
+    document.getElementById("tabNext").setAttribute("aria-selected", !showResults);
+    document.getElementById("tabRes").setAttribute("aria-selected", showResults);
+    document.getElementById("listTitle").textContent = showResults ? "Resultados" : "Próximos partidos";
+    // Juntar los partidos de todos los equipos y agrupar por fin de semana (fecha)
+    var all = [];
+    F.equipos.forEach(function (t, i) { t.partidos.forEach(function (p) { all.push({ p: p, t: t, i: i }); }); });
+    all = all.filter(function (x) { var past = X.day(x.p.fecha) < today; return showResults ? past : !past; });
+    all.sort(function (a, b) { if (a.p.fecha === b.p.fecha) return a.i - b.i; return showResults ? (a.p.fecha < b.p.fecha ? 1 : -1) : (a.p.fecha > b.p.fecha ? 1 : -1); });
+    var groups = [], seen = {};
+    all.forEach(function (x) { if (!seen[x.p.fecha]) { seen[x.p.fecha] = []; groups.push(x.p.fecha); } seen[x.p.fecha].push(x); });
+    groups = groups.slice(0, showResults ? 8 : 6);
+    if (!groups.length) { document.getElementById("agenda").innerHTML = '<p class="empty">' + (showResults ? "Todavía no hay resultados." : "No hay partidos en el calendario.") + "</p>"; return; }
+    document.getElementById("agenda").innerHTML = groups.map(function (f) {
+      var d = X.day(f);
+      return '<div class="agenda-day"><h3>' + DIAL[d.getDay()] + " " + d.getDate() + " de " + MESL[d.getMonth()] + '</h3><div class="panel"><ul class="games">' + seen[f].map(function (x) {
+        var p = x.p, t = x.t, right;
+        var name = function (n) { return X.isUs(n, t) ? '<span class="us">' + esc(n) + "</span>" : esc(n); };
+        if (p.gl != null) { var o = X.outcome(p, t); right = '<span class="score ' + o + '">' + p.gl + "-" + p.gv + "</span>"; }
+        else if (showResults) right = '<span class="score na">Sin cargar</span>';
+        else right = '<span class="hour tbc">Hora por confirmar</span>';
+        return '<li><div class="d">Jornada ' + p.jornada + '<b><a href="equipos.html#' + X.SLUG[t.id] + '" style="text-decoration:none">' + X.APODO[t.id] + '</a></b></div><div class="m">' + name(p.local) + " – " + name(p.visitante) + "<small>" + (X.isUs(p.local, t) ? "En casa · Otxartaga Berri" : "Fuera") + "</small></div>" + right + "</li>";
+      }).join("") + "</ul></div></div>";
+    }).join("");
+  }
+  document.getElementById("tabNext").addEventListener("click", function () { showResults = false; render(); });
+  document.getElementById("tabRes").addEventListener("click", function () { showResults = true; render(); });
+  document.getElementById("source").innerHTML = X.sourceNote();
+  render();
+})();
+</script>
+</body>
+</html>
