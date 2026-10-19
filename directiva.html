@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Directiva · CD Ortuella</title>
+<meta name="description" content="Junta directiva del Club Deportivo Ortuella.">
+<!-- Mientras la web esté en pruebas, que no salga en Google -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="img/escudo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Big+Shoulders+Display:wght@700;800;900&display=swap">
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body data-page="directiva">
+<div id="cabecera"></div>
+<main>
+<section class="page-hero">
+  <div class="wrap">
+    <div class="crumbs"><a href="./">Inicio</a> / Club / Directiva</div>
+    <h1>Directiva</h1>
+    <p>Las personas que sacan adelante el club.</p>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <div class="notice">Datos de la web antigua. Pendiente de confirmar que siguen al día.</div>
+    <div class="board" id="boardList" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))"></div>
+    <p class="source">¿Quieres echar una mano en el club? <a href="contacto.html">Escríbenos</a>.</p>
+  </div>
+</section>
+</main>
+<div id="pie"></div>
+<script src="datos.js"></script>
+<script src="datos-federacion.js"></script>
+<script src="comun.js"></script>
+<script>
+document.getElementById("boardList").innerHTML = window.CDO.C.directiva.map(function (d) { return "<div><small>" + window.CDO.esc(d[0]) + "</small><b>" + window.CDO.esc(d[1]) + "</b></div>"; }).join("");
+</script>
+</body>
+</html>
