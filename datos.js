@@ -17,7 +17,7 @@ window.CLUB = {
       titulo: "75 años de fútbol en Ortuella",
       texto: "Con motivo del 75 aniversario, el club organizó en la Kultur Etxea la exposición «Un paseo por la historia del Club y del fútbol regional vizcaíno»." },
     { fecha: "2022-04-03", etiqueta: "Fútbol base", foto: "img/cadete-campeon.jpg",
-      titulo: "El Cadete, campeón de liga y ascenso a Primera",
+      titulo: "El Cadete gana la liga y sube a Primera",
       texto: "Gran temporada 2021/22 de nuestros cadetes, que se proclamaron campeones y lograron el ascenso a Primera División." }
   ],
 
@@ -67,7 +67,7 @@ window.CLUB = {
   ],
 
   patrocinadores: [
-    { nombre: "Markofer · Montajes y mantenimientos", logo: "img/markofer.png" }
+    { nombre: "Markofer · Montajes y mantenimientos", logo: "img/markofer.webp" }
   ],
   colaboradores: ["Ortuellako Udala · Ayuntamiento de Ortuella", "Bizkaiko Foru Aldundia · Diputación Foral de Bizkaia",
                   "Federación Vizcaína de Fútbol", "Athletic Club Fundazioa"]

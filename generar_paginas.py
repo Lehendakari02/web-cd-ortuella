@@ -4,6 +4,8 @@ import hashlib, os
 D = os.path.dirname(os.path.abspath(__file__))
 # Dirección pública de la web. Cambiarla aquí cuando se use el dominio cdortuella.net
 SITIO = "https://lehendakari02.github.io/web-cd-ortuella"
+# False mientras la web esté en pruebas (no sale en Google). El día del lanzamiento: True.
+PUBLICADA = False
 
 HEAD = """<!doctype html>
 <html lang="es">
@@ -12,8 +14,7 @@ HEAD = """<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{title}</title>
 <meta name="description" content="{desc}">
-<!-- Mientras la web esté en pruebas, que no salga en Google -->
-<meta name="robots" content="noindex, nofollow">
+{robots}<link rel="canonical" href="{sitio}/{archivo}">
 <!-- Vista previa al compartir el enlace (WhatsApp, Facebook, X...) -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="CD Ortuella">
@@ -72,7 +73,7 @@ PAGES["index"] = dict(
  body="""<section class="hero">
   <div class="wrap">
     <div>
-      <span class="eyebrow">Otxartaga Berri · Ortuella · Desde 1949</span>
+      <span class="eyebrow"><span>Otxartaga Berri · Ortuella</span><i class="sep"> · </i><span>Desde 1949</span></span>
       <h1>Club Deportivo <span>Ortuella</span></h1>
       <p class="lead">Más de 75 años de fútbol en Ortuella. Primer equipo, filial y cantera, todos de azul y blanco.</p>
       <div class="btns">
@@ -439,7 +440,7 @@ PAGES["campo"] = dict(
       <div class="tickets" id="ticketList"></div>
       <p class="source">Precios de la web antigua, pendientes de confirmar.</p>
       <h3>La tribuna</h3>
-      <img src="img/entrada.jpg" alt="Entrada al campo de Otxartaga Berri" style="border-radius:6px;display:block;width:100%;max-width:100%;aspect-ratio:16/9;object-fit:cover">
+      <img src="img/entrada.jpg" loading="lazy" decoding="async" alt="Entrada al campo de Otxartaga Berri" style="border-radius:6px;display:block;width:100%;max-width:100%;aspect-ratio:16/9;object-fit:cover">
     </div>
   </div>
 </section>
@@ -577,7 +578,7 @@ PAGES["privacidad"] = dict(
 
     <h3>Jugadores, cuerpo técnico y directiva</h3>
     <p>En la web aparecen nombres y, en su caso, fotografías de jugadores, técnicos y miembros de la directiva, para informar sobre la actividad deportiva del club. En el caso de menores de edad, se publican con el consentimiento de sus madres, padres o tutores. Cualquier persona puede pedir en cualquier momento que se retire su nombre o su imagen escribiendo a cdortuella@cdortuella.net, y el club lo hará sin demora.</p>
-    <p>Los datos de competición (alineaciones, resultados y goleadores) proceden de la información pública de la Federación Vizcaína de Fútbol.</p>
+    <p>Los datos de competición (resultados, clasificaciones y goleadores) proceden de la información pública de la Federación Vizcaína de Fútbol.</p>
 
     <h3>Base legal y conservación</h3>
     <p>Tratamos los datos con tu consentimiento o porque son necesarios para la relación que tienes con el club (por ejemplo, como socio o jugador). Los conservamos mientras dure esa relación y, después, durante los plazos que exija la ley.</p>
@@ -657,13 +658,21 @@ FICHA_GOOGLE = """<script type="application/ld+json">
 V = {f: hashlib.md5(open(os.path.join(D, f), "rb").read()).hexdigest()[:8] for f in ("estilos.css", "datos.js", "comun.js")}
 
 for name, p in PAGES.items():
-    html = HEAD.format(title=p["title"], desc=p["desc"], page=name, v=V, sitio=SITIO, archivo="" if name == "index" else name + ".html") + p["body"] + FOOT.format(script=p["script"], v=V)
+    # Mientras la web esté en pruebas, que no salga en Google; la página de error, nunca
+    robots = '<meta name="robots" content="noindex, nofollow">\n' if not PUBLICADA or name == "404" else ""
+    html = HEAD.format(title=p["title"], desc=p["desc"], page=name, v=V, sitio=SITIO, robots=robots, archivo="" if name == "index" else name + ".html") + p["body"] + FOOT.format(script=p["script"], v=V)
     if name == "index":  # ficha del club para Google (solo sirve cuando se quite el noindex)
         html = html.replace("</head>", FICHA_GOOGLE.replace("{sitio}", SITIO) + "</head>", 1)
     if name == "404":  # GitHub la sirve en cualquier dirección rota, así que los enlaces parten siempre de la raíz de la web
-        html = html.replace("<head>\n", '<head>\n<base href="%s/">\n' % SITIO, 1)
+        html = html.replace("<head>\n", '<head>\n<base href="%s/">\n' % SITIO, 1).replace('<link rel="canonical" href="%s/404.html">\n' % SITIO, "")
     open(os.path.join(D, name + ".html"), "w").write(html)
     print("ok", name)
 
-open(os.path.join(D, "robots.txt"), "w").write("# Web en pruebas: que no la indexe ningún buscador\nUser-agent: *\nDisallow: /\n")
+# Lista de páginas para Google (no hace nada mientras robots.txt lo prohíba)
+urls = "".join("  <url><loc>%s/%s</loc></url>\n" % (SITIO, "" if n == "index" else n + ".html") for n in PAGES if n != "404")
+open(os.path.join(D, "sitemap.xml"), "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + "</urlset>\n")
+if PUBLICADA:
+    open(os.path.join(D, "robots.txt"), "w").write("User-agent: *\nAllow: /\nSitemap: %s/sitemap.xml\n" % SITIO)
+else:
+    open(os.path.join(D, "robots.txt"), "w").write("# Web en pruebas: que no la indexe ningún buscador\nUser-agent: *\nDisallow: /\n")
 open(os.path.join(D, ".nojekyll"), "w").write("")
