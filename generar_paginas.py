@@ -73,7 +73,7 @@ PAGES["index"] = dict(
  body="""<section class="hero">
   <div class="wrap">
     <div>
-      <span class="eyebrow">Otxartaga Berri · Ortuella · Desde 1949</span>
+      <span class="eyebrow"><span>Otxartaga Berri · Ortuella</span><i class="sep"> · </i><span>Desde 1949</span></span>
       <h1>Club Deportivo <span>Ortuella</span></h1>
       <p class="lead">Más de 75 años de fútbol en Ortuella. Primer equipo, filial y cantera, todos de azul y blanco.</p>
       <div class="btns">
@@ -578,7 +578,7 @@ PAGES["privacidad"] = dict(
 
     <h3>Jugadores, cuerpo técnico y directiva</h3>
     <p>En la web aparecen nombres y, en su caso, fotografías de jugadores, técnicos y miembros de la directiva, para informar sobre la actividad deportiva del club. En el caso de menores de edad, se publican con el consentimiento de sus madres, padres o tutores. Cualquier persona puede pedir en cualquier momento que se retire su nombre o su imagen escribiendo a cdortuella@cdortuella.net, y el club lo hará sin demora.</p>
-    <p>Los datos de competición (alineaciones, resultados y goleadores) proceden de la información pública de la Federación Vizcaína de Fútbol.</p>
+    <p>Los datos de competición (resultados, clasificaciones y goleadores) proceden de la información pública de la Federación Vizcaína de Fútbol.</p>
 
     <h3>Base legal y conservación</h3>
     <p>Tratamos los datos con tu consentimiento o porque son necesarios para la relación que tienes con el club (por ejemplo, como socio o jugador). Los conservamos mientras dure esa relación y, después, durante los plazos que exija la ley.</p>
