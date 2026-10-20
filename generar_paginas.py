@@ -4,6 +4,8 @@ import hashlib, os
 D = os.path.dirname(os.path.abspath(__file__))
 # Dirección pública de la web. Cambiarla aquí cuando se use el dominio cdortuella.net
 SITIO = "https://lehendakari02.github.io/web-cd-ortuella"
+# False mientras la web esté en pruebas (no sale en Google). El día del lanzamiento: True.
+PUBLICADA = False
 
 HEAD = """<!doctype html>
 <html lang="es">
@@ -12,8 +14,7 @@ HEAD = """<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{title}</title>
 <meta name="description" content="{desc}">
-<!-- Mientras la web esté en pruebas, que no salga en Google -->
-<meta name="robots" content="noindex, nofollow">
+{robots}<link rel="canonical" href="{sitio}/{archivo}">
 <!-- Vista previa al compartir el enlace (WhatsApp, Facebook, X...) -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="CD Ortuella">
@@ -657,13 +658,21 @@ FICHA_GOOGLE = """<script type="application/ld+json">
 V = {f: hashlib.md5(open(os.path.join(D, f), "rb").read()).hexdigest()[:8] for f in ("estilos.css", "datos.js", "comun.js")}
 
 for name, p in PAGES.items():
-    html = HEAD.format(title=p["title"], desc=p["desc"], page=name, v=V, sitio=SITIO, archivo="" if name == "index" else name + ".html") + p["body"] + FOOT.format(script=p["script"], v=V)
+    # Mientras la web esté en pruebas, que no salga en Google; la página de error, nunca
+    robots = '<meta name="robots" content="noindex, nofollow">\n' if not PUBLICADA or name == "404" else ""
+    html = HEAD.format(title=p["title"], desc=p["desc"], page=name, v=V, sitio=SITIO, robots=robots, archivo="" if name == "index" else name + ".html") + p["body"] + FOOT.format(script=p["script"], v=V)
     if name == "index":  # ficha del club para Google (solo sirve cuando se quite el noindex)
         html = html.replace("</head>", FICHA_GOOGLE.replace("{sitio}", SITIO) + "</head>", 1)
     if name == "404":  # GitHub la sirve en cualquier dirección rota, así que los enlaces parten siempre de la raíz de la web
-        html = html.replace("<head>\n", '<head>\n<base href="%s/">\n' % SITIO, 1)
+        html = html.replace("<head>\n", '<head>\n<base href="%s/">\n' % SITIO, 1).replace('<link rel="canonical" href="%s/404.html">\n' % SITIO, "")
     open(os.path.join(D, name + ".html"), "w").write(html)
     print("ok", name)
 
-open(os.path.join(D, "robots.txt"), "w").write("# Web en pruebas: que no la indexe ningún buscador\nUser-agent: *\nDisallow: /\n")
+# Lista de páginas para Google (no hace nada mientras robots.txt lo prohíba)
+urls = "".join("  <url><loc>%s/%s</loc></url>\n" % (SITIO, "" if n == "index" else n + ".html") for n in PAGES if n != "404")
+open(os.path.join(D, "sitemap.xml"), "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + "</urlset>\n")
+if PUBLICADA:
+    open(os.path.join(D, "robots.txt"), "w").write("User-agent: *\nAllow: /\nSitemap: %s/sitemap.xml\n" % SITIO)
+else:
+    open(os.path.join(D, "robots.txt"), "w").write("# Web en pruebas: que no la indexe ningún buscador\nUser-agent: *\nDisallow: /\n")
 open(os.path.join(D, ".nojekyll"), "w").write("")
