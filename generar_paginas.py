@@ -261,7 +261,7 @@ PAGES["equipos"] = dict(
  script="""(function () {
   var X = window.CDO, C = X.C, F = X.F, esc = X.esc;
   var BY_SLUG = {}; F.equipos.forEach(function (t) { BY_SLUG[X.SLUG[t.id]] = t; });
-  // El fútbol base tiene su página igual que los demás; solo se queda fuera de la portada y sin tarjetas
+  // El fútbol base tiene su página igual que los demás; solo se queda fuera de la portada
   var BASE = F.equipos.filter(function (t) { return t.base; });
   var $ = function (id) { return document.getElementById(id); };
 
@@ -335,7 +335,7 @@ PAGES["equipos"] = dict(
       '<div class="comp' + (t.clasificacion.length ? "" : " solo") + '">' + (t.clasificacion.length ? '<div><div class="panel"><h3>Clasificación</h3><div class="sub">' + esc(t.categoria) + '</div><div class="table-scroll"><table>' + X.TABLE_HEAD + "<tbody>" + X.tableRows(t) + "</tbody></table></div></div></div>" : "") +
       '<div><div class="panel"><h3>Partidos</h3><div class="tabs" role="tablist"><button role="tab" id="tabNext" aria-selected="true">Próximos</button><button role="tab" id="tabRes" aria-selected="false">Resultados</button></div><ul class="games" id="games"></ul></div>' +
       '<div class="panel"><h3>Goleadores</h3><ul class="scorers">' + X.scorersList(t) + "</ul></div>" +
-      (!t.base && X.cardsList(t) ? '<div class="panel"><h3>Tarjetas</h3>' + X.cardsList(t) + "</div>" : "") + "</div></div>" +
+      (X.cardsList(t) ? '<div class="panel"><h3>Tarjetas</h3>' + X.cardsList(t) + "</div>" : "") + "</div></div>" +
       '<p class="source">' + X.sourceNote(t) + "</p>" +
       '<div class="cal-team"><div><b>Los partidos del ' + X.APODO[t.id] + ' en tu calendario</b><p>Se añaden solos y se actualizan con cada jornada. <a href="partidos.html#calendario">Más opciones</a></p></div>' +
       '<div class="btns"><a class="btn blue" href="' + X.calHrefs(X.SLUG[t.id]).apple + '">iPhone o Mac</a><a class="btn line" href="' + X.calHrefs(X.SLUG[t.id]).google + '" target="_blank" rel="noopener">Google Calendar</a></div></div>' +
@@ -677,7 +677,7 @@ PAGES["partido"] = dict(
   var ours = function (lado) { return X.isUs(who(lado), t); };
   // Goles y tarjetas en una sola cronología, por minuto
   var ev = (a.goles || []).map(function (g) { return { min: g.min, lado: g.lado, txt: esc(g.jugador) + (g.tipo === "pp" ? " <small>(en propia)</small>" : g.tipo === "pen" ? " <small>(penalti)</small>" : ""), ico: "gol" }; })
-    .concat((t.base ? [] : a.tarjetas || []).map(function (c) { return { min: c.min, lado: c.lado, txt: esc(c.jugador), ico: c.tipo }; }))
+    .concat((a.tarjetas || []).map(function (c) { return { min: c.min, lado: c.lado, txt: esc(c.jugador), ico: c.tipo }; }))
     .sort(function (x, y) { return x.min - y.min; });
   var gl = 0, gv = 0;  // marcador en cada gol
   ev.forEach(function (e) { if (e.ico === "gol") { if (e.lado === "local") gl++; else gv++; e.txt += ' <b class="ev-sc">' + gl + "-" + gv + "</b>"; } });
