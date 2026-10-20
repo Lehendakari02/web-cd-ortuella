@@ -41,6 +41,14 @@ window.CLUB = {
   },
 
   // Equipos sin datos en la Federación (fútbol base escolar)
+  // Plantilla de cada equipo (de las capturas de la app de la Federación). Ejemplo:
+  // juvenil: { jugadores: [[1, "Nombre Apellido", "Porteros"], [4, "Nombre Apellido", "Defensas"]], tecnicos: [["Entrenador", "Nombre"]] }
+  // Si un equipo tiene plantilla, sale en su página; el Senior A sigue con la convocatoria hasta tener la suya.
+  plantillas: {},
+
+  // Foto de cada equipo en su página (carpeta img/equipos/). Ejemplo: cadete: "img/equipos/cadete.jpg"
+  fotosEquipos: {},
+
   equiposBase: [
     { nombre: "Infantil", categoria: "Infantil Liga D (Bizkaia) · nacidos 2013-14" },
     { nombre: "Alevín", categoria: "Deporte escolar", pendiente: true },

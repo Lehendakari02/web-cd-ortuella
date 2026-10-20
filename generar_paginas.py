@@ -217,10 +217,10 @@ PAGES["partidos"] = dict(
       return '<div class="agenda-day"><div class="agenda-head"><h3>' + DIAL[d.getDay()] + " " + d.getDate() + " de " + MESL[d.getMonth()] + "</h3>" + X.shareLink(msg, "Compartir los partidos de este día por WhatsApp") + '</div><div class="panel"><ul class="games">' + seen[f].map(function (x) {
         var p = x.p, t = x.t, right;
         var name = function (n) { return X.isUs(n, t) ? '<span class="us">' + esc(n) + "</span>" : esc(n); };
-        if (p.gl != null) { var o = X.outcome(p, t); right = '<span class="score ' + o + '">' + p.gl + "-" + p.gv + "</span>"; }
+        if (p.gl != null) { var o = X.outcome(p, t); right = '<a class="score ' + o + '" href="' + X.fichaUrl(t, p) + '" title="Ver la ficha del partido">' + p.gl + "-" + p.gv + "</a>"; }
         else if (showResults) right = '<span class="score na">Sin cargar</span>';
         else right = '<span class="hour tbc">Hora por confirmar</span>';
-        return '<li><div class="d">Jornada ' + p.jornada + '<b><a href="equipos.html#' + X.SLUG[t.id] + '" style="text-decoration:none">' + X.APODO[t.id] + '</a></b></div><div class="m">' + name(p.local) + " – " + name(p.visitante) + "<small>" + (X.isUs(p.local, t) ? "En casa · Otxartaga Berri" : "Fuera " + X.mapsLink(p)) + "</small></div>" + right + "</li>";
+        return '<li><div class="d">Jornada ' + p.jornada + '<b><a href="equipos.html#' + X.SLUG[t.id] + '" style="text-decoration:none">' + X.APODO[t.id] + '</a></b></div><div class="m">' + name(p.local) + " – " + name(p.visitante) + "<small>" + (X.isUs(p.local, t) ? "En casa · Otxartaga Berri" : "Fuera" + (p.campo ? " · " + esc(p.campo) : "") + " " + X.mapsLink(p)) + "</small></div>" + right + "</li>";
       }).join("") + "</ul></div></div>";
     }).join("");
   }
@@ -261,18 +261,19 @@ PAGES["equipos"] = dict(
  script="""(function () {
   var X = window.CDO, C = X.C, F = X.F, esc = X.esc;
   var BY_SLUG = {}; F.equipos.forEach(function (t) { BY_SLUG[X.SLUG[t.id]] = t; });
+  var FED = X.federados(), BASE = F.equipos.filter(function (t) { return t.base; });
   var $ = function (id) { return document.getElementById(id); };
 
   function nav(cur) {
     $("subnav").innerHTML = '<a class="chip" href="equipos.html"' + (!cur ? ' aria-current="page"' : "") + ">Todos</a>" +
-      F.equipos.map(function (t) { var s = X.SLUG[t.id]; return '<a class="chip" href="#' + s + '"' + (cur === s ? ' aria-current="page"' : "") + ">" + X.APODO[t.id] + "</a>"; }).join("") +
-      '<a class="chip" href="#base"' + (cur === "base" ? ' aria-current="page"' : "") + ">Fútbol base</a>";
+      FED.map(function (t) { var s = X.SLUG[t.id]; return '<a class="chip" href="#' + s + '"' + (cur === s ? ' aria-current="page"' : "") + ">" + X.APODO[t.id] + "</a>"; }).join("") +
+      '<a class="chip" href="#base"' + (cur === "base" || BASE.some(function (t) { return X.SLUG[t.id] === cur; }) ? ' aria-current="page"' : "") + ">Fútbol base</a>";
   }
   function heading(name, sub, crumb) { $("teamName").textContent = name; $("teamSub").textContent = sub; $("crumb").textContent = crumb ? " / " + crumb : ""; document.title = (crumb || "Equipos") + " · CD Ortuella"; }
 
   function overview() {
     heading("Nuestros equipos", "Del fútbol base al primer equipo. Elige uno para ver su clasificación, partidos y goleadores.", "");
-    $("teamView").innerHTML = '<section class="block"><div class="wrap"><div class="teams-grid">' + F.equipos.map(function (t) {
+    $("teamView").innerHTML = '<section class="block"><div class="wrap"><div class="teams-grid">' + FED.map(function (t) {
       var r = X.ourRow(t);
       return '<a class="team-card" href="#' + X.SLUG[t.id] + '"><svg width="40" height="40" aria-hidden="true"><use href="#shirt"/></svg><h3>' + X.APODO[t.id] + "</h3><p>" + esc(t.categoria) + "</p>" +
         (r ? '<div class="pos-line">' + r.pos + "º · " + r.pts + " puntos</div>" : "") + '<span class="go">Ver equipo</span></a>';
@@ -281,9 +282,30 @@ PAGES["equipos"] = dict(
 
   function base() {
     heading("Fútbol base", "La cantera del Ortuella. Inscripciones en el 696 51 24 69.", "Fútbol base");
+    // Los equipos de base que ya vienen de la Federación tienen su página; el resto, de momento, solo su tarjeta
+    var fed = {}; BASE.forEach(function (t) { fed[X.APODO[t.id]] = t; });
     $("teamView").innerHTML = '<section class="block"><div class="wrap"><div class="teams-grid">' + C.equiposBase.map(function (t) {
+      var f = fed[t.nombre];
+      if (f) return '<a class="team-card" href="#' + X.SLUG[f.id] + '"><svg width="40" height="40" aria-hidden="true"><use href="#shirt"/></svg><h3>' + esc(t.nombre) + "</h3><p>" + esc(f.categoria) + '</p><span class="go">Ver equipo</span></a>';
       return '<div class="team-card"><svg width="40" height="40" aria-hidden="true"><use href="#shirt"/></svg><h3>' + esc(t.nombre) + "</h3><p>" + esc(t.categoria) + "</p>" + (t.pendiente ? '<div class="pos-line"><span class="pending">Pendiente de confirmar</span></div>' : "") + "</div>";
     }).join("") + '</div><p class="source">Juvenil y cadete compiten en la Federación: los tienes arriba con su clasificación.</p></div></section>';
+  }
+
+  // Plantilla de cada equipo: C.plantillas[id] = { jugadores: [[dorsal, nombre, demarcación]], tecnicos: [[cargo, nombre]] }
+  function roster(t) {
+    var pl = (C.plantillas || {})[t.id]; if (!pl) return "";
+    var POS = ["Porteros", "Defensas", "Centrocampistas", "Delanteros"], by = {};
+    pl.jugadores.forEach(function (j) { var k = j[2] || "Jugadores"; (by[k] = by[k] || []).push(j); });
+    var groups = POS.filter(function (k) { return by[k]; }).concat(Object.keys(by).filter(function (k) { return POS.indexOf(k) < 0; }));
+    var one = function (j) { return '<div class="player"><span class="dorsal">' + esc(j[0] || "") + "</span><b>" + esc(j[1]) + "</b></div>"; };
+    return '<section class="block alt"><div class="wrap"><div class="sec-head"><div><span class="kicker">Plantilla</span><h2>' + X.APODO[t.id] + "</h2></div><p>" + pl.jugadores.length + " jugadores · temporada " + esc(F.temporada) + "</p></div>" +
+      '<div class="squad-wrap"><div class="squad">' + groups.map(function (k) { return '<div class="squad-label">' + esc(k) + "</div>" + by[k].map(one).join(""); }).join("") + "</div>" +
+      ((pl.tecnicos || []).length ? '<aside class="staff"><h3>Cuerpo técnico</h3><dl>' + pl.tecnicos.map(function (s) { return "<div><dt>" + esc(s[0]) + "</dt><dd>" + esc(s[1]) + "</dd></div>"; }).join("") + "</dl></aside>" : "") + "</div></div></section>";
+  }
+  // Foto de cada equipo: C.fotosEquipos[id] = "img/equipos/archivo.jpg"
+  function photo(t) {
+    var f = (C.fotosEquipos || {})[t.id]; if (!f) return "";
+    return '<figure class="team-photo"><img src="' + esc(f) + '" alt="Plantilla del ' + X.APODO[t.id] + ' del CD Ortuella" loading="lazy" decoding="async"><figcaption>' + X.APODO[t.id] + " · temporada " + esc(F.temporada) + "</figcaption></figure>";
   }
 
   function squad() {
@@ -295,23 +317,28 @@ PAGES["equipos"] = dict(
   }
 
   function teamPage(t) {
-    var r = X.ourRow(t), showResults = false;
+    var r = X.ourRow(t), pl = X.played(t), showResults = false;
     heading(X.APODO[t.id], t.categoria, X.APODO[t.id]);
     var goals = t.goleadores.reduce(function (a, g) { return a + g.goles; }, 0);
-    $("teamView").innerHTML = '<section class="block"><div class="wrap">' +
-      '<div class="stats">' +
-        '<div class="stat"><b>' + (r ? r.pos + "º" : "–") + "</b><small>Posición</small></div>" +
-        '<div class="stat"><b>' + (r ? r.pts : "–") + "</b><small>Puntos</small></div>" +
-        '<div class="stat"><b>' + (r ? r.gf + "-" + r.gc : "–") + "</b><small>Goles a favor y en contra</small></div>" +
+    $("teamView").innerHTML = '<section class="block"><div class="wrap">' + photo(t) +
+      '<div class="stats">' + (r ?
+        '<div class="stat"><b>' + r.pos + "º</b><small>Posición</small></div>" +
+        '<div class="stat"><b>' + r.pts + "</b><small>Puntos</small></div>" +
+        '<div class="stat"><b>' + r.gf + "-" + r.gc + "</b><small>Goles a favor y en contra</small></div>" :
+        // Sin clasificación (fútbol base): lo que se saca de sus partidos
+        '<div class="stat"><b>' + pl.length + "</b><small>Partidos jugados</small></div>" +
+        '<div class="stat"><b>' + pl.filter(function (p) { return X.outcome(p, t) === "w"; }).length + "</b><small>Victorias</small></div>" +
+        '<div class="stat"><b>' + pl.reduce(function (n, p) { return n + (X.isUs(p.local, t) ? p.gl : p.gv); }, 0) + "-" + pl.reduce(function (n, p) { return n + (X.isUs(p.local, t) ? p.gv : p.gl); }, 0) + "</b><small>Goles a favor y en contra</small></div>") +
         '<div class="stat"><small>Últimos partidos</small>' + X.formDots(t) + "</div>" +
       "</div>" +
-      '<div class="comp"><div><div class="panel"><h3>Clasificación</h3><div class="sub">' + esc(t.categoria) + '</div><div class="table-scroll"><table>' + X.TABLE_HEAD + "<tbody>" + X.tableRows(t) + "</tbody></table></div></div></div>" +
+      '<div class="comp' + (t.clasificacion.length ? "" : " solo") + '">' + (t.clasificacion.length ? '<div><div class="panel"><h3>Clasificación</h3><div class="sub">' + esc(t.categoria) + '</div><div class="table-scroll"><table>' + X.TABLE_HEAD + "<tbody>" + X.tableRows(t) + "</tbody></table></div></div></div>" : "") +
       '<div><div class="panel"><h3>Partidos</h3><div class="tabs" role="tablist"><button role="tab" id="tabNext" aria-selected="true">Próximos</button><button role="tab" id="tabRes" aria-selected="false">Resultados</button></div><ul class="games" id="games"></ul></div>' +
-      '<div class="panel"><h3>Goleadores</h3><ul class="scorers">' + X.scorersList(t) + "</ul></div></div></div>" +
+      (t.goleadores.length || !t.base ? '<div class="panel"><h3>Goleadores</h3><ul class="scorers">' + X.scorersList(t) + "</ul></div>" : "") +
+      (X.cardsList(t) ? '<div class="panel"><h3>Tarjetas</h3>' + X.cardsList(t) + "</div>" : "") + "</div></div>" +
       '<p class="source">' + X.sourceNote(t) + "</p>" +
       '<div class="cal-team"><div><b>Los partidos del ' + X.APODO[t.id] + ' en tu calendario</b><p>Se añaden solos y se actualizan con cada jornada. <a href="partidos.html#calendario">Más opciones</a></p></div>' +
       '<div class="btns"><a class="btn blue" href="' + X.calHrefs(X.SLUG[t.id]).apple + '">iPhone o Mac</a><a class="btn line" href="' + X.calHrefs(X.SLUG[t.id]).google + '" target="_blank" rel="noopener">Google Calendar</a></div></div>' +
-      "</div></section>" + (t.id === "primer" ? squad() : "");
+      "</div></section>" + (roster(t) || (t.id === "primer" ? squad() : ""));
     var games = function () {
       $("tabNext").setAttribute("aria-selected", !showResults); $("tabRes").setAttribute("aria-selected", showResults);
       $("games").innerHTML = X.gamesList(t, showResults, showResults ? 0 : 8);

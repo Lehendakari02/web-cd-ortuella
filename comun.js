@@ -16,15 +16,22 @@
   var today = new Date(); today.setHours(0, 0, 0, 0);
 
   // Nombre corto y enlace de cada equipo
-  var APODO = { primer: "Senior A", b: "Senior B", juvenil: "Juvenil", cadete: "Cadete" };
-  var SLUG = { primer: "senior-a", b: "senior-b", juvenil: "juvenil", cadete: "cadete" };
+  var APODO = { primer: "Senior A", b: "Senior B", juvenil: "Juvenil", cadete: "Cadete", infantil: "Infantil", alevin: "Alevín", benjamin: "Benjamín" };
+  var SLUG = { primer: "senior-a", b: "senior-b", juvenil: "juvenil", cadete: "cadete", infantil: "infantil", alevin: "alevin", benjamin: "benjamin" };
+  // Fútbol base (Infantil, alevín, benjamín): tienen su página, pero no salen en la portada
+  var federados = function () { return F.equipos.filter(function (t) { return !t.base; }); };
   var team = function (id) { return F.equipos.filter(function (t) { return t.id === id; })[0]; };
   var isUs = function (name, t) { return name === t.nombreFederacion; };
   var played = function (t) { return t.partidos.filter(function (p) { return p.gl != null; }); };
   var upcoming = function (t) { return t.partidos.filter(function (p) { return p.gl == null && day(p.fecha) >= today; }); };
   var outcome = function (p, t) { var us = isUs(p.local, t) ? p.gl : p.gv, them = isUs(p.local, t) ? p.gv : p.gl; return us > them ? "w" : us === them ? "d" : "l"; };
   var initials = function (n) { return n.split(/\s+/).filter(function (w) { return w.length > 1; }).map(function (w) { return w[0]; }).join("").slice(0, 2).toUpperCase(); };
-  var crest = function (name, t) { return isUs(name, t) ? '<img class="crest-mini" src="img/escudo.webp" alt="">' : '<span class="crest-other" aria-hidden="true">' + esc(initials(name)) + "</span>"; };
+  // Escudo de cada equipo: el nuestro, el del rival si lo tenemos en img/escudos/ (F.escudos) y, si no hay ninguno, sus iniciales
+  var crest = function (name, t) {
+    if (isUs(name, t)) return '<img class="crest-mini" src="img/escudo.webp" alt="">';
+    var f = (F.escudos || {})[name];
+    return f ? '<img class="crest-mini" src="img/escudos/' + esc(f) + '" alt="" loading="lazy" decoding="async">' : '<span class="crest-other" aria-hidden="true">' + esc(initials(name)) + "</span>";
+  };
   var ourRow = function (t) { return t.clasificacion.filter(function (r) { return isUs(r.equipo, t); })[0]; };
 
   // ---- cabecera y pie -------------------------------------------------------
@@ -117,6 +124,7 @@
   // Enlace a Google Maps con el campo del rival, para los partidos fuera
   var PIN = '<svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
   function mapsLink(p, campo) {
+    campo = campo || p.campo;
     var where = campo || "Campo de fútbol " + p.local;
     return '<a class="maps" href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(where) + '" target="_blank" rel="noopener" title="Cómo llegar" aria-label="Cómo llegar a ' + esc(campo || "el campo del " + p.local) + '">' + PIN + "</a>";
   }
@@ -128,14 +136,14 @@
     var when = days === 0 ? "Hoy" : days === 1 ? "Mañana" : "Faltan " + days + " días";
     return '<article class="match"><div class="head"><span><b>' + APODO[t.id] + "</b> · Jornada " + p.jornada + '</span><span class="days">' + when + "</span></div>" +
       '<div class="teams"><div class="team">' + crest(p.local, t) + "<b>" + esc(p.local) + '</b></div><div class="vs">VS</div><div class="team">' + crest(p.visitante, t) + "<b>" + esc(p.visitante) + "</b></div></div>" +
-      '<div class="info"><span><strong>' + DIAL[d.getDay()] + " " + fdate(p.fecha) + "</strong></span><span>" + (isUs(p.local, t) ? "Otxartaga Berri" : "Fuera de casa") + "</span><span>Hora por confirmar</span></div>" +
+      '<div class="info"><span><strong>' + DIAL[d.getDay()] + " " + fdate(p.fecha) + "</strong></span><span>" + (isUs(p.local, t) ? "Otxartaga Berri" : esc(p.campo || "Fuera de casa")) + "</span><span>Hora por confirmar</span></div>" +
       (isUs(p.local, t) ? "" : mapsLink(p)) + shareLink(matchShareText(p, t), "Compartir este partido por WhatsApp") + "</article>";
   }
 
   // Cada resultado como un marcador de dos filas: equipo a la izquierda, goles a la derecha
   function resultsStrip() {
     var WORD = { w: "Victoria", d: "Empate", l: "Derrota" };
-    return '<div class="lbl">Últimos resultados</div>' + F.equipos.map(function (t) {
+    return '<div class="lbl">Últimos resultados</div>' + federados().map(function (t) {
       var p = played(t).slice(-1)[0];
       if (!p) return '<div class="res"><small>' + APODO[t.id] + '</small><div class="none">Sin partidos todavía</div></div>';
       var o = outcome(p, t);
@@ -170,8 +178,26 @@
       if (p.gl != null) { var o = outcome(p, t); right = '<a class="score ' + o + '" href="' + fichaUrl(t, p) + '" title="Ver la ficha del partido" aria-label="' + { w: "Victoria", d: "Empate", l: "Derrota" }[o] + " " + p.gl + " a " + p.gv + ". Ver la ficha del partido" + '">' + p.gl + "-" + p.gv + "</a>"; }
       else if (results) right = '<span class="score na">Sin cargar</span>';
       else right = '<span class="hour tbc">Hora por confirmar</span>';
-      return '<li><div class="d">' + DIA[x.getDay()] + '<b class="num">' + x.getDate() + " " + MES[x.getMonth()] + '</b></div><div class="m">' + name(p.local) + " – " + name(p.visitante) + "<small>Jornada " + p.jornada + " · " + (isUs(p.local, t) ? "En casa" : "Fuera") + "</small></div>" + right + "</li>";
+      return '<li><div class="d">' + DIA[x.getDay()] + '<b class="num">' + x.getDate() + " " + MES[x.getMonth()] + '</b></div><div class="m">' + name(p.local) + " – " + name(p.visitante) + "<small>Jornada " + p.jornada + " · " + (isUs(p.local, t) ? "En casa" : "Fuera" + (p.campo ? " · " + esc(p.campo) : "")) + "</small></div>" + right + "</li>";
     }).join("");
+  }
+
+  function cardsList(t) {
+    var n = {};
+    played(t).forEach(function (p) {
+      var a = (F.actas || {})[p.acta]; if (!a) return;
+      var lado = isUs(p.local, t) ? "local" : "visitante";
+      (a.tarjetas || []).forEach(function (c) {
+        if (c.lado !== lado) return;
+        var x = n[c.jugador] = n[c.jugador] || { nombre: c.jugador, y: 0, r: 0 };
+        if (c.tipo === "amarilla") x.y++; else x.r++;  // roja directa o segunda amarilla
+      });
+    });
+    var list = Object.keys(n).map(function (k) { return n[k]; }).sort(function (a, b) { return b.r - a.r || b.y - a.y || a.nombre.localeCompare(b.nombre); });
+    if (!list.length) return "";
+    return '<ul class="cards-list">' + list.map(function (x) {
+      return "<li><b>" + esc(x.nombre) + '</b><span class="cnt" aria-label="' + x.y + " amarillas" + (x.r ? " y " + x.r + " rojas" : "") + '"><i class="card y"></i>' + x.y + (x.r ? ' <i class="card r"></i>' + x.r : "") + "</span></li>";
+    }).join("") + "</ul>";
   }
 
   function scorersList(t, limit) {
@@ -248,5 +274,5 @@
   document.querySelectorAll(".season").forEach(function (el) { el.textContent = F.temporada || "2026/27"; });
 
   window.CDO = { C: C, SLUG: SLUG, formDots: formDots, crest: crest, F: F, esc: esc, fdate: fdate, day: day, APODO: APODO, team: team, isUs: isUs, played: played, upcoming: upcoming, outcome: outcome, ourRow: ourRow,
-    matchCard: matchCard, resultsStrip: resultsStrip, tableRows: tableRows, TABLE_HEAD: TABLE_HEAD, gamesList: gamesList, scorersList: scorersList, sourceNote: sourceNote, newsCard: newsCard, copyButtons: copyButtons, shareLink: shareLink, mapsLink: mapsLink, fichaUrl: fichaUrl, matchLine: matchLine, longDate: longDate, webUrl: webUrl, calHrefs: calHrefs };
+    matchCard: matchCard, resultsStrip: resultsStrip, tableRows: tableRows, TABLE_HEAD: TABLE_HEAD, gamesList: gamesList, scorersList: scorersList, sourceNote: sourceNote, newsCard: newsCard, copyButtons: copyButtons, shareLink: shareLink, mapsLink: mapsLink, fichaUrl: fichaUrl, cardsList: cardsList, federados: federados, matchLine: matchLine, longDate: longDate, webUrl: webUrl, calHrefs: calHrefs };
 })();
