@@ -468,3 +468,8 @@ a.team-card:hover { border-color: var(--blue); }
 .cal-team { margin-top: 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px 24px; flex-wrap: wrap; background: var(--sky); border-radius: var(--radius); padding: 18px 20px; }
 .cal-team p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
 .cal-team a:not(.btn) { color: var(--blue); }
+
+/* Cómo llegar a los campos de fuera */
+.maps { display: inline-flex; align-items: center; gap: 4px; color: var(--blue); font-weight: 600; text-decoration: none; white-space: nowrap; }
+.maps:hover { text-decoration: underline; }
+.maps svg { flex: none; }

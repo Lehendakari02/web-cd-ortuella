@@ -220,7 +220,7 @@ PAGES["partidos"] = dict(
         if (p.gl != null) { var o = X.outcome(p, t); right = '<span class="score ' + o + '">' + p.gl + "-" + p.gv + "</span>"; }
         else if (showResults) right = '<span class="score na">Sin cargar</span>';
         else right = '<span class="hour tbc">Hora por confirmar</span>';
-        return '<li><div class="d">Jornada ' + p.jornada + '<b><a href="equipos.html#' + X.SLUG[t.id] + '" style="text-decoration:none">' + X.APODO[t.id] + '</a></b></div><div class="m">' + name(p.local) + " – " + name(p.visitante) + "<small>" + (X.isUs(p.local, t) ? "En casa · Otxartaga Berri" : "Fuera") + "</small></div>" + right + "</li>";
+        return '<li><div class="d">Jornada ' + p.jornada + '<b><a href="equipos.html#' + X.SLUG[t.id] + '" style="text-decoration:none">' + X.APODO[t.id] + '</a></b></div><div class="m">' + name(p.local) + " – " + name(p.visitante) + "<small>" + (X.isUs(p.local, t) ? "En casa · Otxartaga Berri" : "Fuera · " + X.mapsLink(p)) + "</small></div>" + right + "</li>";
       }).join("") + "</ul></div></div>";
     }).join("");
   }
