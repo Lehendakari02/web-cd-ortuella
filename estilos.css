@@ -84,7 +84,7 @@ nav.menu a.cta:hover { background: #e9f0fb; }
 @media (max-width: 1060px) {
   .menu-btn { display: flex; }
   nav.menu { display: none; position: absolute; left: 0; right: 0; top: 100%; background: var(--navy); flex-direction: column; align-items: stretch; padding: 8px max(16px, env(safe-area-inset-right, 0px)) 18px max(16px, env(safe-area-inset-left, 0px)); border-top: 1px solid rgba(255,255,255,.12); max-height: calc(100vh - 70px); overflow-y: auto; }
-  nav.menu.open { display: flex; }
+  nav.menu.open { display: flex; box-shadow: 0 24px 40px rgba(6,26,61,.35), 0 0 0 100vmax rgba(6,26,61,.55); clip-path: inset(0 -100vmax -100vmax -100vmax); }
   nav.menu > ul { flex-direction: column; }
   nav.menu a, nav.menu .drop-btn { padding: 15px 8px; font-size: 16px; width: 100%; text-align: left; }
   nav.menu .drop-btn::after { float: right; margin-top: 4px; }
@@ -303,8 +303,8 @@ h3.mini { font-size: 30px; font-weight: 900; margin-bottom: 14px; }
 .card-socio ul { margin: 14px 0 22px; padding-left: 20px; color: #d6e0f3; }
 .shop { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
 .item { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; }
-.item .ph { aspect-ratio: 1; max-width: 100%; background: var(--sky); display: grid; place-items: center; }
-.item .ph img { width: 100%; height: 100%; object-fit: cover; }
+.item .ph { aspect-ratio: 1; max-width: 100%; background: var(--sky); display: grid; place-items: center; position: relative; overflow: hidden; }
+.item .ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .item .ph svg { width: 54%; height: auto; }
 .item div.t { padding: 10px 12px 12px; }
 .item b { display: block; font-weight: 600; font-size: 14.5px; line-height: 1.25; }
@@ -323,7 +323,7 @@ h3.mini { font-size: 30px; font-weight: 900; margin-bottom: 14px; }
 .contact dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 14px 20px; }
 .contact dt { font: 700 12px/1.6 var(--f-body); letter-spacing: .12em; text-transform: uppercase; color: #b9c8e6; }
 .contact dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
-.copy { font: 600 11px var(--f-body); text-transform: uppercase; letter-spacing: .08em; margin-left: 8px; background: none; border: 1px solid rgba(255,255,255,.35); color: #b9c8e6; border-radius: 3px; padding: 3px 6px; cursor: pointer; }
+.copy { font: 600 11px var(--f-body); text-transform: uppercase; letter-spacing: .08em; margin-left: 8px; background: none; border: 1px solid rgba(255,255,255,.35); color: #b9c8e6; border-radius: 3px; padding: 7px 10px; cursor: pointer; vertical-align: middle; }
 .social { display: grid; gap: 10px; }
 .social a { display: flex; gap: 14px; align-items: center; padding: 16px 18px; border: 1px solid rgba(255,255,255,.2); border-radius: var(--radius); text-decoration: none; }
 .social a:hover { background: rgba(255,255,255,.08); }
@@ -355,7 +355,7 @@ footer a:hover { color: #fff; text-decoration: underline; }
 .legal-data dt { font: 700 12px/1.6 var(--f-body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
 .legal-data dd { margin: 0; overflow-wrap: anywhere; }
 @media (max-width: 560px) { .legal-data { grid-template-columns: 1fr; gap: 2px; } .legal-data dd { margin-bottom: 8px; } }
-@media (max-width: 760px) { .foot-main { grid-template-columns: 1fr 1fr; } .foot-main > div:first-child, .foot-contact { grid-column: 1 / -1; } .foot-sponsors a { margin-left: 0; } }
+@media (max-width: 760px) { .foot-main ul { gap: 2px; } .foot-main li a { display: inline-block; padding-block: 7px; } .foot-main { grid-template-columns: 1fr 1fr; } .foot-main > div:first-child, .foot-contact { grid-column: 1 / -1; } .foot-sponsors a { margin-left: 0; } }
 
 /* Agenda de partidos (todos los equipos) */
 .agenda { display: grid; gap: 22px; }
@@ -383,7 +383,7 @@ a.team-card:hover { border-color: var(--blue); }
 .crest-block img { width: 100%; max-width: 260px; height: auto; }
 .swatches { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 18px; }
 .swatch { width: 150px; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface); }
-.swatch i { display: block; height: 70px; }
+.swatch i { display: block; height: 70px; border-bottom: 1px solid var(--line); }
 .swatch span { display: block; padding: 8px 12px; font-size: 13px; font-weight: 600; }
 .prose p { margin: 0 0 14px; max-width: 64ch; }
 .prose h3 { font-size: 30px; font-weight: 900; margin: 28px 0 12px; }
