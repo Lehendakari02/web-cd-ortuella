@@ -1,0 +1,44 @@
+# Lee los datos de la Federación Vizcaína y actualiza la web sola.
+# De momento solo se lanza a mano (Actions → Actualizar datos de la Federación → Run workflow).
+# Cuando la prueba salga bien, se quita el # de las líneas de "schedule" para que se ejecute 2 veces al día.
+name: Actualizar datos de la Federación
+
+on:
+  workflow_dispatch:
+  # schedule:
+  #   - cron: "0 6 * * *"    # 8:00 en Madrid en horario de verano (7:00 en invierno)
+  #   - cron: "0 21 * * *"   # 23:00 en Madrid en horario de verano (22:00 en invierno)
+
+permissions:
+  contents: write
+
+concurrency:
+  group: actualizar-federacion
+  cancel-in-progress: false
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Leer la Federación
+        # Si falla un equipo, el script guarda los demás y avisa; la web sigue con los últimos datos buenos
+        run: python3 actualizar_federacion.py || echo "::warning::No se pudieron actualizar todos los equipos"
+
+      - name: Guardar los cambios en la web
+        run: |
+          git add datos-federacion.js
+          if [ -d calendario ]; then git add calendario/; fi
+          if git diff --cached --quiet; then
+            echo "Sin cambios"
+            exit 0
+          fi
+          git -c user.name="Actualización automática" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -m "Datos de la Federación actualizados"
+          git push
