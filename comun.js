@@ -52,7 +52,7 @@
   function renderHeader() {
     var el = document.getElementById("cabecera"); if (!el) return;
     var items = MENU.map(function (m, i) {
-      if (!m.sub) return '<li><a href="' + m.h + '"' + (isCurrent(m.h) ? ' aria-current="page"' : "") + ">" + m.t + "</a></li>";
+      if (!m.sub) return '<li' + (m.h === "./" || m.h === "partidos.html" ? ' class="in-tab"' : "") + '><a href="' + m.h + '"' + (isCurrent(m.h) ? ' aria-current="page"' : "") + ">" + m.t + "</a></li>";
       var cur = m.sub.some(function (s) { return isCurrent(s.h); });
       return '<li><button class="drop-btn' + (cur ? " current" : "") + '" aria-expanded="false" aria-controls="sub' + i + '">' + m.t + '</button><ul class="sub" id="sub' + i + '">' +
         m.sub.map(function (s) { return '<li><a href="' + s.h + '"' + (isCurrent(s.h) ? ' aria-current="page"' : "") + ">" + s.t + "<small>" + s.d + "</small></a></li>"; }).join("") + "</ul></li>";
@@ -63,11 +63,13 @@
       '<header class="top"><div class="wrap">' +
       '<a class="brand" href="./" aria-label="Club Deportivo Ortuella, inicio"><img src="img/escudo.webp" alt=""><span><b>CD Ortuella</b><small>Desde 1949</small></span></a>' +
       '<button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu"><i></i>Menú</button>' +
-      '<nav class="menu" id="menu" aria-label="Menú principal"><ul>' + items + '</ul><a class="cta" href="socios.html"' + (page === "socios" ? ' aria-current="page"' : "") + ">Hazte socio</a></nav>" +
-      "</div></header>";
+      '<nav class="menu" id="menu" aria-label="Menú principal"><ul>' + items + '</ul><a class="cta in-tab" href="socios.html"' + (page === "socios" ? ' aria-current="page"' : "") + ">Hazte socio</a></nav>" +
+      "</div></header>" + tabBar();
 
     var menu = document.getElementById("menu"), btn = document.getElementById("menuBtn");
-    btn.addEventListener("click", function () { var o = menu.classList.toggle("open"); btn.setAttribute("aria-expanded", o); });
+    var tabMenu = document.getElementById("tabMenu");
+    if (tabMenu) tabMenu.addEventListener("click", function (e) { e.stopPropagation(); btn.click(); });
+    btn.addEventListener("click", function () { var o = menu.classList.toggle("open"); btn.setAttribute("aria-expanded", o); if (tabMenu) tabMenu.setAttribute("aria-expanded", o); });
     var closeAll = function (except) {
       menu.querySelectorAll("li.open").forEach(function (li) { if (li !== except) { li.classList.remove("open"); li.querySelector(".drop-btn").setAttribute("aria-expanded", "false"); } });
     };
@@ -81,7 +83,21 @@
     document.addEventListener("click", function (e) { if (!menu.contains(e.target)) closeAll(); });
     document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeAll(); });
     // Al ir a otro equipo dentro de la misma página, cerrar el menú
-    menu.addEventListener("click", function (e) { if (e.target.closest("a")) { closeAll(); menu.classList.remove("open"); btn.setAttribute("aria-expanded", "false"); } });
+    menu.addEventListener("click", function (e) { if (e.target.closest("a")) { closeAll(); menu.classList.remove("open"); btn.setAttribute("aria-expanded", "false"); if (tabMenu) tabMenu.setAttribute("aria-expanded", "false"); } });
+  }
+
+  // Barra inferior en el móvil, al alcance del pulgar
+  function tabBar() {
+    var ico = function (d) { return '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + d + "</svg>"; };
+    var tabs = [
+      { h: "./", t: "Inicio", p: "index", i: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>' },
+      { h: "partidos.html", t: "Partidos", p: "partidos", i: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>' },
+      { h: "equipos.html", t: "Equipos", p: "equipos", i: '<path d="M8 3l-5 3 2 4 2-1v12h10V9l2 1 2-4-5-3a4 4 0 0 1-8 0z"/>' },
+      { h: "socios.html", t: "Socios", p: "socios", i: '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/>' }
+    ];
+    return '<nav class="tabbar" aria-label="Accesos rápidos">' + tabs.map(function (x) {
+      return '<a href="' + x.h + '"' + (page === x.p ? ' aria-current="page"' : "") + ">" + ico(x.i) + "<span>" + x.t + "</span></a>";
+    }).join("") + '<button id="tabMenu" aria-expanded="false" aria-controls="menu">' + ico('<path d="M4 7h16M4 12h16M4 17h16"/>') + "<span>Más</span></button></nav>";
   }
 
   function renderFooter() {
@@ -188,7 +204,7 @@
   function sprite() {
     var d = document.createElement("div");
     d.innerHTML = '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>' +
-      '<symbol id="shirt" viewBox="0 0 48 48"><path d="M16 4 L8 8 L2 18 L9 22 L12 18 V44 H36 V18 L39 22 L46 18 L40 8 L32 4 C30 8 18 8 16 4Z" fill="#ffffff" stroke="#0b2a5b" stroke-width="2"/><path d="M17 6 V44 M24 8 V44 M31 6 V44" stroke="#1757c2" stroke-width="4"/></symbol>' +
+      '<symbol id="shirt" viewBox="0 0 48 48"><path d="M16 4 L8 8 L2 18 L9 22 L12 18 V44 H36 V18 L39 22 L46 18 L40 8 L32 4 C30 8 18 8 16 4Z" fill="#1757c2" stroke="#0b2a5b" stroke-width="2"/><path d="M17 5.5 C20 8.5 28 8.5 31 5.5" fill="none" stroke="#ffffff" stroke-width="2"/></symbol>' +
       '<symbol id="scarf" viewBox="0 0 48 48"><path d="M6 10 h36 v10 h-36z" fill="#1757c2"/><path d="M6 20 h36 v10 h-36z" fill="#ffffff" stroke="#0b2a5b" stroke-width="1"/><path d="M6 30 h36 v10 h-36z" fill="#1757c2"/><path d="M6 40 v5 M12 40 v5 M18 40 v5 M24 40 v5 M30 40 v5 M36 40 v5 M42 40 v5" stroke="#0b2a5b" stroke-width="2"/></symbol>' +
       "</defs></svg>";
     document.body.insertBefore(d.firstChild, document.body.firstChild);
