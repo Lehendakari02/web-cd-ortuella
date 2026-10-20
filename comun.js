@@ -116,8 +116,9 @@
   // ---- piezas de partidos ----------------------------------------------------
   // Enlace a Google Maps con el campo del rival, para los partidos fuera
   var PIN = '<svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
-  function mapsLink(p) {
-    return '<a class="maps" href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent("Campo de fútbol " + p.local) + '" target="_blank" rel="noopener" title="Cómo llegar" aria-label="Cómo llegar al campo del ' + esc(p.local) + '">' + PIN + "</a>";
+  function mapsLink(p, campo) {
+    var where = campo || "Campo de fútbol " + p.local;
+    return '<a class="maps" href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(where) + '" target="_blank" rel="noopener" title="Cómo llegar" aria-label="Cómo llegar a ' + esc(campo || "el campo del " + p.local) + '">' + PIN + "</a>";
   }
 
   function matchCard(t) {
@@ -139,7 +140,7 @@
       if (!p) return '<div class="res"><small>' + APODO[t.id] + '</small><div class="none">Sin partidos todavía</div></div>';
       var o = outcome(p, t);
       var row = function (n, g) { return '<div class="row' + (isUs(n, t) ? " us" : "") + '"><span title="' + esc(n) + '">' + esc(n) + "</span><b>" + g + "</b></div>"; };
-      return '<div class="res"><small>' + APODO[t.id] + " · J" + p.jornada + '<em class="o ' + o + '">' + WORD[o] + "</em></small>" + row(p.local, p.gl) + row(p.visitante, p.gv) + "</div>";
+      return '<a class="res" href="' + fichaUrl(t, p) + '" title="Ver la ficha del partido"><small>' + APODO[t.id] + " · J" + p.jornada + '<em class="o ' + o + '">' + WORD[o] + "</em></small>" + row(p.local, p.gl) + row(p.visitante, p.gv) + "</a>";
     }).join("");
   }
 
@@ -157,6 +158,8 @@
   }
   var TABLE_HEAD = '<thead><tr><th>#</th><th class="t">Equipo</th><th title="Partidos jugados">PJ</th><th class="x" title="Ganados">G</th><th class="x" title="Empatados">E</th><th class="x" title="Perdidos">P</th><th class="x" title="Goles a favor">GF</th><th class="x" title="Goles en contra">GC</th><th title="Puntos">Pts</th></tr></thead>';
 
+  var fichaUrl = function (t, p) { return "partido.html?e=" + t.id + "&j=" + p.jornada; };
+
   function gamesList(t, results, limit) {
     var list = results ? t.partidos.filter(function (p) { return day(p.fecha) < today; }).reverse() : upcoming(t);
     if (limit) list = list.slice(0, limit);
@@ -164,7 +167,7 @@
     var name = function (n) { return isUs(n, t) ? '<span class="us">' + esc(n) + "</span>" : esc(n); };
     return list.map(function (p) {
       var x = day(p.fecha), right;
-      if (p.gl != null) { var o = outcome(p, t); right = '<span class="score ' + o + '" aria-label="' + { w: "Victoria", d: "Empate", l: "Derrota" }[o] + " " + p.gl + " a " + p.gv + '">' + p.gl + "-" + p.gv + "</span>"; }
+      if (p.gl != null) { var o = outcome(p, t); right = '<a class="score ' + o + '" href="' + fichaUrl(t, p) + '" title="Ver la ficha del partido" aria-label="' + { w: "Victoria", d: "Empate", l: "Derrota" }[o] + " " + p.gl + " a " + p.gv + ". Ver la ficha del partido" + '">' + p.gl + "-" + p.gv + "</a>"; }
       else if (results) right = '<span class="score na">Sin cargar</span>';
       else right = '<span class="hour tbc">Hora por confirmar</span>';
       return '<li><div class="d">' + DIA[x.getDay()] + '<b class="num">' + x.getDate() + " " + MES[x.getMonth()] + '</b></div><div class="m">' + name(p.local) + " – " + name(p.visitante) + "<small>Jornada " + p.jornada + " · " + (isUs(p.local, t) ? "En casa" : "Fuera") + "</small></div>" + right + "</li>";
@@ -206,6 +209,7 @@
     d.innerHTML = '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>' +
       '<symbol id="shirt" viewBox="0 0 48 48"><path d="M16 4 L8 8 L2 18 L9 22 L12 18 V44 H36 V18 L39 22 L46 18 L40 8 L32 4 C30 8 18 8 16 4Z" fill="#1757c2" stroke="#0b2a5b" stroke-width="2"/><path d="M17 5.5 C20 8.5 28 8.5 31 5.5" fill="none" stroke="#ffffff" stroke-width="2"/></symbol>' +
       '<symbol id="scarf" viewBox="0 0 48 48"><path d="M6 10 h36 v10 h-36z" fill="#1757c2"/><path d="M6 20 h36 v10 h-36z" fill="#ffffff" stroke="#0b2a5b" stroke-width="1"/><path d="M6 30 h36 v10 h-36z" fill="#1757c2"/><path d="M6 40 v5 M12 40 v5 M18 40 v5 M24 40 v5 M30 40 v5 M36 40 v5 M42 40 v5" stroke="#0b2a5b" stroke-width="2"/></symbol>' +
+      '<symbol id="ball" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#fff" stroke="currentColor" stroke-width="1.6"/><path d="M12 7.2l4.3 3.1-1.6 5h-5.4l-1.6-5z" fill="currentColor"/><path d="M12 7.2V2.3M16.3 10.3l4.6-1.5M14.7 15.3l2.9 4M9.3 15.3l-2.9 4M7.7 10.3L3.1 8.8" stroke="currentColor" stroke-width="1.4" fill="none"/></symbol>' +
       "</defs></svg>";
     document.body.insertBefore(d.firstChild, document.body.firstChild);
   }
@@ -244,5 +248,5 @@
   document.querySelectorAll(".season").forEach(function (el) { el.textContent = F.temporada || "2026/27"; });
 
   window.CDO = { C: C, SLUG: SLUG, formDots: formDots, crest: crest, F: F, esc: esc, fdate: fdate, day: day, APODO: APODO, team: team, isUs: isUs, played: played, upcoming: upcoming, outcome: outcome, ourRow: ourRow,
-    matchCard: matchCard, resultsStrip: resultsStrip, tableRows: tableRows, TABLE_HEAD: TABLE_HEAD, gamesList: gamesList, scorersList: scorersList, sourceNote: sourceNote, newsCard: newsCard, copyButtons: copyButtons, shareLink: shareLink, mapsLink: mapsLink, matchLine: matchLine, longDate: longDate, webUrl: webUrl, calHrefs: calHrefs };
+    matchCard: matchCard, resultsStrip: resultsStrip, tableRows: tableRows, TABLE_HEAD: TABLE_HEAD, gamesList: gamesList, scorersList: scorersList, sourceNote: sourceNote, newsCard: newsCard, copyButtons: copyButtons, shareLink: shareLink, mapsLink: mapsLink, fichaUrl: fichaUrl, matchLine: matchLine, longDate: longDate, webUrl: webUrl, calHrefs: calHrefs };
 })();

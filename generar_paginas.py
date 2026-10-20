@@ -600,6 +600,91 @@ PAGES["privacidad"] = dict(
 </section>
 """, script="")
 
+# ---------------------------------------------------------------- FICHA DE PARTIDO
+# Una sola página para todos los partidos: partido.html?e=<equipo>&j=<jornada>.
+# Los datos del acta (goles, tarjetas, alineaciones, cambios y campo) salen de F.actas,
+# que rellena actualizar_federacion.py. Solo datos del acta, sin textos escritos a mano.
+PAGES["partido"] = dict(
+ title="Partido · CD Ortuella", desc="Ficha del partido: resultado, goles, tarjetas y alineaciones.",
+ body="""<section class="page-hero">
+  <div class="wrap">
+    <div class="crumbs"><a href="./">Inicio</a> / <a href="partidos.html">Partidos</a> / <span id="crumb">Ficha</span></div>
+    <div id="board"></div>
+  </div>
+</section>
+<section class="block">
+  <div class="wrap" id="ficha"></div>
+</section>
+""",
+ script="""(function () {
+  var X = window.CDO, F = X.F, esc = X.esc;
+  var q = new URLSearchParams(location.search), t = X.team(q.get("e")), j = +q.get("j");
+  var p = t && t.partidos.filter(function (x) { return x.jornada === j; })[0];
+  var board = document.getElementById("board"), ficha = document.getElementById("ficha");
+  if (!p) {
+    board.innerHTML = "<h1>Partido no encontrado</h1>";
+    ficha.innerHTML = '<p>Puede que el enlace esté mal copiado. <a href="partidos.html">Ver todos los partidos</a></p>';
+    return;
+  }
+  var a = (F.actas || {})[p.acta] || null, home = X.isUs(p.local, t), played = p.gl != null;
+  document.title = p.local + (played ? " " + p.gl + "-" + p.gv + " " : " – ") + p.visitante + " · CD Ortuella";
+  document.getElementById("crumb").textContent = X.APODO[t.id] + " · Jornada " + p.jornada;
+
+  // Marcador grande
+  var o = played ? X.outcome(p, t) : "";
+  var side = function (n) { return '<div class="fb-team">' + X.crest(n, t) + "<b>" + esc(n) + "</b></div>"; };
+  var cat = t.categoria.indexOf(X.APODO[t.id]) === 0 ? t.categoria : X.APODO[t.id] + " · " + t.categoria;
+  board.innerHTML = '<div class="fb-meta">' + esc(cat) + " · Jornada " + p.jornada + "</div>" +
+    '<div class="fb">' + side(p.local) + '<div class="fb-score">' + (played ? p.gl + '<i>-</i>' + p.gv : "VS") + "</div>" + side(p.visitante) + "</div>" +
+    '<div class="fb-info"><span>' + X.longDate(p.fecha) + "</span>" +
+    "<span>" + esc(a && a.campo ? a.campo : home ? "Otxartaga Berri" : "Fuera de casa") + (home ? "" : " " + X.mapsLink(p, a && a.campo)) + "</span>" +
+    (played ? '<span class="o ' + o + '">' + { w: "Victoria", d: "Empate", l: "Derrota" }[o] + "</span>" : "") + "</div>";
+
+  if (!a) {
+    ficha.innerHTML = '<p class="fi-empty">' + (played ? "El acta de este partido todavía no está cargada. Se completa sola con los datos de la Federación." : "Este partido todavía no se ha jugado.") + "</p>" + back();
+    return;
+  }
+
+  var who = function (lado) { return lado === "local" ? p.local : p.visitante; };
+  var ours = function (lado) { return X.isUs(who(lado), t); };
+  // Goles y tarjetas en una sola cronología, por minuto
+  var ev = (a.goles || []).map(function (g) { return { min: g.min, lado: g.lado, txt: esc(g.jugador) + (g.tipo === "pp" ? " <small>(en propia)</small>" : g.tipo === "pen" ? " <small>(penalti)</small>" : ""), ico: "gol" }; })
+    .concat((a.tarjetas || []).map(function (c) { return { min: c.min, lado: c.lado, txt: esc(c.jugador), ico: c.tipo }; }))
+    .sort(function (x, y) { return x.min - y.min; });
+  var gl = 0, gv = 0;  // marcador en cada gol
+  ev.forEach(function (e) { if (e.ico === "gol") { if (e.lado === "local") gl++; else gv++; e.txt += ' <b class="ev-sc">' + gl + "-" + gv + "</b>"; } });
+  var ICO = { gol: '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ball"/></svg>', amarilla: '<i class="card y"></i>', roja: '<i class="card r"></i>', doble: '<i class="card y"></i><i class="card r"></i>' };
+  var LBL = { gol: "Gol", amarilla: "Amarilla", roja: "Roja", doble: "Segunda amarilla" };
+  var line = function (e) {
+    var body = '<span class="ev-ico" title="' + LBL[e.ico] + '">' + ICO[e.ico] + '</span><span class="ev-txt">' + e.txt + "</span>";
+    return '<li class="' + e.lado + (ours(e.lado) ? " us" : "") + '"><span class="ev-min">' + e.min + "'</span>" + body + "</li>";
+  };
+  var html = "";
+  if (ev.length) html += '<div class="panel fi-sec"><h3>Lo que pasó</h3><div class="ev-head"><span>' + esc(p.local) + "</span><span>" + esc(p.visitante) + '</span></div><ol class="ev">' + ev.map(line).join("") + "</ol></div>";
+
+  // Alineaciones
+  var lineup = function (lado) {
+    var al = (a.alineaciones || {})[lado]; if (!al) return "";
+    var subs = (a.cambios || []).filter(function (c) { return c.lado === lado; });
+    var row = function (j) {
+      var out = subs.filter(function (c) { return c.sale === j.nombre; })[0], inn = subs.filter(function (c) { return c.entra === j.nombre; })[0];
+      return "<li><span class=\\"dorsal\\">" + esc(j.dorsal || "") + "</span>" + esc(j.nombre) + (j.capitan ? ' <abbr title="Capitán">C</abbr>' : "") + (j.portero ? ' <abbr title="Portero">POR</abbr>' : "") +
+        (out ? ' <small class="chg out" title="Cambiado en el minuto ' + out.min + '">▼ ' + out.min + "'</small>" : "") + (inn ? ' <small class="chg in" title="Entra en el minuto ' + inn.min + '">▲ ' + inn.min + "'</small>" : "") + "</li>";
+    };
+    return '<div class="panel lu' + (ours(lado) ? " us" : "") + '"><h3>' + esc(who(lado)) + '</h3><ul class="lu-list">' + (al.titulares || []).map(row).join("") + "</ul>" +
+      ((al.suplentes || []).length ? '<div class="lu-sub">Suplentes</div><ul class="lu-list">' + al.suplentes.map(row).join("") + "</ul>" : "") + "</div>";
+  };
+  var lu = lineup("local") + lineup("visitante");
+  if (lu) html += '<div class="sec-mini">Alineaciones</div><div class="lu-grid">' + lu + "</div>";
+  ficha.innerHTML = html + '<p class="source">Datos del acta oficial de la Federación Vizcaína de Fútbol.</p>' + back();
+
+  function back() {
+    var list = X.played(t), i = list.indexOf(p), prev = list[i - 1], next = list[i + 1];
+    var go = function (x, txt) { return x ? '<a class="btn line" href="partido.html?e=' + t.id + "&j=" + x.jornada + '">' + txt + "</a>" : ""; };
+    return '<div class="btns fi-nav">' + go(prev, "← Jornada " + (prev && prev.jornada)) + '<a class="btn blue" href="equipos.html#' + X.SLUG[t.id] + '">Volver al ' + X.APODO[t.id] + "</a>" + go(next, "Jornada " + (next && next.jornada) + " →") + "</div>";
+  }
+})();""")
+
 # ---------------------------------------------------------------- 404 (enlace roto)
 PAGES["404"] = dict(
  title="Fuera de juego · CD Ortuella", desc="Esta página no existe.",
@@ -668,7 +753,7 @@ for name, p in PAGES.items():
     print("ok", name)
 
 # Lista de páginas para Google (no hace nada mientras robots.txt lo prohíba)
-urls = "".join("  <url><loc>%s/%s</loc></url>\n" % (SITIO, "" if n == "index" else n + ".html") for n in PAGES if n != "404")
+urls = "".join("  <url><loc>%s/%s</loc></url>\n" % (SITIO, "" if n == "index" else n + ".html") for n in PAGES if n not in ("404", "partido"))
 open(os.path.join(D, "sitemap.xml"), "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + "</urlset>\n")
 if PUBLICADA:
     open(os.path.join(D, "robots.txt"), "w").write("User-agent: *\nAllow: /\nSitemap: %s/sitemap.xml\n" % SITIO)
