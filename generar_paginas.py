@@ -35,8 +35,9 @@ HEAD = """<!doctype html>
 <link rel="stylesheet" href="estilos.css?v={v[estilos.css]}">
 </head>
 <body data-page="{page}">
+<a class="skip" href="#contenido">Saltar al contenido</a>
 <div id="cabecera"></div>
-<main>
+<main id="contenido" tabindex="-1">
 """
 FOOT = """</main>
 <div id="pie"></div>
@@ -133,6 +134,7 @@ PAGES["index"] = dict(
     var t = X.team(id); if (!t) return "";
     var r = X.ourRow(t), last = X.played(t).slice(-1)[0];
     return '<div class="panel"><h3>' + X.APODO[id] + '</h3><div class="sub">' + esc(t.categoria) + (r ? " · <b>" + r.pos + "º con " + r.pts + " puntos</b>" : "") + "</div>" +
+      (X.played(t).length ? '<div class="form-line"><small>Últimos partidos</small>' + X.formDots(t) + "</div>" : "") +
       '<div class="table-scroll"><table>' + X.TABLE_HEAD + "<tbody>" + X.tableRows(t, true) + "</tbody></table></div>" +
       '<div class="panel-foot">' + (last ? "Último: " + esc(last.local) + " <b>" + last.gl + "-" + last.gv + "</b> " + esc(last.visitante) + " · " : "") +
       '<a class="more" href="equipos.html#' + X.SLUG[id] + '">Ver equipo</a></div></div>';
@@ -209,7 +211,9 @@ PAGES["partidos"] = dict(
     if (!groups.length) { document.getElementById("agenda").innerHTML = '<p class="empty">' + (showResults ? "Todavía no hay resultados." : "No hay partidos en el calendario.") + "</p>"; return; }
     document.getElementById("agenda").innerHTML = groups.map(function (f) {
       var d = X.day(f);
-      return '<div class="agenda-day"><h3>' + DIAL[d.getDay()] + " " + d.getDate() + " de " + MESL[d.getMonth()] + '</h3><div class="panel"><ul class="games">' + seen[f].map(function (x) {
+      var msg = "⚽ " + (showResults ? "Resultados" : "Partidos") + " del CD Ortuella\\n📅 " + X.longDate(f) + "\\n\\n" +
+        seen[f].map(function (x) { return "• " + X.matchLine(x.p, x.t); }).join("\\n") + (showResults ? "" : "\\n\\nHorarios por confirmar") + "\\n\\n" + X.webUrl("partidos.html");
+      return '<div class="agenda-day"><div class="agenda-head"><h3>' + DIAL[d.getDay()] + " " + d.getDate() + " de " + MESL[d.getMonth()] + "</h3>" + X.shareLink(msg) + '</div><div class="panel"><ul class="games">' + seen[f].map(function (x) {
         var p = x.p, t = x.t, right;
         var name = function (n) { return X.isUs(n, t) ? '<span class="us">' + esc(n) + "</span>" : esc(n); };
         if (p.gl != null) { var o = X.outcome(p, t); right = '<span class="score ' + o + '">' + p.gl + "-" + p.gv + "</span>"; }
@@ -229,12 +233,11 @@ PAGES["partidos"] = dict(
   var calSel = "todos";
   function renderCal() {
     document.getElementById("calTeams").innerHTML = CAL.map(function (c) { return '<button class="chip" data-cal="' + c[0] + '" aria-pressed="' + (c[0] === calSel) + '">' + c[1] + "</button>"; }).join("");
-    var url = new URL("calendario/" + calSel + ".ics", location.href).href;
-    var webcal = url.replace(/^https?:/, "webcal:");
-    document.getElementById("calApple").href = webcal;
-    document.getElementById("calGoogle").href = "https://calendar.google.com/calendar/render?cid=" + encodeURIComponent(webcal);
-    document.getElementById("calUrl").textContent = url;
-    document.getElementById("calCopy").dataset.copy = url;
+    var h = X.calHrefs(calSel);
+    document.getElementById("calApple").href = h.apple;
+    document.getElementById("calGoogle").href = h.google;
+    document.getElementById("calUrl").textContent = h.url;
+    document.getElementById("calCopy").dataset.copy = h.url;
   }
   document.getElementById("calTeams").addEventListener("click", function (e) { var b = e.target.closest("[data-cal]"); if (b) { calSel = b.dataset.cal; renderCal(); } });
   renderCal();
@@ -304,7 +307,10 @@ PAGES["equipos"] = dict(
       '<div class="comp"><div><div class="panel"><h3>Clasificación</h3><div class="sub">' + esc(t.categoria) + '</div><div class="table-scroll"><table>' + X.TABLE_HEAD + "<tbody>" + X.tableRows(t) + "</tbody></table></div></div></div>" +
       '<div><div class="panel"><h3>Partidos</h3><div class="tabs" role="tablist"><button role="tab" id="tabNext" aria-selected="true">Próximos</button><button role="tab" id="tabRes" aria-selected="false">Resultados</button></div><ul class="games" id="games"></ul></div>' +
       '<div class="panel"><h3>Goleadores</h3><ul class="scorers">' + X.scorersList(t) + "</ul></div></div></div>" +
-      '<p class="source">' + X.sourceNote(t) + "</p></div></section>" + (t.id === "primer" ? squad() : "");
+      '<p class="source">' + X.sourceNote(t) + "</p>" +
+      '<div class="cal-team"><div><b>Los partidos del ' + X.APODO[t.id] + ' en tu calendario</b><p>Se añaden solos y se actualizan con cada jornada. <a href="partidos.html#calendario">Más opciones</a></p></div>' +
+      '<div class="btns"><a class="btn blue" href="' + X.calHrefs(X.SLUG[t.id]).apple + '">iPhone o Mac</a><a class="btn line" href="' + X.calHrefs(X.SLUG[t.id]).google + '" target="_blank" rel="noopener">Google Calendar</a></div></div>' +
+      "</div></section>" + (t.id === "primer" ? squad() : "");
     var games = function () {
       $("tabNext").setAttribute("aria-selected", !showResults); $("tabRes").setAttribute("aria-selected", showResults);
       $("games").innerHTML = X.gamesList(t, showResults, showResults ? 0 : 8);
@@ -623,12 +629,37 @@ PAGES["404"] = dict(
   document.getElementById("dato").textContent = DATOS[Math.floor(Math.random() * DATOS.length)];
 })();""")
 
+# Ficha del club en el formato que entienden Google y otros buscadores (schema.org).
+# Pendiente: CIF y razón social, y el escudo en alta calidad cuando lo tengamos.
+FICHA_GOOGLE = """<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "SportsTeam",
+ "name": "Club Deportivo Ortuella",
+ "alternateName": "CD Ortuella",
+ "sport": "Fútbol",
+ "foundingDate": "1949",
+ "url": "{sitio}/",
+ "logo": "{sitio}/img/icono-512.png",
+ "image": "{sitio}/img/compartir.jpg",
+ "email": "cdortuella@cdortuella.net",
+ "telephone": "+34 946 353 598",
+ "address": {"@type": "PostalAddress", "streetAddress": "Catalina Gibaja 1", "addressLocality": "Ortuella", "addressRegion": "Bizkaia", "addressCountry": "ES"},
+ "location": {"@type": "StadiumOrArena", "name": "Otxartaga Berri", "address": {"@type": "PostalAddress", "streetAddress": "Avenida de la Estación s/n", "postalCode": "48530", "addressLocality": "Ortuella", "addressRegion": "Bizkaia", "addressCountry": "ES"}},
+ "memberOf": {"@type": "SportsOrganization", "name": "Federación Vizcaína de Fútbol"},
+ "sameAs": ["https://www.instagram.com/cdortuella/", "https://www.facebook.com/cdortuella1945/", "https://x.com/CD_Ortuella"]
+}
+</script>
+"""
+
 # Huella de cada archivo: si cambia su contenido, cambia el ?v= y el navegador
 # descarga la versión nueva en vez de usar la copia que tenía guardada.
 V = {f: hashlib.md5(open(os.path.join(D, f), "rb").read()).hexdigest()[:8] for f in ("estilos.css", "datos.js", "comun.js")}
 
 for name, p in PAGES.items():
     html = HEAD.format(title=p["title"], desc=p["desc"], page=name, v=V, sitio=SITIO, archivo="" if name == "index" else name + ".html") + p["body"] + FOOT.format(script=p["script"], v=V)
+    if name == "index":  # ficha del club para Google (solo sirve cuando se quite el noindex)
+        html = html.replace("</head>", FICHA_GOOGLE.replace("{sitio}", SITIO) + "</head>", 1)
     if name == "404":  # GitHub la sirve en cualquier dirección rota, así que los enlaces parten siempre de la raíz de la web
         html = html.replace("<head>\n", '<head>\n<base href="%s/">\n' % SITIO, 1)
     open(os.path.join(D, name + ".html"), "w").write(html)
