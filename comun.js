@@ -108,11 +108,15 @@
       '<div class="info"><span><strong>' + DIAL[d.getDay()] + " " + fdate(p.fecha) + "</strong></span><span>" + (isUs(p.local, t) ? "Otxartaga Berri" : "Fuera de casa") + "</span><span>Hora por confirmar</span></div></article>";
   }
 
+  // Cada resultado como un marcador de dos filas: equipo a la izquierda, goles a la derecha
   function resultsStrip() {
+    var WORD = { w: "Victoria", d: "Empate", l: "Derrota" };
     return '<div class="lbl">Últimos resultados</div>' + F.equipos.map(function (t) {
       var p = played(t).slice(-1)[0];
-      if (!p) return '<div class="res"><small>' + APODO[t.id] + "</small><span>Sin partidos todavía</span></div>";
-      return '<div class="res"><small>' + APODO[t.id] + " · J" + p.jornada + '</small><span><i class="dot ' + outcome(p, t) + '"></i>' + esc(p.local) + " <b>" + p.gl + "-" + p.gv + "</b> " + esc(p.visitante) + "</span></div>";
+      if (!p) return '<div class="res"><small>' + APODO[t.id] + '</small><div class="none">Sin partidos todavía</div></div>';
+      var o = outcome(p, t);
+      var row = function (n, g) { return '<div class="row' + (isUs(n, t) ? " us" : "") + '"><span title="' + esc(n) + '">' + esc(n) + "</span><b>" + g + "</b></div>"; };
+      return '<div class="res"><small>' + APODO[t.id] + " · J" + p.jornada + '<em class="o ' + o + '">' + WORD[o] + "</em></small>" + row(p.local, p.gl) + row(p.visitante, p.gv) + "</div>";
     }).join("");
   }
 
