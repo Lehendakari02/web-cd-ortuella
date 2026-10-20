@@ -25,7 +25,7 @@
 <meta name="theme-color" content="#0b2a5b">
 <meta name="apple-mobile-web-app-title" content="CD Ortuella">
 <link rel="preload" href="fuentes/big-shoulders-display.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="estilos.css?v=1700a1ac">
+<link rel="stylesheet" href="estilos.css?v=5718a322">
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -107,7 +107,7 @@
 <div id="pie"></div>
 <script src="datos.js?v=61db6adc"></script>
 <script src="datos-federacion.js"></script>
-<script src="comun.js?v=e1ccdf9a"></script>
+<script src="comun.js?v=a19c8ac2"></script>
 <!-- Contador de visitas anónimo, sin cookies. Panel privado: https://cdortuella.goatcounter.com -->
 <script data-goatcounter="https://cdortuella.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 <script>
@@ -120,11 +120,11 @@
   // Clasificación resumida del Senior A y del Senior B
   document.getElementById("standings").innerHTML = ["primer", "b"].map(function (id) {
     var t = X.team(id); if (!t) return "";
-    var r = X.ourRow(t), last = X.played(t).slice(-1)[0];
+    var r = X.ourRow(t);
     return '<div class="panel"><h3>' + X.APODO[id] + '</h3><div class="sub">' + esc(t.categoria) + (r ? " · <b>" + r.pos + "º con " + r.pts + " puntos</b>" : "") + "</div>" +
       (X.played(t).length ? '<div class="form-line"><small>Últimos partidos</small>' + X.formDots(t) + "</div>" : "") +
       '<div class="table-scroll"><table>' + X.TABLE_HEAD + "<tbody>" + X.tableRows(t, true) + "</tbody></table></div>" +
-      '<div class="panel-foot">' + (last ? "Último: " + esc(last.local) + " <b>" + last.gl + "-" + last.gv + "</b> " + esc(last.visitante) + " · " : "") +
+      '<div class="panel-foot">' +
       '<a class="more" href="equipos.html#' + X.SLUG[id] + '">Ver equipo</a></div></div>';
   }).join("");
   document.getElementById("source").innerHTML = X.sourceNote();

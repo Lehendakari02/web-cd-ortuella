@@ -62,6 +62,7 @@ h1, h2, h3 { font-family: var(--f-display); line-height: .95; text-wrap: balance
 .topbar a { text-decoration: none; color: #d6e0f3; }
 .topbar a:hover { color: #fff; }
 .topbar .socials { display: flex; gap: 14px; }
+#cabecera { display: contents; } /* así la cabecera se queda fija arriba al bajar por la página */
 header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50; background: var(--navy); color: var(--on-navy); box-shadow: 0 1px 0 rgba(255,255,255,.08); }
 header.top .wrap { display: flex; align-items: center; gap: 16px; padding-block: 8px; }
 .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; margin-right: auto; }
@@ -468,3 +469,27 @@ a.team-card:hover { border-color: var(--blue); }
 .cal-team { margin-top: 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px 24px; flex-wrap: wrap; background: var(--sky); border-radius: var(--radius); padding: 18px 20px; }
 .cal-team p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
 .cal-team a:not(.btn) { color: var(--blue); }
+
+/* Cómo llegar a los campos de fuera: circulito con el icono de ubicación, como el de WhatsApp */
+.maps { display: inline-grid; place-items: center; width: 28px; height: 28px; vertical-align: middle; margin-left: 4px; border-radius: 50%; color: var(--blue); border: 1px solid var(--line); background: var(--surface); text-decoration: none; }
+.maps:hover { background: var(--blue); border-color: var(--blue); color: var(--surface); }
+.match .maps { position: absolute; right: 52px; bottom: 12px; width: 32px; height: 32px; margin: 0; color: #1757c2; border-color: #d8e1ef; background: #fff; }
+.match .maps:hover { background: #1757c2; border-color: #1757c2; color: #fff; }
+/* Barra inferior en el móvil */
+.tabbar { display: none; }
+@media (max-width: 760px) {
+  .tabbar { display: grid; grid-template-columns: repeat(5, 1fr); position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; background: var(--navy); border-top: 1px solid rgba(255,255,255,.12); padding: 4px max(4px, env(safe-area-inset-right, 0px)) calc(4px + env(safe-area-inset-bottom, 0px)) max(4px, env(safe-area-inset-left, 0px)); }
+  .tabbar a, .tabbar button { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; color: #b9c8e6; background: none; border: 0; font: 600 11px/1.1 var(--f-body); text-decoration: none; cursor: pointer; border-radius: 6px; }
+  .tabbar svg { width: 22px; height: 22px; }
+  .tabbar [aria-current="page"], .tabbar [aria-expanded="true"] { color: #fff; }
+  .tabbar [aria-current="page"] svg { stroke-width: 2.4; }
+  .tabbar a:focus-visible, .tabbar button:focus-visible { outline: 2px solid #fff; outline-offset: -2px; }
+  body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
+  /* Con la barra abajo sobra el botón «Menú» de arriba: «Más» abre el resto del menú desde abajo */
+  .menu-btn { display: none; }
+  header.top { position: relative; top: 0; }
+  .subnav { top: env(safe-area-inset-top, 0px); }
+  nav.menu .in-tab { display: none; }
+  nav.menu { position: fixed; top: auto; bottom: calc(60px + env(safe-area-inset-bottom, 0px)); max-height: calc(100vh - 140px); border-top: 0; border-radius: 14px 14px 0 0; padding-top: 14px; }
+  nav.menu.open { clip-path: inset(-100vmax -100vmax 0 -100vmax); }
+}

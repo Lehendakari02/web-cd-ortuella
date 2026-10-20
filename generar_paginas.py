@@ -133,11 +133,11 @@ PAGES["index"] = dict(
   // Clasificación resumida del Senior A y del Senior B
   document.getElementById("standings").innerHTML = ["primer", "b"].map(function (id) {
     var t = X.team(id); if (!t) return "";
-    var r = X.ourRow(t), last = X.played(t).slice(-1)[0];
+    var r = X.ourRow(t);
     return '<div class="panel"><h3>' + X.APODO[id] + '</h3><div class="sub">' + esc(t.categoria) + (r ? " · <b>" + r.pos + "º con " + r.pts + " puntos</b>" : "") + "</div>" +
       (X.played(t).length ? '<div class="form-line"><small>Últimos partidos</small>' + X.formDots(t) + "</div>" : "") +
       '<div class="table-scroll"><table>' + X.TABLE_HEAD + "<tbody>" + X.tableRows(t, true) + "</tbody></table></div>" +
-      '<div class="panel-foot">' + (last ? "Último: " + esc(last.local) + " <b>" + last.gl + "-" + last.gv + "</b> " + esc(last.visitante) + " · " : "") +
+      '<div class="panel-foot">' +
       '<a class="more" href="equipos.html#' + X.SLUG[id] + '">Ver equipo</a></div></div>';
   }).join("");
   document.getElementById("source").innerHTML = X.sourceNote();
@@ -220,7 +220,7 @@ PAGES["partidos"] = dict(
         if (p.gl != null) { var o = X.outcome(p, t); right = '<span class="score ' + o + '">' + p.gl + "-" + p.gv + "</span>"; }
         else if (showResults) right = '<span class="score na">Sin cargar</span>';
         else right = '<span class="hour tbc">Hora por confirmar</span>';
-        return '<li><div class="d">Jornada ' + p.jornada + '<b><a href="equipos.html#' + X.SLUG[t.id] + '" style="text-decoration:none">' + X.APODO[t.id] + '</a></b></div><div class="m">' + name(p.local) + " – " + name(p.visitante) + "<small>" + (X.isUs(p.local, t) ? "En casa · Otxartaga Berri" : "Fuera") + "</small></div>" + right + "</li>";
+        return '<li><div class="d">Jornada ' + p.jornada + '<b><a href="equipos.html#' + X.SLUG[t.id] + '" style="text-decoration:none">' + X.APODO[t.id] + '</a></b></div><div class="m">' + name(p.local) + " – " + name(p.visitante) + "<small>" + (X.isUs(p.local, t) ? "En casa · Otxartaga Berri" : "Fuera " + X.mapsLink(p)) + "</small></div>" + right + "</li>";
       }).join("") + "</ul></div></div>";
     }).join("");
   }
