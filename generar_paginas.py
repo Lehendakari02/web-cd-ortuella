@@ -671,12 +671,20 @@ PAGES["partido"] = dict(
       return "<li><span class=\\"dorsal\\">" + esc(j.dorsal || "") + "</span>" + esc(j.nombre) + (j.capitan ? ' <abbr title="Capitán">C</abbr>' : "") + (j.portero ? ' <abbr title="Portero">POR</abbr>' : "") +
         (out ? ' <small class="chg out" title="Cambiado en el minuto ' + out.min + '">▼ ' + out.min + "'</small>" : "") + (inn ? ' <small class="chg in" title="Entra en el minuto ' + inn.min + '">▲ ' + inn.min + "'</small>" : "") + "</li>";
     };
-    return '<div class="panel lu' + (ours(lado) ? " us" : "") + '"><h3>' + esc(who(lado)) + '</h3><ul class="lu-list">' + (al.titulares || []).map(row).join("") + "</ul>" +
+    return '<div class="panel lu ' + lado + (ours(lado) ? " us" : "") + '"><h3>' + esc(who(lado)) + '</h3><ul class="lu-list">' + (al.titulares || []).map(row).join("") + "</ul>" +
       ((al.suplentes || []).length ? '<div class="lu-sub">Suplentes</div><ul class="lu-list">' + al.suplentes.map(row).join("") + "</ul>" : "") + "</div>";
   };
   var lu = lineup("local") + lineup("visitante");
-  if (lu) html += '<div class="sec-mini">Alineaciones</div><div class="lu-grid">' + lu + "</div>";
+  // En el móvil, una alineación cada vez con dos pestañas (empieza por la nuestra), para no hacer la página interminable
+  var tab = function (lado) { return '<button type="button" role="tab" data-lado="' + lado + '" aria-selected="' + ours(lado) + '">' + esc(who(lado)) + "</button>"; };
+  if (lu) html += '<div class="sec-mini">Alineaciones</div><div class="lu-tabs" role="tablist" aria-label="Alineaciones">' + tab("local") + tab("visitante") + '</div><div class="lu-grid" data-show="' + (home ? "local" : "visitante") + '">' + lu + "</div>";
   ficha.innerHTML = html + '<p class="source">Datos del acta oficial de la Federación Vizcaína de Fútbol.</p>' + back();
+  ficha.querySelectorAll(".lu-tabs button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      ficha.querySelectorAll(".lu-tabs button").forEach(function (x) { x.setAttribute("aria-selected", x === b); });
+      ficha.querySelector(".lu-grid").dataset.show = b.dataset.lado;
+    });
+  });
 
   function back() {
     var list = X.played(t), i = list.indexOf(p), prev = list[i - 1], next = list[i + 1];

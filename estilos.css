@@ -551,3 +551,13 @@ a.score:hover { outline: 2px solid var(--blue); outline-offset: 2px; }
   .fi-nav .btn { flex: 1 1 auto; text-align: center; padding-inline: 14px; }
 }
 .ev-sc { margin-left: 4px; font: 800 13px/1 var(--f-body); color: var(--muted); font-variant-numeric: tabular-nums; }
+.lu-tabs { display: none; }
+@media (max-width: 760px) {
+  .lu-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 12px; }
+  .lu-tabs button { font: 700 13px/1.2 var(--f-body); letter-spacing: .06em; text-transform: uppercase; padding: 11px 8px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--surface); color: var(--muted); cursor: pointer; overflow-wrap: anywhere; }
+  .lu-tabs button[aria-selected="true"] { background: var(--blue); border-color: var(--blue); color: var(--surface); }
+  .lu-grid[data-show="local"] .lu.visitante, .lu-grid[data-show="visitante"] .lu.local { display: none; }
+  .lu-list li { padding: 5px 0; font-size: 14.5px; }
+  .lu > h3 { display: none; }
+  .lu-list { padding-top: 6px; }
+}
