@@ -480,4 +480,11 @@ a.team-card:hover { border-color: var(--blue); }
   .tabbar [aria-current="page"] svg { stroke-width: 2.4; }
   .tabbar a:focus-visible, .tabbar button:focus-visible { outline: 2px solid #fff; outline-offset: -2px; }
   body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
+  /* Con la barra abajo sobra el botón «Menú» de arriba: «Más» abre el resto del menú desde abajo */
+  .menu-btn { display: none; }
+  header.top { position: relative; top: 0; }
+  .subnav { top: env(safe-area-inset-top, 0px); }
+  nav.menu .in-tab { display: none; }
+  nav.menu { position: fixed; top: auto; bottom: calc(60px + env(safe-area-inset-bottom, 0px)); max-height: calc(100vh - 140px); border-top: 0; border-radius: 14px 14px 0 0; padding-top: 14px; }
+  nav.menu.open { clip-path: inset(-100vmax -100vmax 0 -100vmax); }
 }

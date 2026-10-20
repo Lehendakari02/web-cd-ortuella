@@ -52,7 +52,7 @@
   function renderHeader() {
     var el = document.getElementById("cabecera"); if (!el) return;
     var items = MENU.map(function (m, i) {
-      if (!m.sub) return '<li><a href="' + m.h + '"' + (isCurrent(m.h) ? ' aria-current="page"' : "") + ">" + m.t + "</a></li>";
+      if (!m.sub) return '<li' + (m.h === "./" || m.h === "partidos.html" ? ' class="in-tab"' : "") + '><a href="' + m.h + '"' + (isCurrent(m.h) ? ' aria-current="page"' : "") + ">" + m.t + "</a></li>";
       var cur = m.sub.some(function (s) { return isCurrent(s.h); });
       return '<li><button class="drop-btn' + (cur ? " current" : "") + '" aria-expanded="false" aria-controls="sub' + i + '">' + m.t + '</button><ul class="sub" id="sub' + i + '">' +
         m.sub.map(function (s) { return '<li><a href="' + s.h + '"' + (isCurrent(s.h) ? ' aria-current="page"' : "") + ">" + s.t + "<small>" + s.d + "</small></a></li>"; }).join("") + "</ul></li>";
@@ -63,7 +63,7 @@
       '<header class="top"><div class="wrap">' +
       '<a class="brand" href="./" aria-label="Club Deportivo Ortuella, inicio"><img src="img/escudo.webp" alt=""><span><b>CD Ortuella</b><small>Desde 1949</small></span></a>' +
       '<button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu"><i></i>Menú</button>' +
-      '<nav class="menu" id="menu" aria-label="Menú principal"><ul>' + items + '</ul><a class="cta" href="socios.html"' + (page === "socios" ? ' aria-current="page"' : "") + ">Hazte socio</a></nav>" +
+      '<nav class="menu" id="menu" aria-label="Menú principal"><ul>' + items + '</ul><a class="cta in-tab" href="socios.html"' + (page === "socios" ? ' aria-current="page"' : "") + ">Hazte socio</a></nav>" +
       "</div></header>" + tabBar();
 
     var menu = document.getElementById("menu"), btn = document.getElementById("menuBtn");
