@@ -25,7 +25,7 @@
 <meta name="theme-color" content="#0b2a5b">
 <meta name="apple-mobile-web-app-title" content="CD Ortuella">
 <link rel="preload" href="fuentes/big-shoulders-display.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="estilos.css?v=de95cd69">
+<link rel="stylesheet" href="estilos.css?v=c8488a89">
 </head>
 <body data-page="partidos">
 <a class="skip" href="#contenido">Saltar al contenido</a>
@@ -74,7 +74,7 @@
 <div id="pie"></div>
 <script src="datos.js?v=2248a3c2"></script>
 <script src="datos-federacion.js"></script>
-<script src="comun.js?v=d8e2ec6e"></script>
+<script src="comun.js?v=c44e678d"></script>
 <!-- Contador de visitas anónimo, sin cookies. Panel privado: https://cdortuella.goatcounter.com -->
 <script data-goatcounter="https://cdortuella.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 <script>
@@ -102,7 +102,7 @@
       var d = X.day(f);
       var msg = "⚽ " + (showResults ? "Resultados" : "Partidos") + " del CD Ortuella\n📅 " + X.longDate(f) + "\n\n" +
         seen[f].map(function (x) { return "• " + X.matchLine(x.p, x.t); }).join("\n") + (showResults ? "" : "\n\nHorarios por confirmar") + "\n\n" + X.webUrl("partidos.html");
-      return '<div class="agenda-day"><div class="agenda-head"><h3>' + DIAL[d.getDay()] + " " + d.getDate() + " de " + MESL[d.getMonth()] + "</h3>" + X.shareLink(msg) + '</div><div class="panel"><ul class="games">' + seen[f].map(function (x) {
+      return '<div class="agenda-day"><div class="agenda-head"><h3>' + DIAL[d.getDay()] + " " + d.getDate() + " de " + MESL[d.getMonth()] + "</h3>" + X.shareLink(msg, "Compartir los partidos de este día por WhatsApp") + '</div><div class="panel"><ul class="games">' + seen[f].map(function (x) {
         var p = x.p, t = x.t, right;
         var name = function (n) { return X.isUs(n, t) ? '<span class="us">' + esc(n) + "</span>" : esc(n); };
         if (p.gl != null) { var o = X.outcome(p, t); right = '<span class="score ' + o + '">' + p.gl + "-" + p.gv + "</span>"; }
