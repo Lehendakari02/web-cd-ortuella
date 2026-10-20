@@ -391,7 +391,7 @@ a.team-card:hover { border-color: var(--blue); }
 /* Colores y escudo */
 .crest-block { display: grid; grid-template-columns: 260px 1fr; gap: 36px; align-items: center; }
 .crest-block img { width: 100%; max-width: 260px; height: auto; }
-.swatches { display: grid; grid-template-columns: repeat(3, minmax(0, 150px)); gap: 14px; margin-top: 18px; }
+.swatches { display: grid; grid-template-columns: repeat(2, minmax(0, 150px)); gap: 14px; margin-top: 18px; }
 .swatch { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface); }
 .swatch i { display: block; height: 70px; border-bottom: 1px solid var(--line); }
 .swatch span { display: block; padding: 8px 12px; font-size: 13px; font-weight: 600; }

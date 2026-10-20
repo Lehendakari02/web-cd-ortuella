@@ -394,7 +394,6 @@ PAGES["historia"] = dict(
         <p style="max-width:60ch">El azul y el blanco visten al Ortuella desde su fundación. El escudo es el que luce la camiseta en cada partido en Otxartaga Berri.</p>
         <div class="swatches">
           <div class="swatch"><i style="background:#1757c2"></i><span>Azul</span></div>
-          <div class="swatch"><i style="background:#0b2a5b"></i><span>Azul marino</span></div>
           <div class="swatch"><i style="background:#ffffff"></i><span>Blanco</span></div>
         </div>
       </div>
