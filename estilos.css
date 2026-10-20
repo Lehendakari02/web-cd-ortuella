@@ -469,7 +469,8 @@ a.team-card:hover { border-color: var(--blue); }
 .cal-team p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
 .cal-team a:not(.btn) { color: var(--blue); }
 
-/* Cómo llegar a los campos de fuera */
-.maps { display: inline-flex; align-items: center; gap: 4px; color: var(--blue); font-weight: 600; text-decoration: none; white-space: nowrap; }
-.maps:hover { text-decoration: underline; }
-.maps svg { flex: none; }
+/* Cómo llegar a los campos de fuera: circulito con el icono de ubicación, como el de WhatsApp */
+.maps { display: inline-grid; place-items: center; width: 28px; height: 28px; vertical-align: middle; margin-left: 4px; border-radius: 50%; color: var(--blue); border: 1px solid var(--line); background: var(--surface); text-decoration: none; }
+.maps:hover { background: var(--blue); border-color: var(--blue); color: var(--surface); }
+.match .maps { position: absolute; right: 52px; bottom: 12px; width: 32px; height: 32px; margin: 0; color: #1757c2; border-color: #d8e1ef; background: #fff; }
+.match .maps:hover { background: #1757c2; border-color: #1757c2; color: #fff; }

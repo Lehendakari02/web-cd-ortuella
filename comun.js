@@ -99,9 +99,9 @@
 
   // ---- piezas de partidos ----------------------------------------------------
   // Enlace a Google Maps con el campo del rival, para los partidos fuera
-  var PIN = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
+  var PIN = '<svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
   function mapsLink(p) {
-    return '<a class="maps" href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent("Campo de fútbol " + p.local) + '" target="_blank" rel="noopener">' + PIN + "Cómo llegar</a>";
+    return '<a class="maps" href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent("Campo de fútbol " + p.local) + '" target="_blank" rel="noopener" title="Cómo llegar" aria-label="Cómo llegar al campo del ' + esc(p.local) + '">' + PIN + "</a>";
   }
 
   function matchCard(t) {
@@ -111,8 +111,8 @@
     var when = days === 0 ? "Hoy" : days === 1 ? "Mañana" : "Faltan " + days + " días";
     return '<article class="match"><div class="head"><span><b>' + APODO[t.id] + "</b> · Jornada " + p.jornada + '</span><span class="days">' + when + "</span></div>" +
       '<div class="teams"><div class="team">' + crest(p.local, t) + "<b>" + esc(p.local) + '</b></div><div class="vs">VS</div><div class="team">' + crest(p.visitante, t) + "<b>" + esc(p.visitante) + "</b></div></div>" +
-      '<div class="info"><span><strong>' + DIAL[d.getDay()] + " " + fdate(p.fecha) + "</strong></span><span>" + (isUs(p.local, t) ? "Otxartaga Berri" : "Fuera · " + mapsLink(p)) + "</span><span>Hora por confirmar</span></div>" +
-      shareLink(matchShareText(p, t), "Compartir este partido por WhatsApp") + "</article>";
+      '<div class="info"><span><strong>' + DIAL[d.getDay()] + " " + fdate(p.fecha) + "</strong></span><span>" + (isUs(p.local, t) ? "Otxartaga Berri" : "Fuera de casa") + "</span><span>Hora por confirmar</span></div>" +
+      (isUs(p.local, t) ? "" : mapsLink(p)) + shareLink(matchShareText(p, t), "Compartir este partido por WhatsApp") + "</article>";
   }
 
   // Cada resultado como un marcador de dos filas: equipo a la izquierda, goles a la derecha
