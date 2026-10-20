@@ -25,7 +25,7 @@
 <meta name="theme-color" content="#0b2a5b">
 <meta name="apple-mobile-web-app-title" content="CD Ortuella">
 <link rel="preload" href="fuentes/big-shoulders-display.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="estilos.css?v=72967a3a">
+<link rel="stylesheet" href="estilos.css?v=9365b5d3">
 </head>
 <body data-page="partidos">
 <a class="skip" href="#contenido">Saltar al contenido</a>
@@ -74,7 +74,7 @@
 <div id="pie"></div>
 <script src="datos.js?v=61db6adc"></script>
 <script src="datos-federacion.js"></script>
-<script src="comun.js?v=5a123204"></script>
+<script src="comun.js?v=a19c8ac2"></script>
 <!-- Contador de visitas anónimo, sin cookies. Panel privado: https://cdortuella.goatcounter.com -->
 <script data-goatcounter="https://cdortuella.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 <script>
@@ -108,7 +108,7 @@
         if (p.gl != null) { var o = X.outcome(p, t); right = '<span class="score ' + o + '">' + p.gl + "-" + p.gv + "</span>"; }
         else if (showResults) right = '<span class="score na">Sin cargar</span>';
         else right = '<span class="hour tbc">Hora por confirmar</span>';
-        return '<li><div class="d">Jornada ' + p.jornada + '<b><a href="equipos.html#' + X.SLUG[t.id] + '" style="text-decoration:none">' + X.APODO[t.id] + '</a></b></div><div class="m">' + name(p.local) + " – " + name(p.visitante) + "<small>" + (X.isUs(p.local, t) ? "En casa · Otxartaga Berri" : "Fuera") + "</small></div>" + right + "</li>";
+        return '<li><div class="d">Jornada ' + p.jornada + '<b><a href="equipos.html#' + X.SLUG[t.id] + '" style="text-decoration:none">' + X.APODO[t.id] + '</a></b></div><div class="m">' + name(p.local) + " – " + name(p.visitante) + "<small>" + (X.isUs(p.local, t) ? "En casa · Otxartaga Berri" : "Fuera " + X.mapsLink(p)) + "</small></div>" + right + "</li>";
       }).join("") + "</ul></div></div>";
     }).join("");
   }
