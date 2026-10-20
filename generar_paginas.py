@@ -25,7 +25,12 @@ HEAD = """<!doctype html>
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="es_ES">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="img/escudo.webp">
+<link rel="icon" href="img/favicon.png" type="image/png">
+<!-- Icono y color al guardar la web en la pantalla de inicio del móvil -->
+<link rel="apple-touch-icon" href="img/icono-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b2a5b">
+<meta name="apple-mobile-web-app-title" content="CD Ortuella">
 <link rel="preload" href="fuentes/big-shoulders-display.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="estilos.css?v={v[estilos.css]}">
 </head>
@@ -163,6 +168,24 @@ PAGES["partidos"] = dict(
     <p class="source" id="source"></p>
   </div>
 </section>
+<section class="block alt" id="calendario">
+  <div class="wrap cal">
+    <div class="sec-head">
+      <div><span class="kicker">En tu móvil</span><h2>Los partidos en tu calendario</h2></div>
+      <p>Suscríbete una vez y los partidos aparecerán solos en el calendario de tu móvil. Si la Federación cambia una fecha o sale un resultado, se actualiza solo.</p>
+    </div>
+    <div class="cal-box">
+      <b>1. Elige equipo</b>
+      <div class="cal-teams" id="calTeams"></div>
+      <b>2. Añádelo a tu calendario</b>
+      <div class="btns">
+        <a class="btn blue" id="calApple" href="#">iPhone o Mac</a>
+        <a class="btn line" id="calGoogle" href="#" target="_blank" rel="noopener">Google Calendar</a>
+      </div>
+      <p class="cal-note">En Android, si Google Calendar no se abre desde el móvil, hazlo una vez desde el ordenador con tu cuenta de Google y aparecerá también en el móvil. Para otro calendario, usa esta dirección: <code id="calUrl"></code> <button class="copy" id="calCopy">Copiar</button></p>
+    </div>
+  </div>
+</section>
 """,
  script="""(function () {
   var X = window.CDO, F = X.F, esc = X.esc;
@@ -200,6 +223,22 @@ PAGES["partidos"] = dict(
   document.getElementById("tabRes").addEventListener("click", function () { showResults = true; render(); });
   document.getElementById("source").innerHTML = X.sourceNote();
   render();
+
+  // Suscripción al calendario: un archivo .ics por equipo, que se regenera con cada actualización
+  var CAL = [["todos", "Todos"], ["senior-a", "Senior A"], ["senior-b", "Senior B"], ["juvenil", "Juvenil"], ["cadete", "Cadete"]];
+  var calSel = "todos";
+  function renderCal() {
+    document.getElementById("calTeams").innerHTML = CAL.map(function (c) { return '<button class="chip" data-cal="' + c[0] + '" aria-pressed="' + (c[0] === calSel) + '">' + c[1] + "</button>"; }).join("");
+    var url = new URL("calendario/" + calSel + ".ics", location.href).href;
+    var webcal = url.replace(/^https?:/, "webcal:");
+    document.getElementById("calApple").href = webcal;
+    document.getElementById("calGoogle").href = "https://calendar.google.com/calendar/render?cid=" + encodeURIComponent(webcal);
+    document.getElementById("calUrl").textContent = url;
+    document.getElementById("calCopy").dataset.copy = url;
+  }
+  document.getElementById("calTeams").addEventListener("click", function (e) { var b = e.target.closest("[data-cal]"); if (b) { calSel = b.dataset.cal; renderCal(); } });
+  renderCal();
+  X.copyButtons();
 })();""")
 
 # ---------------------------------------------------------------- EQUIPOS
@@ -555,12 +594,43 @@ PAGES["privacidad"] = dict(
 </section>
 """, script="")
 
+# ---------------------------------------------------------------- 404 (enlace roto)
+PAGES["404"] = dict(
+ title="Fuera de juego · CD Ortuella", desc="Esta página no existe.",
+ body="""
+<section class="offside">
+  <div class="wrap">
+    <div class="offside-board" aria-hidden="true"><small>Minuto</small><b>404</b></div>
+    <div>
+      <span class="kicker">Enlace roto</span>
+      <h1>¡Fuera de juego!</h1>
+      <p>El enlace que has seguido estaba en posición adelantada y el linier ha levantado la bandera: esta página no existe o ha cambiado de sitio.</p>
+      <div class="btns"><a class="btn blue" href="./">Volver al inicio</a><a class="btn line" href="partidos.html">Ver los partidos</a></div>
+      <aside class="offside-fact"><b>Ya que estás aquí, ¿sabías que…?</b><p id="dato"></p></aside>
+    </div>
+  </div>
+</section>
+""",
+ script="""(function () {
+  var DATOS = [
+    "El Ortuella nació en 1949 en la cocina de la casa parroquial, donde se reunía un grupo de aficionados con el párroco José María Sukia.",
+    "El primer equipo del Ortuella lo seleccionó y preparó Juan Antonio Ipiña, vecino del pueblo y jugador del Real Madrid y de la selección española.",
+    "La primera sede del club estuvo en un bar: el del directivo Julián Melgosa, en la calle Catalina Gibaja.",
+    "Antes de tener campo propio, el Ortuella jugó en el Malecón de Muskiz y en la balsa de Bañales.",
+    "Otxartaga Berri se inauguró el 29 de agosto de 1984 con un partido contra el Bilbao Athletic. Ganaron ellos, 0-3.",
+    "En la temporada 1985/86 el Ortuella jugó en Tercera División, la categoría estatal."
+  ];
+  document.getElementById("dato").textContent = DATOS[Math.floor(Math.random() * DATOS.length)];
+})();""")
+
 # Huella de cada archivo: si cambia su contenido, cambia el ?v= y el navegador
 # descarga la versión nueva en vez de usar la copia que tenía guardada.
 V = {f: hashlib.md5(open(os.path.join(D, f), "rb").read()).hexdigest()[:8] for f in ("estilos.css", "datos.js", "comun.js")}
 
 for name, p in PAGES.items():
     html = HEAD.format(title=p["title"], desc=p["desc"], page=name, v=V, sitio=SITIO, archivo="" if name == "index" else name + ".html") + p["body"] + FOOT.format(script=p["script"], v=V)
+    if name == "404":  # GitHub la sirve en cualquier dirección rota, así que los enlaces parten siempre de la raíz de la web
+        html = html.replace("<head>\n", '<head>\n<base href="%s/">\n' % SITIO, 1)
     open(os.path.join(D, name + ".html"), "w").write(html)
     print("ok", name)
 

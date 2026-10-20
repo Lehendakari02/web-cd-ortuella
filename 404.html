@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es">
+<head>
+<base href="https://lehendakari02.github.io/web-cd-ortuella/">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fuera de juego · CD Ortuella</title>
+<meta name="description" content="Esta página no existe.">
+<!-- Mientras la web esté en pruebas, que no salga en Google -->
+<meta name="robots" content="noindex, nofollow">
+<!-- Vista previa al compartir el enlace (WhatsApp, Facebook, X...) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CD Ortuella">
+<meta property="og:title" content="Fuera de juego · CD Ortuella">
+<meta property="og:description" content="Esta página no existe.">
+<meta property="og:url" content="https://lehendakari02.github.io/web-cd-ortuella/404.html">
+<meta property="og:image" content="https://lehendakari02.github.io/web-cd-ortuella/img/compartir.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="es_ES">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="img/favicon.png" type="image/png">
+<!-- Icono y color al guardar la web en la pantalla de inicio del móvil -->
+<link rel="apple-touch-icon" href="img/icono-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b2a5b">
+<meta name="apple-mobile-web-app-title" content="CD Ortuella">
+<link rel="preload" href="fuentes/big-shoulders-display.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="estilos.css?v=ff28d6e8">
+</head>
+<body data-page="404">
+<div id="cabecera"></div>
+<main>
+
+<section class="offside">
+  <div class="wrap">
+    <div class="offside-board" aria-hidden="true"><small>Minuto</small><b>404</b></div>
+    <div>
+      <span class="kicker">Enlace roto</span>
+      <h1>¡Fuera de juego!</h1>
+      <p>El enlace que has seguido estaba en posición adelantada y el linier ha levantado la bandera: esta página no existe o ha cambiado de sitio.</p>
+      <div class="btns"><a class="btn blue" href="./">Volver al inicio</a><a class="btn line" href="partidos.html">Ver los partidos</a></div>
+      <aside class="offside-fact"><b>Ya que estás aquí, ¿sabías que…?</b><p id="dato"></p></aside>
+    </div>
+  </div>
+</section>
+</main>
+<div id="pie"></div>
+<script src="datos.js?v=2248a3c2"></script>
+<script src="datos-federacion.js"></script>
+<script src="comun.js?v=ff0ff514"></script>
+<!-- Contador de visitas anónimo, sin cookies. Panel privado: https://cdortuella.goatcounter.com -->
+<script data-goatcounter="https://cdortuella.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script>
+(function () {
+  var DATOS = [
+    "El Ortuella nació en 1949 en la cocina de la casa parroquial, donde se reunía un grupo de aficionados con el párroco José María Sukia.",
+    "El primer equipo del Ortuella lo seleccionó y preparó Juan Antonio Ipiña, vecino del pueblo y jugador del Real Madrid y de la selección española.",
+    "La primera sede del club estuvo en un bar: el del directivo Julián Melgosa, en la calle Catalina Gibaja.",
+    "Antes de tener campo propio, el Ortuella jugó en el Malecón de Muskiz y en la balsa de Bañales.",
+    "Otxartaga Berri se inauguró el 29 de agosto de 1984 con un partido contra el Bilbao Athletic. Ganaron ellos, 0-3.",
+    "En la temporada 1985/86 el Ortuella jugó en Tercera División, la categoría estatal."
+  ];
+  document.getElementById("dato").textContent = DATOS[Math.floor(Math.random() * DATOS.length)];
+})();
+</script>
+</body>
+</html>

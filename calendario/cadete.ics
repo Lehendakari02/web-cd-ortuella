@@ -1,0 +1,322 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//CD Ortuella//Partidos//ES
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:CD Ortuella · Cadete
+X-WR-TIMEZONE:Europe/Madrid
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:cdortuella-cadete-j1@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261018
+DTEND;VALUE=DATE:20261019
+SUMMARY:⚽ Cadete: Zuazo B 1-5 Ortuella
+DESCRIPTION:Cadete · Jornada 1 · Cadete Tercera División (3C) · Grupo 1
+ \nFuera. Hora por confirmar.\nMás información: https://lehendakari02.git
+ hub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j2@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261025
+DTEND;VALUE=DATE:20261026
+SUMMARY:⚽ Cadete: Ortuella – Santurtzi B
+DESCRIPTION:Cadete · Jornada 2 · Cadete Tercera División (3C) · Grupo 1
+ \nEn casa. Hora por confirmar.\nMás información: https://lehendakari02.g
+ ithub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j3@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261101
+DTEND;VALUE=DATE:20261102
+SUMMARY:⚽ Cadete: Somorrostro B – Ortuella
+DESCRIPTION:Cadete · Jornada 3 · Cadete Tercera División (3C) · Grupo 1
+ \nFuera. Hora por confirmar.\nMás información: https://lehendakari02.git
+ hub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j4@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261108
+DTEND;VALUE=DATE:20261109
+SUMMARY:⚽ Cadete: Ortuella – Trapagaran C
+DESCRIPTION:Cadete · Jornada 4 · Cadete Tercera División (3C) · Grupo 1
+ \nEn casa. Hora por confirmar.\nMás información: https://lehendakari02.g
+ ithub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j5@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261115
+DTEND;VALUE=DATE:20261116
+SUMMARY:⚽ Cadete: Peña ATH. Santurtzi B – Ortuella
+DESCRIPTION:Cadete · Jornada 5 · Cadete Tercera División (3C) · Grupo 1
+ \nFuera. Hora por confirmar.\nMás información: https://lehendakari02.git
+ hub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j6@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261122
+DTEND;VALUE=DATE:20261123
+SUMMARY:⚽ Cadete: Ortuella – Beti Lagunak
+DESCRIPTION:Cadete · Jornada 6 · Cadete Tercera División (3C) · Grupo 1
+ \nEn casa. Hora por confirmar.\nMás información: https://lehendakari02.g
+ ithub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j7@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261129
+DTEND;VALUE=DATE:20261130
+SUMMARY:⚽ Cadete: Ortuella – San Pedro A
+DESCRIPTION:Cadete · Jornada 7 · Cadete Tercera División (3C) · Grupo 1
+ \nEn casa. Hora por confirmar.\nMás información: https://lehendakari02.g
+ ithub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j8@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261206
+DTEND;VALUE=DATE:20261207
+SUMMARY:⚽ Cadete: Portugalete D – Ortuella
+DESCRIPTION:Cadete · Jornada 8 · Cadete Tercera División (3C) · Grupo 1
+ \nFuera. Hora por confirmar.\nMás información: https://lehendakari02.git
+ hub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j9@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261213
+DTEND;VALUE=DATE:20261214
+SUMMARY:⚽ Cadete: Ortuella – Zalla
+DESCRIPTION:Cadete · Jornada 9 · Cadete Tercera División (3C) · Grupo 1
+ \nEn casa. Hora por confirmar.\nMás información: https://lehendakari02.g
+ ithub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j10@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261220
+DTEND;VALUE=DATE:20261221
+SUMMARY:⚽ Cadete: Arbuyo – Ortuella
+DESCRIPTION:Cadete · Jornada 10 · Cadete Tercera División (3C) · Grupo 
+ 1\nFuera. Hora por confirmar.\nMás información: https://lehendakari02.gi
+ thub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j11@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270103
+DTEND;VALUE=DATE:20270104
+SUMMARY:⚽ Cadete: Ortuella – Dinamo San Juan A
+DESCRIPTION:Cadete · Jornada 11 · Cadete Tercera División (3C) · Grupo 
+ 1\nEn casa. Hora por confirmar.\nMás información: https://lehendakari02.
+ github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j12@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270110
+DTEND;VALUE=DATE:20270111
+SUMMARY:⚽ Cadete: Aranguren B – Ortuella
+DESCRIPTION:Cadete · Jornada 12 · Cadete Tercera División (3C) · Grupo 
+ 1\nFuera. Hora por confirmar.\nMás información: https://lehendakari02.gi
+ thub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j13@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270117
+DTEND;VALUE=DATE:20270118
+SUMMARY:⚽ Cadete: Ortuella – Ortuellako Jendea 1999
+DESCRIPTION:Cadete · Jornada 13 · Cadete Tercera División (3C) · Grupo 
+ 1\nEn casa. Hora por confirmar.\nMás información: https://lehendakari02.
+ github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j14@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270124
+DTEND;VALUE=DATE:20270125
+SUMMARY:⚽ Cadete: Ortuella – Zuazo B
+DESCRIPTION:Cadete · Jornada 14 · Cadete Tercera División (3C) · Grupo 
+ 1\nEn casa. Hora por confirmar.\nMás información: https://lehendakari02.
+ github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j15@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270131
+DTEND;VALUE=DATE:20270201
+SUMMARY:⚽ Cadete: Santurtzi B – Ortuella
+DESCRIPTION:Cadete · Jornada 15 · Cadete Tercera División (3C) · Grupo 
+ 1\nFuera. Hora por confirmar.\nMás información: https://lehendakari02.gi
+ thub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j16@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270207
+DTEND;VALUE=DATE:20270208
+SUMMARY:⚽ Cadete: Ortuella – Somorrostro B
+DESCRIPTION:Cadete · Jornada 16 · Cadete Tercera División (3C) · Grupo 
+ 1\nEn casa. Hora por confirmar.\nMás información: https://lehendakari02.
+ github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j17@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270214
+DTEND;VALUE=DATE:20270215
+SUMMARY:⚽ Cadete: Trapagaran C – Ortuella
+DESCRIPTION:Cadete · Jornada 17 · Cadete Tercera División (3C) · Grupo 
+ 1\nFuera. Hora por confirmar.\nMás información: https://lehendakari02.gi
+ thub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j18@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270221
+DTEND;VALUE=DATE:20270222
+SUMMARY:⚽ Cadete: Ortuella – Peña ATH. Santurtzi B
+DESCRIPTION:Cadete · Jornada 18 · Cadete Tercera División (3C) · Grupo 
+ 1\nEn casa. Hora por confirmar.\nMás información: https://lehendakari02.
+ github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j19@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270228
+DTEND;VALUE=DATE:20270301
+SUMMARY:⚽ Cadete: Beti Lagunak – Ortuella
+DESCRIPTION:Cadete · Jornada 19 · Cadete Tercera División (3C) · Grupo 
+ 1\nFuera. Hora por confirmar.\nMás información: https://lehendakari02.gi
+ thub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j20@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270307
+DTEND;VALUE=DATE:20270308
+SUMMARY:⚽ Cadete: San Pedro A – Ortuella
+DESCRIPTION:Cadete · Jornada 20 · Cadete Tercera División (3C) · Grupo 
+ 1\nFuera. Hora por confirmar.\nMás información: https://lehendakari02.gi
+ thub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j21@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270314
+DTEND;VALUE=DATE:20270315
+SUMMARY:⚽ Cadete: Ortuella – Portugalete D
+DESCRIPTION:Cadete · Jornada 21 · Cadete Tercera División (3C) · Grupo 
+ 1\nEn casa. Hora por confirmar.\nMás información: https://lehendakari02.
+ github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j22@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270321
+DTEND;VALUE=DATE:20270322
+SUMMARY:⚽ Cadete: Zalla – Ortuella
+DESCRIPTION:Cadete · Jornada 22 · Cadete Tercera División (3C) · Grupo 
+ 1\nFuera. Hora por confirmar.\nMás información: https://lehendakari02.gi
+ thub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j23@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270404
+DTEND;VALUE=DATE:20270405
+SUMMARY:⚽ Cadete: Ortuella – Arbuyo
+DESCRIPTION:Cadete · Jornada 23 · Cadete Tercera División (3C) · Grupo 
+ 1\nEn casa. Hora por confirmar.\nMás información: https://lehendakari02.
+ github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j24@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270411
+DTEND;VALUE=DATE:20270412
+SUMMARY:⚽ Cadete: Dinamo San Juan A – Ortuella
+DESCRIPTION:Cadete · Jornada 24 · Cadete Tercera División (3C) · Grupo 
+ 1\nFuera. Hora por confirmar.\nMás información: https://lehendakari02.gi
+ thub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j25@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270418
+DTEND;VALUE=DATE:20270419
+SUMMARY:⚽ Cadete: Ortuella – Aranguren B
+DESCRIPTION:Cadete · Jornada 25 · Cadete Tercera División (3C) · Grupo 
+ 1\nEn casa. Hora por confirmar.\nMás información: https://lehendakari02.
+ github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-cadete-j26@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270425
+DTEND;VALUE=DATE:20270426
+SUMMARY:⚽ Cadete: Ortuellako Jendea 1999 – Ortuella
+DESCRIPTION:Cadete · Jornada 26 · Cadete Tercera División (3C) · Grupo 
+ 1\nFuera. Hora por confirmar.\nMás información: https://lehendakari02.gi
+ thub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+END:VCALENDAR
