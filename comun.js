@@ -94,7 +94,7 @@
       '<ul><li><a href="partidos.html">Partidos</a></li><li><a href="equipos.html">Equipos</a></li><li><a href="noticias.html">Noticias</a></li><li><a href="historia.html">Historia</a></li></ul>' +
       '<ul><li><a href="socios.html">Socios y tienda</a></li><li><a href="directiva.html">Directiva</a></li><li><a href="campo.html">Otxartaga Berri</a></li><li><a href="contacto.html">Contacto</a></li></ul>' +
       '<div class="foot-contact"><span>cdortuella@cdortuella.net</span><span class="num">946 353 598</span></div>' +
-      '</div><div class="wrap foot-legal">© ' + new Date().getFullYear() + ' CD Ortuella · Datos de competición: Federación Vizcaína de Fútbol</div></footer>';
+      '</div><div class="wrap foot-legal">© ' + new Date().getFullYear() + ' CD Ortuella · Datos de competición: Federación Vizcaína de Fútbol<span class="legal-links"><a href="aviso-legal.html">Aviso legal</a><a href="privacidad.html">Privacidad y cookies</a></span></div></footer>';
   }
 
   // ---- piezas de partidos ----------------------------------------------------
