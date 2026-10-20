@@ -26,9 +26,7 @@ HEAD = """<!doctype html>
 <meta property="og:locale" content="es_ES">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="img/escudo.webp">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Big+Shoulders+Display:wght@700;800;900&display=swap">
+<link rel="preload" href="fuentes/big-shoulders-display.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="estilos.css?v={v[estilos.css]}">
 </head>
 <body data-page="{page}">
@@ -481,6 +479,76 @@ PAGES["contacto"] = dict(
 </section>
 """,
  script="""window.CDO.copyButtons();""")
+
+# ---------------------------------------------------------------- AVISO LEGAL
+# Lo marcado con PEND está por completar con los datos oficiales del club.
+PEND = '<span class="pending">Pendiente</span>'
+
+PAGES["aviso-legal"] = dict(
+ title="Aviso legal · CD Ortuella", desc="Aviso legal de la web del Club Deportivo Ortuella.",
+ body=hero("Aviso legal", "Quién es el titular de esta web y en qué condiciones se puede usar.", "Aviso legal") + """
+<section class="block">
+  <div class="wrap prose legal">
+    <h3>Titular de la web</h3>
+    <p>En cumplimiento del artículo 10 de la Ley 34/2002, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI), se informa de los datos del titular de esta web:</p>
+    <dl class="legal-data">
+      <dt>Denominación</dt><dd>""" + PEND + """</dd>
+      <dt>CIF</dt><dd>""" + PEND + """</dd>
+      <dt>Domicilio social</dt><dd>Catalina Gibaja 1, 48530 Ortuella (Bizkaia)</dd>
+      <dt>Inscripción</dt><dd>Registro de Entidades Deportivas del País Vasco, n.º """ + PEND + """</dd>
+      <dt>Email</dt><dd>cdortuella@cdortuella.net</dd>
+      <dt>Teléfono</dt><dd>946 353 598</dd>
+    </dl>
+    <h3>Objeto</h3>
+    <p>Esta web informa sobre la actividad del Club Deportivo Ortuella: sus equipos, partidos, resultados, noticias, historia e instalaciones, y sobre cómo hacerse socio o colaborar con el club. Su uso es gratuito.</p>
+    <h3>Datos de competición</h3>
+    <p>Los calendarios, resultados, clasificaciones y goleadores se obtienen de la información pública de la Federación Vizcaína de Fútbol. El club los muestra con la mayor exactitud posible, pero la información oficial es la publicada por la Federación.</p>
+    <h3>Propiedad intelectual</h3>
+    <p>El escudo, el nombre, los textos y las fotografías de esta web pertenecen al Club Deportivo Ortuella o se usan con permiso de sus autores. No se pueden reproducir con fines comerciales sin autorización del club. Los logotipos de patrocinadores y colaboradores pertenecen a sus respectivos titulares.</p>
+    <h3>Enlaces a otras webs</h3>
+    <p>Esta web enlaza con redes sociales y con webs de terceros, como la de la Federación. El club no se hace responsable de sus contenidos ni de sus políticas de privacidad.</p>
+    <h3>Responsabilidad</h3>
+    <p>El club trabaja para que la información sea correcta y esté al día, pero no garantiza la ausencia de errores ni que la web esté disponible en todo momento.</p>
+    <h3>Legislación aplicable</h3>
+    <p>Este aviso legal se rige por la legislación española.</p>
+    <p class="source">Última actualización: """ + "octubre de 2026" + """.</p>
+  </div>
+</section>
+""", script="")
+
+# ---------------------------------------------------------------- PRIVACIDAD
+PAGES["privacidad"] = dict(
+ title="Privacidad · CD Ortuella", desc="Política de privacidad y cookies de la web del Club Deportivo Ortuella.",
+ body=hero("Privacidad", "Qué datos personales trata el club, para qué y cuáles son tus derechos.", "Privacidad") + """
+<section class="block">
+  <div class="wrap prose legal">
+    <h3>Responsable del tratamiento</h3>
+    <p>""" + PEND + """ (Club Deportivo Ortuella), con CIF """ + PEND + """, domicilio en Catalina Gibaja 1, 48530 Ortuella (Bizkaia), y email cdortuella@cdortuella.net.</p>
+
+    <h3>Esta web no recoge datos</h3>
+    <p>La web no tiene formularios ni zona de usuarios, y no pide ningún dato a quien la visita. Si escribes o llamas al club usando los datos de contacto, usaremos lo que nos envíes solo para responderte y atender lo que pidas: inscripciones, hacerte socio, patrocinio o cualquier consulta.</p>
+
+    <h3>Jugadores, cuerpo técnico y directiva</h3>
+    <p>En la web aparecen nombres y, en su caso, fotografías de jugadores, técnicos y miembros de la directiva, para informar sobre la actividad deportiva del club. En el caso de menores de edad, se publican con el consentimiento de sus madres, padres o tutores. Cualquier persona puede pedir en cualquier momento que se retire su nombre o su imagen escribiendo a cdortuella@cdortuella.net, y el club lo hará sin demora.</p>
+    <p>Los datos de competición (alineaciones, resultados y goleadores) proceden de la información pública de la Federación Vizcaína de Fútbol.</p>
+
+    <h3>Base legal y conservación</h3>
+    <p>Tratamos los datos con tu consentimiento o porque son necesarios para la relación que tienes con el club (por ejemplo, como socio o jugador). Los conservamos mientras dure esa relación y, después, durante los plazos que exija la ley.</p>
+
+    <h3>Con quién se comparten</h3>
+    <p>El club no vende ni cede datos personales a terceros, salvo obligación legal o cuando sea necesario para la competición (por ejemplo, las fichas que se tramitan ante la Federación).</p>
+    <p>La web está alojada en GitHub Pages, un servicio de GitHub Inc. (Microsoft). Como cualquier servidor web, GitHub registra la dirección IP de las visitas por motivos de seguridad. GitHub está adherida al Marco de Privacidad de Datos UE-EE. UU., que permite estas transferencias con garantías.</p>
+
+    <h3>Tus derechos</h3>
+    <p>Puedes pedir acceder a tus datos, corregirlos, borrarlos, oponerte a su uso, limitarlo o llevártelos a otro sitio, escribiendo a cdortuella@cdortuella.net. Si crees que no hemos atendido bien tu petición, puedes reclamar ante la Agencia Española de Protección de Datos (aepd.es).</p>
+
+    <h3>Cookies</h3>
+    <p>Esta web <strong>no usa cookies</strong> ni herramientas de seguimiento. Los tipos de letra y las imágenes se sirven desde la propia web, sin conectar con servidores de terceros. Si sigues un enlace a redes sociales o a otras webs, se aplicarán sus propias políticas de cookies.</p>
+
+    <p class="source">Última actualización: octubre de 2026.</p>
+  </div>
+</section>
+""", script="")
 
 # Huella de cada archivo: si cambia su contenido, cambia el ?v= y el navegador
 # descarga la versión nueva en vez de usar la copia que tenía guardada.
