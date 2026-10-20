@@ -261,19 +261,20 @@ PAGES["equipos"] = dict(
  script="""(function () {
   var X = window.CDO, C = X.C, F = X.F, esc = X.esc;
   var BY_SLUG = {}; F.equipos.forEach(function (t) { BY_SLUG[X.SLUG[t.id]] = t; });
-  var FED = X.federados(), BASE = F.equipos.filter(function (t) { return t.base; });
+  // El fútbol base tiene su página igual que los demás; solo se queda fuera de la portada y sin tarjetas
+  var BASE = F.equipos.filter(function (t) { return t.base; });
   var $ = function (id) { return document.getElementById(id); };
 
   function nav(cur) {
     $("subnav").innerHTML = '<a class="chip" href="equipos.html"' + (!cur ? ' aria-current="page"' : "") + ">Todos</a>" +
-      FED.map(function (t) { var s = X.SLUG[t.id]; return '<a class="chip" href="#' + s + '"' + (cur === s ? ' aria-current="page"' : "") + ">" + X.APODO[t.id] + "</a>"; }).join("") +
-      '<a class="chip" href="#base"' + (cur === "base" || BASE.some(function (t) { return X.SLUG[t.id] === cur; }) ? ' aria-current="page"' : "") + ">Fútbol base</a>";
+      F.equipos.map(function (t) { var s = X.SLUG[t.id]; return '<a class="chip" href="#' + s + '"' + (cur === s ? ' aria-current="page"' : "") + ">" + X.APODO[t.id] + "</a>"; }).join("") +
+      '<a class="chip" href="#base"' + (cur === "base" ? ' aria-current="page"' : "") + ">Fútbol base</a>";
   }
   function heading(name, sub, crumb) { $("teamName").textContent = name; $("teamSub").textContent = sub; $("crumb").textContent = crumb ? " / " + crumb : ""; document.title = (crumb || "Equipos") + " · CD Ortuella"; }
 
   function overview() {
     heading("Nuestros equipos", "Del fútbol base al primer equipo. Elige uno para ver su clasificación, partidos y goleadores.", "");
-    $("teamView").innerHTML = '<section class="block"><div class="wrap"><div class="teams-grid">' + FED.map(function (t) {
+    $("teamView").innerHTML = '<section class="block"><div class="wrap"><div class="teams-grid">' + F.equipos.map(function (t) {
       var r = X.ourRow(t);
       return '<a class="team-card" href="#' + X.SLUG[t.id] + '"><svg width="40" height="40" aria-hidden="true"><use href="#shirt"/></svg><h3>' + X.APODO[t.id] + "</h3><p>" + esc(t.categoria) + "</p>" +
         (r ? '<div class="pos-line">' + r.pos + "º · " + r.pts + " puntos</div>" : "") + '<span class="go">Ver equipo</span></a>';
@@ -333,8 +334,8 @@ PAGES["equipos"] = dict(
       "</div>" +
       '<div class="comp' + (t.clasificacion.length ? "" : " solo") + '">' + (t.clasificacion.length ? '<div><div class="panel"><h3>Clasificación</h3><div class="sub">' + esc(t.categoria) + '</div><div class="table-scroll"><table>' + X.TABLE_HEAD + "<tbody>" + X.tableRows(t) + "</tbody></table></div></div></div>" : "") +
       '<div><div class="panel"><h3>Partidos</h3><div class="tabs" role="tablist"><button role="tab" id="tabNext" aria-selected="true">Próximos</button><button role="tab" id="tabRes" aria-selected="false">Resultados</button></div><ul class="games" id="games"></ul></div>' +
-      (t.goleadores.length || !t.base ? '<div class="panel"><h3>Goleadores</h3><ul class="scorers">' + X.scorersList(t) + "</ul></div>" : "") +
-      (X.cardsList(t) ? '<div class="panel"><h3>Tarjetas</h3>' + X.cardsList(t) + "</div>" : "") + "</div></div>" +
+      '<div class="panel"><h3>Goleadores</h3><ul class="scorers">' + X.scorersList(t) + "</ul></div>" +
+      (!t.base && X.cardsList(t) ? '<div class="panel"><h3>Tarjetas</h3>' + X.cardsList(t) + "</div>" : "") + "</div></div>" +
       '<p class="source">' + X.sourceNote(t) + "</p>" +
       '<div class="cal-team"><div><b>Los partidos del ' + X.APODO[t.id] + ' en tu calendario</b><p>Se añaden solos y se actualizan con cada jornada. <a href="partidos.html#calendario">Más opciones</a></p></div>' +
       '<div class="btns"><a class="btn blue" href="' + X.calHrefs(X.SLUG[t.id]).apple + '">iPhone o Mac</a><a class="btn line" href="' + X.calHrefs(X.SLUG[t.id]).google + '" target="_blank" rel="noopener">Google Calendar</a></div></div>' +
@@ -676,7 +677,7 @@ PAGES["partido"] = dict(
   var ours = function (lado) { return X.isUs(who(lado), t); };
   // Goles y tarjetas en una sola cronología, por minuto
   var ev = (a.goles || []).map(function (g) { return { min: g.min, lado: g.lado, txt: esc(g.jugador) + (g.tipo === "pp" ? " <small>(en propia)</small>" : g.tipo === "pen" ? " <small>(penalti)</small>" : ""), ico: "gol" }; })
-    .concat((a.tarjetas || []).map(function (c) { return { min: c.min, lado: c.lado, txt: esc(c.jugador), ico: c.tipo }; }))
+    .concat((t.base ? [] : a.tarjetas || []).map(function (c) { return { min: c.min, lado: c.lado, txt: esc(c.jugador), ico: c.tipo }; }))
     .sort(function (x, y) { return x.min - y.min; });
   var gl = 0, gv = 0;  // marcador en cada gol
   ev.forEach(function (e) { if (e.ico === "gol") { if (e.lado === "local") gl++; else gv++; e.txt += ' <b class="ev-sc">' + gl + "-" + gv + "</b>"; } });

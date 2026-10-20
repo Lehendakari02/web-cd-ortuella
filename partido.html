@@ -81,7 +81,7 @@
   var ours = function (lado) { return X.isUs(who(lado), t); };
   // Goles y tarjetas en una sola cronología, por minuto
   var ev = (a.goles || []).map(function (g) { return { min: g.min, lado: g.lado, txt: esc(g.jugador) + (g.tipo === "pp" ? " <small>(en propia)</small>" : g.tipo === "pen" ? " <small>(penalti)</small>" : ""), ico: "gol" }; })
-    .concat((a.tarjetas || []).map(function (c) { return { min: c.min, lado: c.lado, txt: esc(c.jugador), ico: c.tipo }; }))
+    .concat((t.base ? [] : a.tarjetas || []).map(function (c) { return { min: c.min, lado: c.lado, txt: esc(c.jugador), ico: c.tipo }; }))
     .sort(function (x, y) { return x.min - y.min; });
   var gl = 0, gv = 0;  // marcador en cada gol
   ev.forEach(function (e) { if (e.ico === "gol") { if (e.lado === "local") gl++; else gv++; e.txt += ' <b class="ev-sc">' + gl + "-" + gv + "</b>"; } });
