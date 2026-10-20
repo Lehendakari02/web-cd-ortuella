@@ -120,11 +120,11 @@
   // Clasificación resumida del Senior A y del Senior B
   document.getElementById("standings").innerHTML = ["primer", "b"].map(function (id) {
     var t = X.team(id); if (!t) return "";
-    var r = X.ourRow(t), last = X.played(t).slice(-1)[0];
+    var r = X.ourRow(t);
     return '<div class="panel"><h3>' + X.APODO[id] + '</h3><div class="sub">' + esc(t.categoria) + (r ? " · <b>" + r.pos + "º con " + r.pts + " puntos</b>" : "") + "</div>" +
       (X.played(t).length ? '<div class="form-line"><small>Últimos partidos</small>' + X.formDots(t) + "</div>" : "") +
       '<div class="table-scroll"><table>' + X.TABLE_HEAD + "<tbody>" + X.tableRows(t, true) + "</tbody></table></div>" +
-      '<div class="panel-foot">' + (last ? "Último: " + esc(last.local) + " <b>" + last.gl + "-" + last.gv + "</b> " + esc(last.visitante) + " · " : "") +
+      '<div class="panel-foot">' +
       '<a class="more" href="equipos.html#' + X.SLUG[id] + '">Ver equipo</a></div></div>';
   }).join("");
   document.getElementById("source").innerHTML = X.sourceNote();
