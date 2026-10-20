@@ -67,7 +67,7 @@ window.CLUB = {
   ],
 
   patrocinadores: [
-    { nombre: "Markofer · Montajes y mantenimientos", logo: "img/markofer.png" }
+    { nombre: "Markofer · Montajes y mantenimientos", logo: "img/markofer.webp" }
   ],
   colaboradores: ["Ortuellako Udala · Ayuntamiento de Ortuella", "Bizkaiko Foru Aldundia · Diputación Foral de Bizkaia",
                   "Federación Vizcaína de Fútbol", "Athletic Club Fundazioa"]

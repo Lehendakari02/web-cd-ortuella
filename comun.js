@@ -86,11 +86,11 @@
 
   function renderFooter() {
     var el = document.getElementById("pie"); if (!el) return;
-    var sp = (C.patrocinadores || []).map(function (s) { return '<span class="foot-sponsor">' + (s.logo ? '<img src="' + esc(s.logo) + '" alt="' + esc(s.nombre) + '">' : esc(s.nombre)) + "</span>"; }).join("");
+    var sp = (C.patrocinadores || []).map(function (s) { return '<span class="foot-sponsor">' + (s.logo ? '<img src="' + esc(s.logo) + '" alt="' + esc(s.nombre) + '" loading="lazy" decoding="async">' : esc(s.nombre)) + "</span>"; }).join("");
     el.innerHTML = '<footer>' +
       (sp && page !== "socios" ? '<div class="foot-sponsors"><div class="wrap"><span>Patrocinan</span>' + sp + '<a href="contacto.html">¿Tu negocio aquí?</a></div></div>' : "") +
       '<div class="wrap foot-main">' +
-      '<div><img src="img/escudo.webp" alt=""><b>Club Deportivo Ortuella</b><p>Fundado en 1949 · Otxartaga Berri, Ortuella (Bizkaia)</p></div>' +
+      '<div><img src="img/escudo.webp" alt="" loading="lazy" decoding="async"><b>Club Deportivo Ortuella</b><p>Fundado en 1949 · Otxartaga Berri, Ortuella (Bizkaia)</p></div>' +
       '<ul><li><a href="partidos.html">Partidos</a></li><li><a href="equipos.html">Equipos</a></li><li><a href="noticias.html">Noticias</a></li><li><a href="historia.html">Historia</a></li></ul>' +
       '<ul><li><a href="socios.html">Socios y tienda</a></li><li><a href="directiva.html">Directiva</a></li><li><a href="campo.html">Otxartaga Berri</a></li><li><a href="contacto.html">Contacto</a></li></ul>' +
       '<div class="foot-contact"><span>cdortuella@cdortuella.net</span><span class="num">946 353 598</span></div>' +

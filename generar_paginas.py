@@ -439,7 +439,7 @@ PAGES["campo"] = dict(
       <div class="tickets" id="ticketList"></div>
       <p class="source">Precios de la web antigua, pendientes de confirmar.</p>
       <h3>La tribuna</h3>
-      <img src="img/entrada.jpg" alt="Entrada al campo de Otxartaga Berri" style="border-radius:6px;display:block;width:100%;max-width:100%;aspect-ratio:16/9;object-fit:cover">
+      <img src="img/entrada.jpg" loading="lazy" decoding="async" alt="Entrada al campo de Otxartaga Berri" style="border-radius:6px;display:block;width:100%;max-width:100%;aspect-ratio:16/9;object-fit:cover">
     </div>
   </div>
 </section>
