@@ -182,7 +182,7 @@
   function sprite() {
     var d = document.createElement("div");
     d.innerHTML = '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>' +
-      '<symbol id="shirt" viewBox="0 0 48 48"><path d="M16 4 L8 8 L2 18 L9 22 L12 18 V44 H36 V18 L39 22 L46 18 L40 8 L32 4 C30 8 18 8 16 4Z" fill="#ffffff" stroke="#0b2a5b" stroke-width="2"/><path d="M17 6 V44 M24 8 V44 M31 6 V44" stroke="#1757c2" stroke-width="4"/></symbol>' +
+      '<symbol id="shirt" viewBox="0 0 48 48"><path d="M16 4 L8 8 L2 18 L9 22 L12 18 V44 H36 V18 L39 22 L46 18 L40 8 L32 4 C30 8 18 8 16 4Z" fill="#1757c2" stroke="#0b2a5b" stroke-width="2"/><path d="M17 5.5 C20 8.5 28 8.5 31 5.5" fill="none" stroke="#ffffff" stroke-width="2"/></symbol>' +
       '<symbol id="scarf" viewBox="0 0 48 48"><path d="M6 10 h36 v10 h-36z" fill="#1757c2"/><path d="M6 20 h36 v10 h-36z" fill="#ffffff" stroke="#0b2a5b" stroke-width="1"/><path d="M6 30 h36 v10 h-36z" fill="#1757c2"/><path d="M6 40 v5 M12 40 v5 M18 40 v5 M24 40 v5 M30 40 v5 M36 40 v5 M42 40 v5" stroke="#0b2a5b" stroke-width="2"/></symbol>' +
       "</defs></svg>";
     document.body.insertBefore(d.firstChild, document.body.firstChild);
