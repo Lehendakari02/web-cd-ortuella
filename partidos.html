@@ -25,11 +25,12 @@
 <meta name="theme-color" content="#0b2a5b">
 <meta name="apple-mobile-web-app-title" content="CD Ortuella">
 <link rel="preload" href="fuentes/big-shoulders-display.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="estilos.css?v=ff28d6e8">
+<link rel="stylesheet" href="estilos.css?v=de95cd69">
 </head>
 <body data-page="partidos">
+<a class="skip" href="#contenido">Saltar al contenido</a>
 <div id="cabecera"></div>
-<main>
+<main id="contenido" tabindex="-1">
 <section class="page-hero">
   <div class="wrap">
     <div class="crumbs"><a href="./">Inicio</a> / Partidos</div>
@@ -73,7 +74,7 @@
 <div id="pie"></div>
 <script src="datos.js?v=2248a3c2"></script>
 <script src="datos-federacion.js"></script>
-<script src="comun.js?v=ff0ff514"></script>
+<script src="comun.js?v=d8e2ec6e"></script>
 <!-- Contador de visitas anónimo, sin cookies. Panel privado: https://cdortuella.goatcounter.com -->
 <script data-goatcounter="https://cdortuella.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 <script>
@@ -99,7 +100,9 @@
     if (!groups.length) { document.getElementById("agenda").innerHTML = '<p class="empty">' + (showResults ? "Todavía no hay resultados." : "No hay partidos en el calendario.") + "</p>"; return; }
     document.getElementById("agenda").innerHTML = groups.map(function (f) {
       var d = X.day(f);
-      return '<div class="agenda-day"><h3>' + DIAL[d.getDay()] + " " + d.getDate() + " de " + MESL[d.getMonth()] + '</h3><div class="panel"><ul class="games">' + seen[f].map(function (x) {
+      var msg = "⚽ " + (showResults ? "Resultados" : "Partidos") + " del CD Ortuella\n📅 " + X.longDate(f) + "\n\n" +
+        seen[f].map(function (x) { return "• " + X.matchLine(x.p, x.t); }).join("\n") + (showResults ? "" : "\n\nHorarios por confirmar") + "\n\n" + X.webUrl("partidos.html");
+      return '<div class="agenda-day"><div class="agenda-head"><h3>' + DIAL[d.getDay()] + " " + d.getDate() + " de " + MESL[d.getMonth()] + "</h3>" + X.shareLink(msg) + '</div><div class="panel"><ul class="games">' + seen[f].map(function (x) {
         var p = x.p, t = x.t, right;
         var name = function (n) { return X.isUs(n, t) ? '<span class="us">' + esc(n) + "</span>" : esc(n); };
         if (p.gl != null) { var o = X.outcome(p, t); right = '<span class="score ' + o + '">' + p.gl + "-" + p.gv + "</span>"; }
@@ -119,12 +122,11 @@
   var calSel = "todos";
   function renderCal() {
     document.getElementById("calTeams").innerHTML = CAL.map(function (c) { return '<button class="chip" data-cal="' + c[0] + '" aria-pressed="' + (c[0] === calSel) + '">' + c[1] + "</button>"; }).join("");
-    var url = new URL("calendario/" + calSel + ".ics", location.href).href;
-    var webcal = url.replace(/^https?:/, "webcal:");
-    document.getElementById("calApple").href = webcal;
-    document.getElementById("calGoogle").href = "https://calendar.google.com/calendar/render?cid=" + encodeURIComponent(webcal);
-    document.getElementById("calUrl").textContent = url;
-    document.getElementById("calCopy").dataset.copy = url;
+    var h = X.calHrefs(calSel);
+    document.getElementById("calApple").href = h.apple;
+    document.getElementById("calGoogle").href = h.google;
+    document.getElementById("calUrl").textContent = h.url;
+    document.getElementById("calCopy").dataset.copy = h.url;
   }
   document.getElementById("calTeams").addEventListener("click", function (e) { var b = e.target.closest("[data-cal]"); if (b) { calSel = b.dataset.cal; renderCal(); } });
   renderCal();

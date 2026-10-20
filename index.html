@@ -25,11 +25,31 @@
 <meta name="theme-color" content="#0b2a5b">
 <meta name="apple-mobile-web-app-title" content="CD Ortuella">
 <link rel="preload" href="fuentes/big-shoulders-display.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="estilos.css?v=ff28d6e8">
+<link rel="stylesheet" href="estilos.css?v=de95cd69">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "SportsTeam",
+ "name": "Club Deportivo Ortuella",
+ "alternateName": "CD Ortuella",
+ "sport": "Fútbol",
+ "foundingDate": "1949",
+ "url": "https://lehendakari02.github.io/web-cd-ortuella/",
+ "logo": "https://lehendakari02.github.io/web-cd-ortuella/img/icono-512.png",
+ "image": "https://lehendakari02.github.io/web-cd-ortuella/img/compartir.jpg",
+ "email": "cdortuella@cdortuella.net",
+ "telephone": "+34 946 353 598",
+ "address": {"@type": "PostalAddress", "streetAddress": "Catalina Gibaja 1", "addressLocality": "Ortuella", "addressRegion": "Bizkaia", "addressCountry": "ES"},
+ "location": {"@type": "StadiumOrArena", "name": "Otxartaga Berri", "address": {"@type": "PostalAddress", "streetAddress": "Avenida de la Estación s/n", "postalCode": "48530", "addressLocality": "Ortuella", "addressRegion": "Bizkaia", "addressCountry": "ES"}},
+ "memberOf": {"@type": "SportsOrganization", "name": "Federación Vizcaína de Fútbol"},
+ "sameAs": ["https://www.instagram.com/cdortuella/", "https://www.facebook.com/cdortuella1945/", "https://x.com/CD_Ortuella"]
+}
+</script>
 </head>
 <body data-page="index">
+<a class="skip" href="#contenido">Saltar al contenido</a>
 <div id="cabecera"></div>
-<main>
+<main id="contenido" tabindex="-1">
 <section class="hero">
   <div class="wrap">
     <div>
@@ -87,7 +107,7 @@
 <div id="pie"></div>
 <script src="datos.js?v=2248a3c2"></script>
 <script src="datos-federacion.js"></script>
-<script src="comun.js?v=ff0ff514"></script>
+<script src="comun.js?v=d8e2ec6e"></script>
 <!-- Contador de visitas anónimo, sin cookies. Panel privado: https://cdortuella.goatcounter.com -->
 <script data-goatcounter="https://cdortuella.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 <script>
@@ -102,6 +122,7 @@
     var t = X.team(id); if (!t) return "";
     var r = X.ourRow(t), last = X.played(t).slice(-1)[0];
     return '<div class="panel"><h3>' + X.APODO[id] + '</h3><div class="sub">' + esc(t.categoria) + (r ? " · <b>" + r.pos + "º con " + r.pts + " puntos</b>" : "") + "</div>" +
+      (X.played(t).length ? '<div class="form-line"><small>Últimos partidos</small>' + X.formDots(t) + "</div>" : "") +
       '<div class="table-scroll"><table>' + X.TABLE_HEAD + "<tbody>" + X.tableRows(t, true) + "</tbody></table></div>" +
       '<div class="panel-foot">' + (last ? "Último: " + esc(last.local) + " <b>" + last.gl + "-" + last.gv + "</b> " + esc(last.visitante) + " · " : "") +
       '<a class="more" href="equipos.html#' + X.SLUG[id] + '">Ver equipo</a></div></div>';
