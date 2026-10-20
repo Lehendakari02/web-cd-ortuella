@@ -106,7 +106,7 @@
     return '<article class="match"><div class="head"><span><b>' + APODO[t.id] + "</b> · Jornada " + p.jornada + '</span><span class="days">' + when + "</span></div>" +
       '<div class="teams"><div class="team">' + crest(p.local, t) + "<b>" + esc(p.local) + '</b></div><div class="vs">VS</div><div class="team">' + crest(p.visitante, t) + "<b>" + esc(p.visitante) + "</b></div></div>" +
       '<div class="info"><span><strong>' + DIAL[d.getDay()] + " " + fdate(p.fecha) + "</strong></span><span>" + (isUs(p.local, t) ? "Otxartaga Berri" : "Fuera de casa") + "</span><span>Hora por confirmar</span></div>" +
-      '<div class="share-row">' + shareLink(matchShareText(p, t), "Compartir por WhatsApp") + "</div></article>";
+      shareLink(matchShareText(p, t), "Compartir este partido por WhatsApp") + "</article>";
   }
 
   // Cada resultado como un marcador de dos filas: equipo a la izquierda, goles a la derecha
@@ -196,7 +196,8 @@
   var BUBBLE = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.6-.3z"/></svg>';
   // Enlace que abre WhatsApp con el mensaje ya escrito (en el móvil, la app; en el ordenador, WhatsApp Web)
   function shareLink(text, label) {
-    return '<a class="share" href="https://wa.me/?text=' + encodeURIComponent(text) + '" target="_blank" rel="noopener">' + BUBBLE + (label || "Compartir") + "</a>";
+    label = label || "Compartir por WhatsApp";
+    return '<a class="share" href="https://wa.me/?text=' + encodeURIComponent(text) + '" target="_blank" rel="noopener" title="' + label + '" aria-label="' + label + '">' + BUBBLE + "</a>";
   }
   function matchLine(p, t) {
     if (p.gl != null) return APODO[t.id] + ": " + p.local + " " + p.gl + "-" + p.gv + " " + p.visitante;

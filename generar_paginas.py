@@ -213,7 +213,7 @@ PAGES["partidos"] = dict(
       var d = X.day(f);
       var msg = "⚽ " + (showResults ? "Resultados" : "Partidos") + " del CD Ortuella\\n📅 " + X.longDate(f) + "\\n\\n" +
         seen[f].map(function (x) { return "• " + X.matchLine(x.p, x.t); }).join("\\n") + (showResults ? "" : "\\n\\nHorarios por confirmar") + "\\n\\n" + X.webUrl("partidos.html");
-      return '<div class="agenda-day"><div class="agenda-head"><h3>' + DIAL[d.getDay()] + " " + d.getDate() + " de " + MESL[d.getMonth()] + "</h3>" + X.shareLink(msg) + '</div><div class="panel"><ul class="games">' + seen[f].map(function (x) {
+      return '<div class="agenda-day"><div class="agenda-head"><h3>' + DIAL[d.getDay()] + " " + d.getDate() + " de " + MESL[d.getMonth()] + "</h3>" + X.shareLink(msg, "Compartir los partidos de este día por WhatsApp") + '</div><div class="panel"><ul class="games">' + seen[f].map(function (x) {
         var p = x.p, t = x.t, right;
         var name = function (n) { return X.isUs(n, t) ? '<span class="us">' + esc(n) + "</span>" : esc(n); };
         if (p.gl != null) { var o = X.outcome(p, t); right = '<span class="score ' + o + '">' + p.gl + "-" + p.gv + "</span>"; }
