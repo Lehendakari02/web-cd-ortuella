@@ -2,6 +2,8 @@
 # Uso: python3 generar_paginas.py  (sobrescribe los .html de esta carpeta)
 import hashlib, os
 D = os.path.dirname(os.path.abspath(__file__))
+# Dirección pública de la web. Cambiarla aquí cuando se use el dominio cdortuella.net
+SITIO = "https://lehendakari02.github.io/web-cd-ortuella"
 
 HEAD = """<!doctype html>
 <html lang="es">
@@ -12,6 +14,17 @@ HEAD = """<!doctype html>
 <meta name="description" content="{desc}">
 <!-- Mientras la web esté en pruebas, que no salga en Google -->
 <meta name="robots" content="noindex, nofollow">
+<!-- Vista previa al compartir el enlace (WhatsApp, Facebook, X...) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CD Ortuella">
+<meta property="og:title" content="{title}">
+<meta property="og:description" content="{desc}">
+<meta property="og:url" content="{sitio}/{archivo}">
+<meta property="og:image" content="{sitio}/img/compartir.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="es_ES">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="img/escudo.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -474,7 +487,7 @@ PAGES["contacto"] = dict(
 V = {f: hashlib.md5(open(os.path.join(D, f), "rb").read()).hexdigest()[:8] for f in ("estilos.css", "datos.js", "comun.js")}
 
 for name, p in PAGES.items():
-    html = HEAD.format(title=p["title"], desc=p["desc"], page=name, v=V) + p["body"] + FOOT.format(script=p["script"], v=V)
+    html = HEAD.format(title=p["title"], desc=p["desc"], page=name, v=V, sitio=SITIO, archivo="" if name == "index" else name + ".html") + p["body"] + FOOT.format(script=p["script"], v=V)
     open(os.path.join(D, name + ".html"), "w").write(html)
     print("ok", name)
 
