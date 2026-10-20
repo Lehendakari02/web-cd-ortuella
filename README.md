@@ -12,3 +12,5 @@ Web estática (solo HTML, CSS y JavaScript), sin servidor ni base de datos.
 | `img/` | Fotos y logos | Al añadir fotos |
 
 Mientras la web está en pruebas no aparece en buscadores: cada página lleva `<meta name="robots" content="noindex">` y `robots.txt` lo prohíbe. Para el lanzamiento se quitan las dos cosas.
+
+Después de cambiar `estilos.css`, `comun.js` o `datos.js`, ejecuta `python3 generar_paginas.py`: actualiza la marca `?v=` de las páginas para que los navegadores no sigan mostrando la versión antigua guardada.

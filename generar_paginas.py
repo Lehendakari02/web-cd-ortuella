@@ -1,6 +1,6 @@
 # Genera las páginas HTML (index, partidos, equipos...) a partir de una plantilla común.
 # Uso: python3 generar_paginas.py  (sobrescribe los .html de esta carpeta)
-import os
+import hashlib, os
 D = os.path.dirname(os.path.abspath(__file__))
 
 HEAD = """<!doctype html>
@@ -16,7 +16,7 @@ HEAD = """<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Big+Shoulders+Display:wght@700;800;900&display=swap">
-<link rel="stylesheet" href="estilos.css">
+<link rel="stylesheet" href="estilos.css?v={v[estilos.css]}">
 </head>
 <body data-page="{page}">
 <div id="cabecera"></div>
@@ -24,9 +24,9 @@ HEAD = """<!doctype html>
 """
 FOOT = """</main>
 <div id="pie"></div>
-<script src="datos.js"></script>
+<script src="datos.js?v={v[datos.js]}"></script>
 <script src="datos-federacion.js"></script>
-<script src="comun.js"></script>
+<script src="comun.js?v={v[comun.js]}"></script>
 <script>
 {script}
 </script>
@@ -469,8 +469,12 @@ PAGES["contacto"] = dict(
 """,
  script="""window.CDO.copyButtons();""")
 
+# Huella de cada archivo: si cambia su contenido, cambia el ?v= y el navegador
+# descarga la versión nueva en vez de usar la copia que tenía guardada.
+V = {f: hashlib.md5(open(os.path.join(D, f), "rb").read()).hexdigest()[:8] for f in ("estilos.css", "datos.js", "comun.js")}
+
 for name, p in PAGES.items():
-    html = HEAD.format(title=p["title"], desc=p["desc"], page=name) + p["body"] + FOOT.format(script=p["script"])
+    html = HEAD.format(title=p["title"], desc=p["desc"], page=name, v=V) + p["body"] + FOOT.format(script=p["script"], v=V)
     open(os.path.join(D, name + ".html"), "w").write(html)
     print("ok", name)
 
