@@ -62,6 +62,7 @@ h1, h2, h3 { font-family: var(--f-display); line-height: .95; text-wrap: balance
 .topbar a { text-decoration: none; color: #d6e0f3; }
 .topbar a:hover { color: #fff; }
 .topbar .socials { display: flex; gap: 14px; }
+#cabecera { display: contents; } /* así la cabecera se queda fija arriba al bajar por la página */
 header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50; background: var(--navy); color: var(--on-navy); box-shadow: 0 1px 0 rgba(255,255,255,.08); }
 header.top .wrap { display: flex; align-items: center; gap: 16px; padding-block: 8px; }
 .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; margin-right: auto; }
