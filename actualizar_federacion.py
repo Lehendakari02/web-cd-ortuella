@@ -5,6 +5,7 @@ Federación Vizcaína de Fútbol (www.fvf-bff.eus).
 
 Genera el archivo datos-federacion.js con, para cada equipo:
 clasificación, calendario, resultados y goleadores del club.
+Después regenera los calendarios del móvil (carpeta calendario/).
 
 Uso:  python3 actualizar_federacion.py
 Solo usa la biblioteca estándar de Python, para que funcione en cualquier sitio.
@@ -22,6 +23,8 @@ import sys
 import time
 import urllib.request
 from datetime import datetime, timezone
+
+import generar_calendario
 
 BASE = "https://www.fvf-bff.eus/pnfg/NPcd/"
 TEMPORADA = 22            # 22 = temporada 2026-2027 en la web de la Federación
@@ -228,6 +231,7 @@ def main():
         f.write("/* Archivo generado automáticamente por actualizar_federacion.py. No editar a mano. */\n")
         f.write("window.FEDERACION = " + json.dumps(datos, ensure_ascii=False, indent=1) + ";\n")
     print(f"Guardado {SALIDA}")
+    generar_calendario.main()           # calendarios .ics para el móvil, con los datos recién guardados
     if errores:
         sys.exit("Algunos equipos no se pudieron actualizar:\n" + "\n".join(errores))
 

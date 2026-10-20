@@ -1,0 +1,418 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//CD Ortuella//Partidos//ES
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:CD Ortuella · Senior A
+X-WR-TIMEZONE:Europe/Madrid
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:cdortuella-primer-j1@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20260920
+DTEND;VALUE=DATE:20260921
+SUMMARY:⚽ Senior A: Dinamo San Juan B – Ortuella
+DESCRIPTION:Senior A · Jornada 1 · Segunda División (2A) · Grupo 1\nFue
+ ra. Hora por confirmar.\nMás información: https://lehendakari02.github.i
+ o/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j2@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20260927
+DTEND;VALUE=DATE:20260928
+SUMMARY:⚽ Senior A: Ortuella – Sporting De Lutxana B
+DESCRIPTION:Senior A · Jornada 2 · Segunda División (2A) · Grupo 1\nEn 
+ casa. Hora por confirmar.\nMás información: https://lehendakari02.github
+ .io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j3@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261004
+DTEND;VALUE=DATE:20261005
+SUMMARY:⚽ Senior A: Atletismo Ortuella – Ortuella
+DESCRIPTION:Senior A · Jornada 3 · Segunda División (2A) · Grupo 1\nFue
+ ra. Hora por confirmar.\nMás información: https://lehendakari02.github.i
+ o/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j4@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261011
+DTEND;VALUE=DATE:20261012
+SUMMARY:⚽ Senior A: Ortuella – Union Sport B
+DESCRIPTION:Senior A · Jornada 4 · Segunda División (2A) · Grupo 1\nEn 
+ casa. Hora por confirmar.\nMás información: https://lehendakari02.github
+ .io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j5@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261018
+DTEND;VALUE=DATE:20261019
+SUMMARY:⚽ Senior A: Sopuerta 0-0 Ortuella
+DESCRIPTION:Senior A · Jornada 5 · Segunda División (2A) · Grupo 1\nFue
+ ra. Hora por confirmar.\nMás información: https://lehendakari02.github.i
+ o/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j6@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261025
+DTEND;VALUE=DATE:20261026
+SUMMARY:⚽ Senior A: Ortuella – Gazteak
+DESCRIPTION:Senior A · Jornada 6 · Segunda División (2A) · Grupo 1\nEn 
+ casa. Hora por confirmar.\nMás información: https://lehendakari02.github
+ .io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j7@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261101
+DTEND;VALUE=DATE:20261102
+SUMMARY:⚽ Senior A: Zazpi Landa – Ortuella
+DESCRIPTION:Senior A · Jornada 7 · Segunda División (2A) · Grupo 1\nFue
+ ra. Hora por confirmar.\nMás información: https://lehendakari02.github.i
+ o/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j8@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261108
+DTEND;VALUE=DATE:20261109
+SUMMARY:⚽ Senior A: Ortuella – Basurto B
+DESCRIPTION:Senior A · Jornada 8 · Segunda División (2A) · Grupo 1\nEn 
+ casa. Hora por confirmar.\nMás información: https://lehendakari02.github
+ .io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j9@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261115
+DTEND;VALUE=DATE:20261116
+SUMMARY:⚽ Senior A: Balmaseda B – Ortuella
+DESCRIPTION:Senior A · Jornada 9 · Segunda División (2A) · Grupo 1\nFue
+ ra. Hora por confirmar.\nMás información: https://lehendakari02.github.i
+ o/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j10@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261122
+DTEND;VALUE=DATE:20261123
+SUMMARY:⚽ Senior A: Ortuella – Trapagaran B
+DESCRIPTION:Senior A · Jornada 10 · Segunda División (2A) · Grupo 1\nEn
+  casa. Hora por confirmar.\nMás información: https://lehendakari02.githu
+ b.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j11@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261129
+DTEND;VALUE=DATE:20261130
+SUMMARY:⚽ Senior A: Retuerto B – Ortuella
+DESCRIPTION:Senior A · Jornada 11 · Segunda División (2A) · Grupo 1\nFu
+ era. Hora por confirmar.\nMás información: https://lehendakari02.github.
+ io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j12@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261206
+DTEND;VALUE=DATE:20261207
+SUMMARY:⚽ Senior A: Ortuella – Begoña B
+DESCRIPTION:Senior A · Jornada 12 · Segunda División (2A) · Grupo 1\nEn
+  casa. Hora por confirmar.\nMás información: https://lehendakari02.githu
+ b.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j13@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261213
+DTEND;VALUE=DATE:20261214
+SUMMARY:⚽ Senior A: Ortuella – Asti-leku
+DESCRIPTION:Senior A · Jornada 13 · Segunda División (2A) · Grupo 1\nEn
+  casa. Hora por confirmar.\nMás información: https://lehendakari02.githu
+ b.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j14@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261220
+DTEND;VALUE=DATE:20261221
+SUMMARY:⚽ Senior A: Karrantza – Ortuella
+DESCRIPTION:Senior A · Jornada 14 · Segunda División (2A) · Grupo 1\nFu
+ era. Hora por confirmar.\nMás información: https://lehendakari02.github.
+ io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j15@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270103
+DTEND;VALUE=DATE:20270104
+SUMMARY:⚽ Senior A: Ortuella – Abanto B
+DESCRIPTION:Senior A · Jornada 15 · Segunda División (2A) · Grupo 1\nEn
+  casa. Hora por confirmar.\nMás información: https://lehendakari02.githu
+ b.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j16@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270110
+DTEND;VALUE=DATE:20270111
+SUMMARY:⚽ Senior A: Gurutzeta B – Ortuella
+DESCRIPTION:Senior A · Jornada 16 · Segunda División (2A) · Grupo 1\nFu
+ era. Hora por confirmar.\nMás información: https://lehendakari02.github.
+ io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j17@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270117
+DTEND;VALUE=DATE:20270118
+SUMMARY:⚽ Senior A: Ortuella – Trueba
+DESCRIPTION:Senior A · Jornada 17 · Segunda División (2A) · Grupo 1\nEn
+  casa. Hora por confirmar.\nMás información: https://lehendakari02.githu
+ b.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j18@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270124
+DTEND;VALUE=DATE:20270125
+SUMMARY:⚽ Senior A: Ortuella – Dinamo San Juan B
+DESCRIPTION:Senior A · Jornada 18 · Segunda División (2A) · Grupo 1\nEn
+  casa. Hora por confirmar.\nMás información: https://lehendakari02.githu
+ b.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j19@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270131
+DTEND;VALUE=DATE:20270201
+SUMMARY:⚽ Senior A: Sporting De Lutxana B – Ortuella
+DESCRIPTION:Senior A · Jornada 19 · Segunda División (2A) · Grupo 1\nFu
+ era. Hora por confirmar.\nMás información: https://lehendakari02.github.
+ io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j20@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270207
+DTEND;VALUE=DATE:20270208
+SUMMARY:⚽ Senior A: Ortuella – Atletismo Ortuella
+DESCRIPTION:Senior A · Jornada 20 · Segunda División (2A) · Grupo 1\nEn
+  casa. Hora por confirmar.\nMás información: https://lehendakari02.githu
+ b.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j21@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270214
+DTEND;VALUE=DATE:20270215
+SUMMARY:⚽ Senior A: Union Sport B – Ortuella
+DESCRIPTION:Senior A · Jornada 21 · Segunda División (2A) · Grupo 1\nFu
+ era. Hora por confirmar.\nMás información: https://lehendakari02.github.
+ io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j22@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270221
+DTEND;VALUE=DATE:20270222
+SUMMARY:⚽ Senior A: Ortuella – Sopuerta
+DESCRIPTION:Senior A · Jornada 22 · Segunda División (2A) · Grupo 1\nEn
+  casa. Hora por confirmar.\nMás información: https://lehendakari02.githu
+ b.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j23@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270228
+DTEND;VALUE=DATE:20270301
+SUMMARY:⚽ Senior A: Gazteak – Ortuella
+DESCRIPTION:Senior A · Jornada 23 · Segunda División (2A) · Grupo 1\nFu
+ era. Hora por confirmar.\nMás información: https://lehendakari02.github.
+ io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j24@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270307
+DTEND;VALUE=DATE:20270308
+SUMMARY:⚽ Senior A: Ortuella – Zazpi Landa
+DESCRIPTION:Senior A · Jornada 24 · Segunda División (2A) · Grupo 1\nEn
+  casa. Hora por confirmar.\nMás información: https://lehendakari02.githu
+ b.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j25@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270314
+DTEND;VALUE=DATE:20270315
+SUMMARY:⚽ Senior A: Basurto B – Ortuella
+DESCRIPTION:Senior A · Jornada 25 · Segunda División (2A) · Grupo 1\nFu
+ era. Hora por confirmar.\nMás información: https://lehendakari02.github.
+ io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j26@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270321
+DTEND;VALUE=DATE:20270322
+SUMMARY:⚽ Senior A: Ortuella – Balmaseda B
+DESCRIPTION:Senior A · Jornada 26 · Segunda División (2A) · Grupo 1\nEn
+  casa. Hora por confirmar.\nMás información: https://lehendakari02.githu
+ b.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j27@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270404
+DTEND;VALUE=DATE:20270405
+SUMMARY:⚽ Senior A: Trapagaran B – Ortuella
+DESCRIPTION:Senior A · Jornada 27 · Segunda División (2A) · Grupo 1\nFu
+ era. Hora por confirmar.\nMás información: https://lehendakari02.github.
+ io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j28@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270411
+DTEND;VALUE=DATE:20270412
+SUMMARY:⚽ Senior A: Ortuella – Retuerto B
+DESCRIPTION:Senior A · Jornada 28 · Segunda División (2A) · Grupo 1\nEn
+  casa. Hora por confirmar.\nMás información: https://lehendakari02.githu
+ b.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j29@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270418
+DTEND;VALUE=DATE:20270419
+SUMMARY:⚽ Senior A: Begoña B – Ortuella
+DESCRIPTION:Senior A · Jornada 29 · Segunda División (2A) · Grupo 1\nFu
+ era. Hora por confirmar.\nMás información: https://lehendakari02.github.
+ io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j30@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270425
+DTEND;VALUE=DATE:20270426
+SUMMARY:⚽ Senior A: Asti-leku – Ortuella
+DESCRIPTION:Senior A · Jornada 30 · Segunda División (2A) · Grupo 1\nFu
+ era. Hora por confirmar.\nMás información: https://lehendakari02.github.
+ io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j31@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270502
+DTEND;VALUE=DATE:20270503
+SUMMARY:⚽ Senior A: Ortuella – Karrantza
+DESCRIPTION:Senior A · Jornada 31 · Segunda División (2A) · Grupo 1\nEn
+  casa. Hora por confirmar.\nMás información: https://lehendakari02.githu
+ b.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j32@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270509
+DTEND;VALUE=DATE:20270510
+SUMMARY:⚽ Senior A: Abanto B – Ortuella
+DESCRIPTION:Senior A · Jornada 32 · Segunda División (2A) · Grupo 1\nFu
+ era. Hora por confirmar.\nMás información: https://lehendakari02.github.
+ io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j33@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270516
+DTEND;VALUE=DATE:20270517
+SUMMARY:⚽ Senior A: Ortuella – Gurutzeta B
+DESCRIPTION:Senior A · Jornada 33 · Segunda División (2A) · Grupo 1\nEn
+  casa. Hora por confirmar.\nMás información: https://lehendakari02.githu
+ b.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-primer-j34@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270523
+DTEND;VALUE=DATE:20270524
+SUMMARY:⚽ Senior A: Trueba – Ortuella
+DESCRIPTION:Senior A · Jornada 34 · Segunda División (2A) · Grupo 1\nFu
+ era. Hora por confirmar.\nMás información: https://lehendakari02.github.
+ io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+END:VCALENDAR

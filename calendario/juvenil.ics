@@ -1,0 +1,370 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//CD Ortuella//Partidos//ES
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:CD Ortuella · Juvenil
+X-WR-TIMEZONE:Europe/Madrid
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j1@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261004
+DTEND;VALUE=DATE:20261005
+SUMMARY:⚽ Juvenil: Abanto – Ortuella
+DESCRIPTION:Juvenil · Jornada 1 · Juvenil Segunda División (2J) · Grupo
+  1\nFuera. Hora por confirmar.\nMás información: https://lehendakari02.g
+ ithub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j2@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261011
+DTEND;VALUE=DATE:20261012
+SUMMARY:⚽ Juvenil: Ortuella – Loyola Indauchu B
+DESCRIPTION:Juvenil · Jornada 2 · Juvenil Segunda División (2J) · Grupo
+  1\nEn casa. Hora por confirmar.\nMás información: https://lehendakari02
+ .github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j3@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261018
+DTEND;VALUE=DATE:20261019
+SUMMARY:⚽ Juvenil: Begoñako Arteagabe 1-3 Ortuella
+DESCRIPTION:Juvenil · Jornada 3 · Juvenil Segunda División (2J) · Grupo
+  1\nFuera. Hora por confirmar.\nMás información: https://lehendakari02.g
+ ithub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j4@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261025
+DTEND;VALUE=DATE:20261026
+SUMMARY:⚽ Juvenil: Ortuella – Zuazo B
+DESCRIPTION:Juvenil · Jornada 4 · Juvenil Segunda División (2J) · Grupo
+  1\nEn casa. Hora por confirmar.\nMás información: https://lehendakari02
+ .github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j5@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261101
+DTEND;VALUE=DATE:20261102
+SUMMARY:⚽ Juvenil: Zazpi Landa A – Ortuella
+DESCRIPTION:Juvenil · Jornada 5 · Juvenil Segunda División (2J) · Grupo
+  1\nFuera. Hora por confirmar.\nMás información: https://lehendakari02.g
+ ithub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j6@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261108
+DTEND;VALUE=DATE:20261109
+SUMMARY:⚽ Juvenil: Ortuella – Sestao River B
+DESCRIPTION:Juvenil · Jornada 6 · Juvenil Segunda División (2J) · Grupo
+  1\nEn casa. Hora por confirmar.\nMás información: https://lehendakari02
+ .github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j7@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261115
+DTEND;VALUE=DATE:20261116
+SUMMARY:⚽ Juvenil: Dinamo San Juan – Ortuella
+DESCRIPTION:Juvenil · Jornada 7 · Juvenil Segunda División (2J) · Grupo
+  1\nFuera. Hora por confirmar.\nMás información: https://lehendakari02.g
+ ithub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j8@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261122
+DTEND;VALUE=DATE:20261123
+SUMMARY:⚽ Juvenil: Ortuella – Aranguren A
+DESCRIPTION:Juvenil · Jornada 8 · Juvenil Segunda División (2J) · Grupo
+  1\nEn casa. Hora por confirmar.\nMás información: https://lehendakari02
+ .github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j9@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261129
+DTEND;VALUE=DATE:20261130
+SUMMARY:⚽ Juvenil: Arrontegi A – Ortuella
+DESCRIPTION:Juvenil · Jornada 9 · Juvenil Segunda División (2J) · Grupo
+  1\nFuera. Hora por confirmar.\nMás información: https://lehendakari02.g
+ ithub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j10@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261206
+DTEND;VALUE=DATE:20261207
+SUMMARY:⚽ Juvenil: Ortuella – Gazteak
+DESCRIPTION:Juvenil · Jornada 10 · Juvenil Segunda División (2J) · Grup
+ o 1\nEn casa. Hora por confirmar.\nMás información: https://lehendakari0
+ 2.github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j11@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261213
+DTEND;VALUE=DATE:20261214
+SUMMARY:⚽ Juvenil: Ortuella – San Pedro A
+DESCRIPTION:Juvenil · Jornada 11 · Juvenil Segunda División (2J) · Grup
+ o 1\nEn casa. Hora por confirmar.\nMás información: https://lehendakari0
+ 2.github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j12@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20261220
+DTEND;VALUE=DATE:20261221
+SUMMARY:⚽ Juvenil: Asti-leku B – Ortuella
+DESCRIPTION:Juvenil · Jornada 12 · Juvenil Segunda División (2J) · Grup
+ o 1\nFuera. Hora por confirmar.\nMás información: https://lehendakari02.
+ github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j13@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270103
+DTEND;VALUE=DATE:20270104
+SUMMARY:⚽ Juvenil: Ortuella – Sodupe B
+DESCRIPTION:Juvenil · Jornada 13 · Juvenil Segunda División (2J) · Grup
+ o 1\nEn casa. Hora por confirmar.\nMás información: https://lehendakari0
+ 2.github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j14@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270110
+DTEND;VALUE=DATE:20270111
+SUMMARY:⚽ Juvenil: Union Sport B – Ortuella
+DESCRIPTION:Juvenil · Jornada 14 · Juvenil Segunda División (2J) · Grup
+ o 1\nFuera. Hora por confirmar.\nMás información: https://lehendakari02.
+ github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j15@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270117
+DTEND;VALUE=DATE:20270118
+SUMMARY:⚽ Juvenil: Ortuella – Trapagaran B
+DESCRIPTION:Juvenil · Jornada 15 · Juvenil Segunda División (2J) · Grup
+ o 1\nEn casa. Hora por confirmar.\nMás información: https://lehendakari0
+ 2.github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j16@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270124
+DTEND;VALUE=DATE:20270125
+SUMMARY:⚽ Juvenil: Ortuella – Abanto
+DESCRIPTION:Juvenil · Jornada 16 · Juvenil Segunda División (2J) · Grup
+ o 1\nEn casa. Hora por confirmar.\nMás información: https://lehendakari0
+ 2.github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j17@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270131
+DTEND;VALUE=DATE:20270201
+SUMMARY:⚽ Juvenil: Loyola Indauchu B – Ortuella
+DESCRIPTION:Juvenil · Jornada 17 · Juvenil Segunda División (2J) · Grup
+ o 1\nFuera. Hora por confirmar.\nMás información: https://lehendakari02.
+ github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j18@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270207
+DTEND;VALUE=DATE:20270208
+SUMMARY:⚽ Juvenil: Ortuella – Begoñako Arteagabe
+DESCRIPTION:Juvenil · Jornada 18 · Juvenil Segunda División (2J) · Grup
+ o 1\nEn casa. Hora por confirmar.\nMás información: https://lehendakari0
+ 2.github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j19@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270214
+DTEND;VALUE=DATE:20270215
+SUMMARY:⚽ Juvenil: Zuazo B – Ortuella
+DESCRIPTION:Juvenil · Jornada 19 · Juvenil Segunda División (2J) · Grup
+ o 1\nFuera. Hora por confirmar.\nMás información: https://lehendakari02.
+ github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j20@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270221
+DTEND;VALUE=DATE:20270222
+SUMMARY:⚽ Juvenil: Ortuella – Zazpi Landa A
+DESCRIPTION:Juvenil · Jornada 20 · Juvenil Segunda División (2J) · Grup
+ o 1\nEn casa. Hora por confirmar.\nMás información: https://lehendakari0
+ 2.github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j21@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270228
+DTEND;VALUE=DATE:20270301
+SUMMARY:⚽ Juvenil: Sestao River B – Ortuella
+DESCRIPTION:Juvenil · Jornada 21 · Juvenil Segunda División (2J) · Grup
+ o 1\nFuera. Hora por confirmar.\nMás información: https://lehendakari02.
+ github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j22@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270307
+DTEND;VALUE=DATE:20270308
+SUMMARY:⚽ Juvenil: Ortuella – Dinamo San Juan
+DESCRIPTION:Juvenil · Jornada 22 · Juvenil Segunda División (2J) · Grup
+ o 1\nEn casa. Hora por confirmar.\nMás información: https://lehendakari0
+ 2.github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j23@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270314
+DTEND;VALUE=DATE:20270315
+SUMMARY:⚽ Juvenil: Aranguren A – Ortuella
+DESCRIPTION:Juvenil · Jornada 23 · Juvenil Segunda División (2J) · Grup
+ o 1\nFuera. Hora por confirmar.\nMás información: https://lehendakari02.
+ github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j24@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270321
+DTEND;VALUE=DATE:20270322
+SUMMARY:⚽ Juvenil: Ortuella – Arrontegi A
+DESCRIPTION:Juvenil · Jornada 24 · Juvenil Segunda División (2J) · Grup
+ o 1\nEn casa. Hora por confirmar.\nMás información: https://lehendakari0
+ 2.github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j25@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270404
+DTEND;VALUE=DATE:20270405
+SUMMARY:⚽ Juvenil: Gazteak – Ortuella
+DESCRIPTION:Juvenil · Jornada 25 · Juvenil Segunda División (2J) · Grup
+ o 1\nFuera. Hora por confirmar.\nMás información: https://lehendakari02.
+ github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j26@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270411
+DTEND;VALUE=DATE:20270412
+SUMMARY:⚽ Juvenil: San Pedro A – Ortuella
+DESCRIPTION:Juvenil · Jornada 26 · Juvenil Segunda División (2J) · Grup
+ o 1\nFuera. Hora por confirmar.\nMás información: https://lehendakari02.
+ github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j27@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270418
+DTEND;VALUE=DATE:20270419
+SUMMARY:⚽ Juvenil: Ortuella – Asti-leku B
+DESCRIPTION:Juvenil · Jornada 27 · Juvenil Segunda División (2J) · Grup
+ o 1\nEn casa. Hora por confirmar.\nMás información: https://lehendakari0
+ 2.github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j28@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270425
+DTEND;VALUE=DATE:20270426
+SUMMARY:⚽ Juvenil: Sodupe B – Ortuella
+DESCRIPTION:Juvenil · Jornada 28 · Juvenil Segunda División (2J) · Grup
+ o 1\nFuera. Hora por confirmar.\nMás información: https://lehendakari02.
+ github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j29@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270502
+DTEND;VALUE=DATE:20270503
+SUMMARY:⚽ Juvenil: Ortuella – Union Sport B
+DESCRIPTION:Juvenil · Jornada 29 · Juvenil Segunda División (2J) · Grup
+ o 1\nEn casa. Hora por confirmar.\nMás información: https://lehendakari0
+ 2.github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-juvenil-j30@cdortuella
+DTSTAMP:20261019T225300Z
+DTSTART;VALUE=DATE:20270509
+DTEND;VALUE=DATE:20270510
+SUMMARY:⚽ Juvenil: Trapagaran B – Ortuella
+DESCRIPTION:Juvenil · Jornada 30 · Juvenil Segunda División (2J) · Grup
+ o 1\nFuera. Hora por confirmar.\nMás información: https://lehendakari02.
+ github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+END:VCALENDAR

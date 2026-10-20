@@ -18,9 +18,14 @@
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="es_ES">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="img/escudo.webp">
+<link rel="icon" href="img/favicon.png" type="image/png">
+<!-- Icono y color al guardar la web en la pantalla de inicio del móvil -->
+<link rel="apple-touch-icon" href="img/icono-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b2a5b">
+<meta name="apple-mobile-web-app-title" content="CD Ortuella">
 <link rel="preload" href="fuentes/big-shoulders-display.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="estilos.css?v=5fda81bf">
+<link rel="stylesheet" href="estilos.css?v=ff28d6e8">
 </head>
 <body data-page="partidos">
 <div id="cabecera"></div>
@@ -44,6 +49,24 @@
     </div>
     <div class="agenda" id="agenda"></div>
     <p class="source" id="source"></p>
+  </div>
+</section>
+<section class="block alt" id="calendario">
+  <div class="wrap cal">
+    <div class="sec-head">
+      <div><span class="kicker">En tu móvil</span><h2>Los partidos en tu calendario</h2></div>
+      <p>Suscríbete una vez y los partidos aparecerán solos en el calendario de tu móvil. Si la Federación cambia una fecha o sale un resultado, se actualiza solo.</p>
+    </div>
+    <div class="cal-box">
+      <b>1. Elige equipo</b>
+      <div class="cal-teams" id="calTeams"></div>
+      <b>2. Añádelo a tu calendario</b>
+      <div class="btns">
+        <a class="btn blue" id="calApple" href="#">iPhone o Mac</a>
+        <a class="btn line" id="calGoogle" href="#" target="_blank" rel="noopener">Google Calendar</a>
+      </div>
+      <p class="cal-note">En Android, si Google Calendar no se abre desde el móvil, hazlo una vez desde el ordenador con tu cuenta de Google y aparecerá también en el móvil. Para otro calendario, usa esta dirección: <code id="calUrl"></code> <button class="copy" id="calCopy">Copiar</button></p>
+    </div>
   </div>
 </section>
 </main>
@@ -90,6 +113,22 @@
   document.getElementById("tabRes").addEventListener("click", function () { showResults = true; render(); });
   document.getElementById("source").innerHTML = X.sourceNote();
   render();
+
+  // Suscripción al calendario: un archivo .ics por equipo, que se regenera con cada actualización
+  var CAL = [["todos", "Todos"], ["senior-a", "Senior A"], ["senior-b", "Senior B"], ["juvenil", "Juvenil"], ["cadete", "Cadete"]];
+  var calSel = "todos";
+  function renderCal() {
+    document.getElementById("calTeams").innerHTML = CAL.map(function (c) { return '<button class="chip" data-cal="' + c[0] + '" aria-pressed="' + (c[0] === calSel) + '">' + c[1] + "</button>"; }).join("");
+    var url = new URL("calendario/" + calSel + ".ics", location.href).href;
+    var webcal = url.replace(/^https?:/, "webcal:");
+    document.getElementById("calApple").href = webcal;
+    document.getElementById("calGoogle").href = "https://calendar.google.com/calendar/render?cid=" + encodeURIComponent(webcal);
+    document.getElementById("calUrl").textContent = url;
+    document.getElementById("calCopy").dataset.copy = url;
+  }
+  document.getElementById("calTeams").addEventListener("click", function (e) { var b = e.target.closest("[data-cal]"); if (b) { calSel = b.dataset.cal; renderCal(); } });
+  renderCal();
+  X.copyButtons();
 })();
 </script>
 </body>

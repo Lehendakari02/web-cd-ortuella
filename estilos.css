@@ -132,6 +132,7 @@ nav.menu a.cta:hover { background: #e9f0fb; }
 .btn { display: inline-block; font: 700 14px/1 var(--f-body); text-transform: uppercase; letter-spacing: .08em; text-decoration: none; padding: 15px 22px; border-radius: 4px; background: #fff; color: #0b2a5b; border: 2px solid #fff; cursor: pointer; }
 .btn.ghost { background: transparent; color: #fff; }
 .btn.blue { background: var(--blue); border-color: var(--blue); color: #fff; }
+.btn.line { background: transparent; border-color: var(--blue); color: var(--blue); }
 .next { display: grid; gap: 14px; min-width: 0; }
 .match { background: #fff; color: #0e1a2e; border-radius: 10px; padding: 18px 20px; box-shadow: 0 20px 44px rgba(0,0,0,.35); min-width: 0; }
 .match .head { display: flex; justify-content: space-between; align-items: center; gap: 8px; font: 700 12px/1.2 var(--f-body); letter-spacing: .12em; text-transform: uppercase; color: #56667f; }
@@ -422,3 +423,22 @@ a.team-card:hover { border-color: var(--blue); }
   .honour b { font-size: 26px; }
   .honour { padding: 14px; }
 }
+
+/* Suscripción al calendario de partidos */
+.cal-box { display: grid; gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; max-width: 760px; }
+.cal-teams { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.cal-note { margin: 4px 0 0; font-size: 13.5px; color: var(--muted); }
+.cal-note code { font-size: 12.5px; overflow-wrap: anywhere; color: var(--ink); }
+.cal-note .copy { color: var(--blue); border-color: var(--line); }
+
+/* Página de error (404) */
+.offside { padding-block: clamp(40px, 8vw, 96px); }
+.offside .wrap { display: grid; grid-template-columns: auto 1fr; gap: clamp(24px, 5vw, 64px); align-items: center; }
+.offside h1 { font: 900 clamp(48px, 9vw, 96px)/.9 var(--f-display); text-transform: uppercase; margin: 0 0 16px; color: var(--ink); }
+.offside p { max-width: 52ch; }
+.offside-board { background: var(--navy); color: #fff; border-radius: var(--radius); padding: 18px 26px 22px; text-align: center; box-shadow: inset 0 0 0 3px rgba(255,255,255,.12); }
+.offside-board small { display: block; font: 700 12px/1 var(--f-body); letter-spacing: .2em; text-transform: uppercase; color: #b9c8e6; margin-bottom: 8px; }
+.offside-board b { font: 900 clamp(64px, 14vw, 140px)/.85 var(--f-display); color: #ffd23f; font-variant-numeric: tabular-nums; }
+.offside-fact { margin-top: 32px; padding: 16px 20px; border-left: 4px solid var(--blue); background: var(--surface); border-radius: 0 var(--radius) var(--radius) 0; max-width: 60ch; }
+.offside-fact p { margin: 6px 0 0; color: var(--muted); }
+@media (max-width: 640px) { .offside .wrap { grid-template-columns: 1fr; } .offside-board { justify-self: start; } }
