@@ -51,10 +51,11 @@
       { t: "Directiva", h: "directiva.html", d: "Quién es quién en el club" },
       { t: "Otxartaga Berri", h: "campo.html", d: "Nuestro campo" }
     ] },
+    { t: "Tienda", h: "socios.html#tienda" },
     { t: "Contacto", h: "contacto.html" }
   ];
   var page = document.body.getAttribute("data-page");
-  var isCurrent = function (h) { return h.split("#")[0] === page + ".html" || (h === "./" && page === "index"); };
+  var isCurrent = function (h) { return h.indexOf("#tienda") < 0 && h.split("#")[0] === page + ".html" || (h === "./" && page === "index"); };
 
   function renderHeader() {
     var el = document.getElementById("cabecera"); if (!el) return;
@@ -99,7 +100,7 @@
       '<div class="wrap foot-main">' +
       '<div><img src="img/escudo.webp" alt="" loading="lazy" decoding="async"><b>Club Deportivo Ortuella</b><p>Fundado en 1949 · Otxartaga Berri, Ortuella (Bizkaia)</p></div>' +
       '<ul><li><a href="partidos.html">Partidos</a></li><li><a href="equipos.html">Equipos</a></li><li><a href="noticias.html">Noticias</a></li><li><a href="historia.html">Historia</a></li></ul>' +
-      '<ul><li><a href="socios.html">Socios y tienda</a></li><li><a href="directiva.html">Directiva</a></li><li><a href="campo.html">Otxartaga Berri</a></li><li><a href="contacto.html">Contacto</a></li></ul>' +
+      '<ul><li><a href="socios.html">Hazte socio</a></li><li><a href="socios.html#tienda">Tienda</a></li><li><a href="directiva.html">Directiva</a></li><li><a href="campo.html">Otxartaga Berri</a></li><li><a href="contacto.html">Contacto</a></li></ul>' +
       '<div class="foot-contact"><span>cdortuella@cdortuella.net</span><span class="num">946 353 598</span></div>' +
       '</div><div class="wrap foot-legal">© ' + new Date().getFullYear() + ' CD Ortuella · Datos de competición: Federación Vizcaína de Fútbol<span class="legal-links"><a href="aviso-legal.html">Aviso legal</a><a href="privacidad.html">Privacidad y cookies</a></span></div></footer>';
   }
