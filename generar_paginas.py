@@ -526,7 +526,7 @@ PAGES["socios"] = dict(
   document.getElementById("socioOther").textContent = (C.socio.otros || []).map(function (o) { return o[0] + ": " + o[1] + " " + C.socio.periodo; }).join(" · ");
   document.getElementById("shopList").innerHTML = C.tienda.map(function (it) {
     var icon = /bufanda/i.test(it.nombre) ? "scarf" : "shirt";
-    return '<div class="item"><div class="ph">' + (it.foto ? '<img src="' + esc(it.foto) + '" alt="" loading="lazy">' : '<svg aria-hidden="true" viewBox="0 0 48 48"><use href="#' + icon + '"/></svg>') + '</div><div class="t"><b>' + esc(it.nombre) + "</b><small>" + (it.precio ? esc(it.precio) : "Precio por confirmar") + "</small></div></div>";
+    return '<div class="item"><div class="ph">' + (it.foto ? '<img src="' + esc(it.foto) + '" alt="' + esc(it.nombre) + '" loading="lazy">' : '<svg aria-hidden="true" viewBox="0 0 48 48"><use href="#' + icon + '"/></svg>') + '</div><div class="t"><b>' + esc(it.nombre) + "</b><small>" + (it.precio ? esc(it.precio) : "Precio por confirmar") + "</small></div></div>";
   }).join("");
   var slots = C.patrocinadores.map(function (s) { return '<div class="logo">' + (s.logo ? '<img src="' + esc(s.logo) + '" alt="' + esc(s.nombre) + '">' : esc(s.nombre)) + "</div>"; });
   while (slots.length < 4) slots.push('<a class="free" href="contacto.html"><div>¿Tu negocio aquí?<br>Patrocina al Ortuella</div></a>');

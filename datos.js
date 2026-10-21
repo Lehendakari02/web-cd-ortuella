@@ -169,7 +169,7 @@ window.CLUB = {
   entradas: [["Senior", "7 €"], ["Juvenil", "4 €"], ["Cadete", "3 €"]],
 
   tienda: [
-    { nombre: "Camiseta 75 aniversario", precio: "30 €", foto: null },
+    { nombre: "Camiseta 75 aniversario", precio: "30 €", foto: "img/camiseta-75.webp" },
     { nombre: "Bufanda del club", precio: "15 €", foto: null },
     { nombre: "Paraguas", precio: null, foto: "img/paraguas.jpg" },
     { nombre: "Pin del escudo", precio: null, foto: "img/pin.jpg" }
