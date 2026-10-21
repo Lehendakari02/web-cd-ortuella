@@ -621,8 +621,9 @@ a.sp.free:hover .sp-box { color: var(--blue); }
 .flip.flipping.on-club .face.club { visibility: visible; }
 .flip.flipping.on-club .flip-in { transform: rotateY(180deg); }
 .face.dest { display: grid; grid-template-columns: minmax(0, 200px) minmax(0, 1fr); gap: 26px; align-items: center; }
-.dest-pic { display: block; aspect-ratio: 1; max-width: 100%; border-radius: 10px; overflow: hidden; background: #fff; box-shadow: 0 20px 44px rgba(0,0,0,.35); }
-.dest-pic img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* La foto del destacado va recortada (sin fondo): solo la sombra del propio objeto */
+.dest-pic { display: block; aspect-ratio: 1; max-width: 100%; }
+.dest-pic img { width: 100%; height: 100%; object-fit: contain; display: block; filter: drop-shadow(0 16px 22px rgba(0,0,0,.45)); }
 .face.dest h2 { font-size: clamp(38px, 4.6vw, 64px); font-weight: 900; line-height: .95; margin: 10px 0 14px; text-wrap: balance; }
 .face.dest .lead { margin-bottom: 22px; }
 .flip-dots { display: flex; gap: 8px; margin-top: 22px; }
