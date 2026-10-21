@@ -53,7 +53,8 @@ EQUIPOS = [
 AQUI = os.path.dirname(os.path.abspath(__file__))
 SALIDA = os.path.join(AQUI, "datos-federacion.js")
 
-_cookies = urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar())
+_galletas = http.cookiejar.CookieJar()
+_cookies = urllib.request.HTTPCookieProcessor(_galletas)
 _opener = urllib.request.build_opener(_cookies)
 _opener.addheaders = [("User-Agent", "Mozilla/5.0 (compatible; CDOrtuellaWeb/1.0; web del CD Ortuella)"),
                       ("Accept-Language", "es-ES,es;q=0.9")]
@@ -71,7 +72,9 @@ def descargar(ruta):
             if len(datos) > 5000 and "Sarbide datuak" not in datos and "Datos de acceso" not in datos:
                 return datos
             # A veces la Federación devuelve una página vacía o pide la cookie otra vez
-            print(f"  aviso: respuesta vacía en {ruta}", file=sys.stderr)
+            motivo = "pide acceso" if ("Sarbide datuak" in datos or "Datos de acceso" in datos) else f"{len(datos)} bytes"
+            print(f"  aviso: respuesta vacía en {ruta} ({motivo}); se empieza sesión nueva", file=sys.stderr)
+            _galletas.clear()            # a veces la sesión caduca y todo llega vacío hasta coger cookie nueva
         except Exception as e:  # red caída, servidor lento...
             print(f"  aviso: fallo al leer {ruta} ({e})", file=sys.stderr)
         if intento < len(ESPERAS):
