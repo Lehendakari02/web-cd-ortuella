@@ -6,6 +6,18 @@
    ========================================================================== */
 
 window.CLUB = {
+  // Destacado de la portada: una sola novedad importante que se alterna (gira) con
+  // el texto del club. Para quitarlo: destacado: null. "hasta": deja de salir ese día.
+  destacado: {
+    etiqueta: "Ya a la venta",
+    titulo: "Camiseta del 75 aniversario",
+    texto: "Edición especial por los 75 años del club. 30 €.",
+    foto: "img/camiseta-75.webp",
+    boton: "Cómprala aquí",
+    enlace: "tienda.html",
+    hasta: null
+  },
+
   noticias: [
     { fecha: "2026-10-18", etiqueta: "Primer equipo", foto: "img/campo.jpg",
       titulo: "Empate sin goles en Sopuerta",
@@ -175,9 +187,18 @@ window.CLUB = {
     { nombre: "Pin del escudo", precio: null, foto: "img/pin.jpg" }
   ],
 
+  // Patrocinadores y colaboradores (los mismos que la web antigua del club + Markofer).
+  // logo: null -> sale el nombre en una ficha hasta tener el logo bueno.
   patrocinadores: [
-    { nombre: "Markofer · Montajes y mantenimientos", logo: "img/markofer.webp" }
+    { nombre: "Markofer", detalle: "Montajes y mantenimientos", logo: "img/markofer.webp", web: null },
+    { nombre: "Academia Siglo XXIII", detalle: "Academia · Ortuella", logo: null, web: null },
+    { nombre: "Andamios y Montacargas Europa", detalle: "Andamios · Ortuella", logo: "img/patrocinadores/andamios-europa.webp", web: null }
   ],
-  colaboradores: ["Ortuellako Udala · Ayuntamiento de Ortuella", "Bizkaiko Foru Aldundia · Diputación Foral de Bizkaia",
-                  "Federación Vizcaína de Fútbol", "Athletic Club Fundazioa"]
+  colaboradores: [
+    { nombre: "Ayuntamiento de Ortuella", detalle: "Ortuellako Udala", logo: "img/patrocinadores/ayuntamiento-ortuella.webp", web: "https://www.ortuella.eus/" },
+    { nombre: "Diputación Foral de Bizkaia", detalle: "Bizkaiko Foru Aldundia", logo: "img/patrocinadores/bizkaia.webp", web: "https://web.bizkaia.eus/es/inicio" },
+    { nombre: "Federación Vizcaína de Fútbol", detalle: "Bizkaiko Futbol Federazioa", logo: "img/patrocinadores/fvf.webp", web: "https://www.fvf-bff.eus/" },
+    { nombre: "Athletic Club Fundazioa", detalle: "Fundación Athletic Club", logo: null, web: "https://www.athletic-club.eus/" },
+    { nombre: "Ekipaciones", detalle: "Tienda online oficial del club", logo: null, web: "https://www.latiendademiclub.com/cdortuella/" }
+  ]
 };

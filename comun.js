@@ -52,6 +52,7 @@
       { t: "Otxartaga Berri", h: "campo.html", d: "Nuestro campo" }
     ] },
     { t: "Tienda", h: "tienda.html" },
+    { t: "Patrocinadores", h: "patrocinadores.html" },
     { t: "Contacto", h: "contacto.html" }
   ];
   var page = document.body.getAttribute("data-page");
@@ -94,13 +95,14 @@
 
   function renderFooter() {
     var el = document.getElementById("pie"); if (!el) return;
-    var sp = (C.patrocinadores || []).map(function (s) { return '<span class="foot-sponsor">' + (s.logo ? '<img src="' + esc(s.logo) + '" alt="' + esc(s.nombre) + '" loading="lazy" decoding="async">' : esc(s.nombre)) + "</span>"; }).join("");
+    var todos = (C.patrocinadores || []).concat(C.colaboradores || []);
+    var sp = todos.map(function (s) { return '<span class="foot-sponsor' + (s.logo ? "" : " txt") + '">' + (s.logo ? '<img src="' + esc(s.logo) + '" alt="' + esc(s.nombre) + '" loading="lazy" decoding="async">' : esc(s.nombre)) + "</span>"; }).join("");
     el.innerHTML = '<footer>' +
-      (sp && page !== "socios" ? '<div class="foot-sponsors"><div class="wrap"><span>Patrocinan</span>' + sp + '<a href="contacto.html">¿Tu negocio aquí?</a></div></div>' : "") +
+      (sp && page !== "patrocinadores" ? '<div class="foot-sponsors"><div class="wrap"><span>Patrocinan y colaboran</span><div class="foot-logos">' + sp + '</div><a href="patrocinadores.html">Ver todos</a></div></div>' : "") +
       '<div class="wrap foot-main">' +
       '<div><img src="img/escudo.webp" alt="" loading="lazy" decoding="async"><b>Club Deportivo Ortuella</b><p>Fundado en 1949 · Otxartaga Berri, Ortuella (Bizkaia)</p></div>' +
       '<ul><li><a href="partidos.html">Partidos</a></li><li><a href="equipos.html">Equipos</a></li><li><a href="noticias.html">Noticias</a></li><li><a href="historia.html">Historia</a></li></ul>' +
-      '<ul><li><a href="socios.html">Hazte socio</a></li><li><a href="tienda.html">Tienda</a></li><li><a href="directiva.html">Directiva</a></li><li><a href="campo.html">Otxartaga Berri</a></li><li><a href="contacto.html">Contacto</a></li></ul>' +
+      '<ul><li><a href="socios.html">Hazte socio</a></li><li><a href="tienda.html">Tienda</a></li><li><a href="patrocinadores.html">Patrocinadores</a></li><li><a href="directiva.html">Directiva</a></li><li><a href="campo.html">Otxartaga Berri</a></li><li><a href="contacto.html">Contacto</a></li></ul>' +
       '<div class="foot-contact"><span>cdortuella@cdortuella.net</span><span class="num">946 353 598</span></div>' +
       '</div><div class="wrap foot-legal">© ' + new Date().getFullYear() + ' CD Ortuella · Datos de competición: Federación Vizcaína de Fútbol<span class="legal-links"><a href="aviso-legal.html">Aviso legal</a><a href="privacidad.html">Privacidad y cookies</a></span></div></footer>';
   }
@@ -270,6 +272,23 @@
   renderFooter();
   document.querySelectorAll(".season").forEach(function (el) { el.textContent = F.temporada || "2026/27"; });
 
-  window.CDO = { C: C, SLUG: SLUG, formDots: formDots, crest: crest, F: F, esc: esc, fdate: fdate, day: day, APODO: APODO, team: team, isUs: isUs, played: played, upcoming: upcoming, outcome: outcome, ourRow: ourRow,
+  // Ficha de patrocinador o colaborador: logo si lo hay; si no, el nombre
+  function sponsorCard(s) {
+    var inner = s.logo ? '<img src="' + esc(s.logo) + '" alt="' + esc(s.nombre) + '" loading="lazy" decoding="async">'
+      : '<b>' + esc(s.nombre) + '</b>';
+    var cap = '<span class="sp-cap">' + (s.logo ? '<b>' + esc(s.nombre) + '</b>' : "") + (s.detalle ? '<small>' + esc(s.detalle) + '</small>' : "") + '</span>';
+    var box = '<span class="sp-box' + (s.logo ? "" : " txt") + '">' + inner + '</span>' + cap;
+    return s.web ? '<a class="sp" href="' + esc(s.web) + '" target="_blank" rel="noopener">' + box + '</a>' : '<div class="sp">' + box + '</div>';
+  }
+
+  // Cerrar el desplegable «Al calendario» al tocar fuera o pulsar Escape
+  document.addEventListener("click", function (e) {
+    [].forEach.call(document.querySelectorAll("details.cal-pop[open]"), function (d) { if (!d.contains(e.target)) d.open = false; });
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") [].forEach.call(document.querySelectorAll("details.cal-pop[open]"), function (d) { d.open = false; });
+  });
+
+  window.CDO = { sponsorCard: sponsorCard, C: C, SLUG: SLUG, formDots: formDots, crest: crest, F: F, esc: esc, fdate: fdate, day: day, APODO: APODO, team: team, isUs: isUs, played: played, upcoming: upcoming, outcome: outcome, ourRow: ourRow,
     matchCard: matchCard, resultsStrip: resultsStrip, tableRows: tableRows, TABLE_HEAD: TABLE_HEAD, gamesList: gamesList, scorersList: scorersList, keepersList: keepersList, sourceNote: sourceNote, newsCard: newsCard, copyButtons: copyButtons, shareLink: shareLink, mapsLink: mapsLink, fichaUrl: fichaUrl, cardsList: cardsList, federados: federados, matchLine: matchLine, longDate: longDate, webUrl: webUrl, calHrefs: calHrefs };
 })();
