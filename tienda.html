@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tienda · CD Ortuella</title>
+<meta name="description" content="Camiseta del 75 aniversario, bufanda y más productos del CD Ortuella.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://lehendakari02.github.io/web-cd-ortuella/tienda.html">
+<!-- Vista previa al compartir el enlace (WhatsApp, Facebook, X...) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CD Ortuella">
+<meta property="og:title" content="Tienda · CD Ortuella">
+<meta property="og:description" content="Camiseta del 75 aniversario, bufanda y más productos del CD Ortuella.">
+<meta property="og:url" content="https://lehendakari02.github.io/web-cd-ortuella/tienda.html">
+<meta property="og:image" content="https://lehendakari02.github.io/web-cd-ortuella/img/compartir.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="es_ES">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="img/favicon.png" type="image/png">
+<!-- Icono y color al guardar la web en la pantalla de inicio del móvil -->
+<link rel="apple-touch-icon" href="img/icono-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b2a5b">
+<meta name="apple-mobile-web-app-title" content="CD Ortuella">
+<link rel="preload" href="fuentes/big-shoulders-display.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="estilos.css?v=1945891f">
+</head>
+<body data-page="tienda">
+<a class="skip" href="#contenido">Saltar al contenido</a>
+<div id="cabecera"></div>
+<main id="contenido" tabindex="-1">
+<section class="page-hero">
+  <div class="wrap">
+    <div class="crumbs"><a href="./">Inicio</a> / Tienda</div>
+    <h1>Tienda del club</h1>
+    <p>La camiseta del 75 aniversario, la bufanda y más. Cada compra ayuda al Ortuella.</p>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <div class="shop" id="shopList"></div>
+    <p class="source">Para comprar, pásate por la oficina del club o escríbenos por redes sociales. ¿Quieres ayudar todavía más? <a href="socios.html">Hazte socio</a>.</p>
+  </div>
+</section>
+</main>
+<div id="pie"></div>
+<script src="datos.js?v=98b56541"></script>
+<script src="datos-federacion.js"></script>
+<script src="comun.js?v=7a6bb0b6"></script>
+<!-- Contador de visitas anónimo, sin cookies. Panel privado: https://cdortuella.goatcounter.com -->
+<script data-goatcounter="https://cdortuella.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script>
+(function () {
+  var X = window.CDO, C = X.C, esc = X.esc;
+  document.getElementById("shopList").innerHTML = C.tienda.map(function (it) {
+    var icon = /bufanda/i.test(it.nombre) ? "scarf" : "shirt";
+    return '<div class="item"><div class="ph">' + (it.foto ? '<img src="' + esc(it.foto) + '" alt="' + esc(it.nombre) + '" loading="lazy">' : '<svg aria-hidden="true" viewBox="0 0 48 48"><use href="#' + icon + '"/></svg>') + '</div><div class="t"><b>' + esc(it.nombre) + "</b><small>" + (it.precio ? esc(it.precio) : "Precio por confirmar") + "</small></div></div>";
+  }).join("");
+})();
+</script>
+</body>
+</html>

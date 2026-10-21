@@ -107,7 +107,7 @@
 <div id="pie"></div>
 <script src="datos.js?v=98b56541"></script>
 <script src="datos-federacion.js"></script>
-<script src="comun.js?v=6d61a268"></script>
+<script src="comun.js?v=7a6bb0b6"></script>
 <!-- Contador de visitas anónimo, sin cookies. Panel privado: https://cdortuella.goatcounter.com -->
 <script data-goatcounter="https://cdortuella.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 <script>
@@ -135,8 +135,8 @@
   var price = function (name) { var it = (C.tienda || []).filter(function (x) { return x.nombre.indexOf(name) === 0; })[0]; return it && it.precio ? it.precio : ""; };
   document.getElementById("quick").innerHTML = [
     ["socios.html", "Hazte socio", C.socio.precio + " " + C.socio.periodo + ". Apoya al primer equipo y a la cantera."],
-    ["socios.html#tienda", "Camiseta 75 aniversario", price("Camiseta") + ". Edición especial por los 75 años del club."],
-    ["socios.html#tienda", "Bufanda del club", price("Bufanda") + ". Azul y blanca, para la grada de Otxartaga."],
+    ["tienda.html", "Camiseta 75 aniversario", price("Camiseta") + ". Edición especial por los 75 años del club."],
+    ["tienda.html", "Bufanda del club", price("Bufanda") + ". Azul y blanca, para la grada de Otxartaga."],
     ["contacto.html", "Juega en el Ortuella", "Inscripciones abiertas para la temporada. Llama al 696 51 24 69."]
   ].map(function (q) { return '<a href="' + q[0] + '"><b>' + q[1] + "</b><span>" + esc(q[2]) + "</span></a>"; }).join("");
 })();
