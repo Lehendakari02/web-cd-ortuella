@@ -110,8 +110,9 @@
   var PIN = '<svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
   function mapsLink(p, campo) {
     campo = campo || p.campo;
-    var where = campo || "Campo de fútbol " + p.local;
-    return '<a class="maps" href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(where) + '" target="_blank" rel="noopener" title="Cómo llegar" aria-label="Cómo llegar a ' + esc(campo || "el campo del " + p.local) + '">' + PIN + "</a>";
+    if (!campo) return "";   // sin campo confirmado por la Federación no se pone mapa (sale unas semanas antes)
+    var exacto = (F.mapas || {})[campo];   // coordenadas del campo, de la ficha de la Federación
+    return '<a class="maps" href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(exacto || campo) + '" target="_blank" rel="noopener" title="Cómo llegar" aria-label="Cómo llegar a ' + esc(campo) + '">' + PIN + "</a>";
   }
 
   function matchCard(t) {
@@ -121,7 +122,7 @@
     var when = days === 0 ? "Hoy" : days === 1 ? "Mañana" : "Faltan " + days + " días";
     return '<article class="match"><div class="head"><span><b>' + APODO[t.id] + "</b> · Jornada " + p.jornada + '</span><span class="days">' + when + "</span></div>" +
       '<div class="teams"><div class="team">' + crest(p.local, t) + "<b>" + esc(p.local) + '</b></div><div class="vs">VS</div><div class="team">' + crest(p.visitante, t) + "<b>" + esc(p.visitante) + "</b></div></div>" +
-      '<div class="info"><span><strong>' + DIAL[d.getDay()] + " " + fdate(p.fecha) + "</strong></span><span>" + (isUs(p.local, t) ? "Otxartaga Berri" : esc(p.campo || "Fuera de casa")) + "</span><span>Hora por confirmar</span></div>" +
+      '<div class="info"><span><strong>' + DIAL[d.getDay()] + " " + fdate(p.fecha) + "</strong></span><span>" + (isUs(p.local, t) ? "Otxartaga Berri" : esc(p.campo || "Fuera de casa")) + "</span><span>" + (p.hora ? "<strong>" + p.hora + " h</strong>" : "Hora por confirmar") + "</span></div>" +
       (isUs(p.local, t) ? "" : mapsLink(p)) + shareLink(matchShareText(p, t), "Compartir este partido por WhatsApp") + "</article>";
   }
 
@@ -162,8 +163,8 @@
       var x = day(p.fecha), right;
       if (p.gl != null) { var o = outcome(p, t); right = '<a class="score ' + o + '" href="' + fichaUrl(t, p) + '" title="Ver la ficha del partido" aria-label="' + { w: "Victoria", d: "Empate", l: "Derrota" }[o] + " " + p.gl + " a " + p.gv + ". Ver la ficha del partido" + '">' + p.gl + "-" + p.gv + "</a>"; }
       else if (results) right = '<span class="score na">Sin cargar</span>';
-      else right = '<span class="hour tbc">Hora por confirmar</span>';
-      return '<li><div class="d">' + DIA[x.getDay()] + '<b class="num">' + x.getDate() + " " + MES[x.getMonth()] + '</b></div><div class="m">' + name(p.local) + " – " + name(p.visitante) + "<small>Jornada " + p.jornada + " · " + (isUs(p.local, t) ? "En casa" : "Fuera" + (p.campo ? " · " + esc(p.campo) : "")) + "</small></div>" + right + "</li>";
+      else right = p.hora ? '<span class="hour">' + p.hora + "</span>" : '<span class="hour tbc">Hora por confirmar</span>';
+      return '<li><div class="d">' + DIA[x.getDay()] + '<b class="num">' + x.getDate() + " " + MES[x.getMonth()] + '</b></div><div class="m">' + name(p.local) + " – " + name(p.visitante) + "<small>Jornada " + p.jornada + " · " + (isUs(p.local, t) ? "En casa" : "Fuera" + (p.campo ? " · " + esc(p.campo) : "") + (results ? "" : " " + mapsLink(p))) + "</small></div>" + right + "</li>";
     }).join("");
   }
 
@@ -249,10 +250,10 @@
   }
   function matchLine(p, t) {
     if (p.gl != null) return APODO[t.id] + ": " + p.local + " " + p.gl + "-" + p.gv + " " + p.visitante;
-    return APODO[t.id] + ": " + p.local + " – " + p.visitante + (isUs(p.local, t) ? " (en casa, Otxartaga Berri)" : " (fuera)");
+    return APODO[t.id] + ": " + p.local + " – " + p.visitante + (p.hora ? ", " + p.hora + " h" : "") + (isUs(p.local, t) ? " (en casa, Otxartaga Berri)" : " (fuera)");
   }
   function matchShareText(p, t) {
-    return "⚽ " + APODO[t.id] + " · Jornada " + p.jornada + "\n" + p.local + " – " + p.visitante + "\n📅 " + longDate(p.fecha) + (isUs(p.local, t) ? " · Otxartaga Berri" : " · Fuera de casa") + "\nHora por confirmar\n\n" + webUrl("partidos.html");
+    return "⚽ " + APODO[t.id] + " · Jornada " + p.jornada + "\n" + p.local + " – " + p.visitante + "\n📅 " + longDate(p.fecha) + (isUs(p.local, t) ? " · Otxartaga Berri" : " · Fuera de casa" + (p.campo ? " (" + p.campo + ")" : "")) + "\n" + (p.hora ? "🕐 " + p.hora + " h" : "Hora por confirmar") + "\n\n" + webUrl("partidos.html");
   }
   // Enlaces para suscribirse al calendario .ics de un equipo (o "todos")
   function calHrefs(slug) {

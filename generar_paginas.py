@@ -213,13 +213,13 @@ PAGES["partidos"] = dict(
     document.getElementById("agenda").innerHTML = groups.map(function (f) {
       var d = X.day(f);
       var msg = "⚽ " + (showResults ? "Resultados" : "Partidos") + " del CD Ortuella\\n📅 " + X.longDate(f) + "\\n\\n" +
-        seen[f].map(function (x) { return "• " + X.matchLine(x.p, x.t); }).join("\\n") + (showResults ? "" : "\\n\\nHorarios por confirmar") + "\\n\\n" + X.webUrl("partidos.html");
+        seen[f].map(function (x) { return "• " + X.matchLine(x.p, x.t); }).join("\\n") + (showResults || seen[f].every(function (x) { return x.p.hora; }) ? "" : "\\n\\nHorarios por confirmar") + "\\n\\n" + X.webUrl("partidos.html");
       return '<div class="agenda-day"><div class="agenda-head"><h3>' + DIAL[d.getDay()] + " " + d.getDate() + " de " + MESL[d.getMonth()] + "</h3>" + X.shareLink(msg, "Compartir los partidos de este día por WhatsApp") + '</div><div class="panel"><ul class="games">' + seen[f].map(function (x) {
         var p = x.p, t = x.t, right;
         var name = function (n) { return X.isUs(n, t) ? '<span class="us">' + esc(n) + "</span>" : esc(n); };
         if (p.gl != null) { var o = X.outcome(p, t); right = '<a class="score ' + o + '" href="' + X.fichaUrl(t, p) + '" title="Ver la ficha del partido">' + p.gl + "-" + p.gv + "</a>"; }
         else if (showResults) right = '<span class="score na">Sin cargar</span>';
-        else right = '<span class="hour tbc">Hora por confirmar</span>';
+        else right = p.hora ? '<span class="hour">' + p.hora + "</span>" : '<span class="hour tbc">Hora por confirmar</span>';
         return '<li><div class="d">Jornada ' + p.jornada + '<b><a href="equipos.html#' + X.SLUG[t.id] + '" style="text-decoration:none">' + X.APODO[t.id] + '</a></b></div><div class="m">' + name(p.local) + " – " + name(p.visitante) + "<small>" + (X.isUs(p.local, t) ? "En casa · Otxartaga Berri" : "Fuera" + (p.campo ? " · " + esc(p.campo) : "") + " " + X.mapsLink(p)) + "</small></div>" + right + "</li>";
       }).join("") + "</ul></div></div>";
     }).join("");

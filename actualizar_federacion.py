@@ -222,7 +222,7 @@ def leer_acta(pagina):
         ciudad = titulo(limpio(ciudad.group(1))) if ciudad else ""
         acta["campo"] = campo + (", " + ciudad if ciudad and ciudad.lower() not in campo.lower() else "")
         acta["codcampo"] = int(m.group(1))
-    acta["escudos"] = re.findall(r'src="(/pnfg/pimg/[^"]*escudos[^"]*?(\d+)_grande\.png)"', pagina)[:2]
+    acta["escudos"] = [ruta_escudo(x) for x in re.findall(r'<img src="([^"]*/pimg/[^"]*(?:_grande\.png|_Escudo[^"]*))"', pagina)][:2]
 
     # Cada equipo tiene su bloque: Titularrak (titulares), Ordezkoak (suplentes),
     # Ordezkapenak (cambios) y Txartelak (tarjetas). El primero es el local.
@@ -289,6 +289,66 @@ def cargar_anterior():
         return {}
 
 
+def ruta_escudo(url):
+    """De la dirección de un escudo saca (ruta, código). Hay dos formatos en la Federación:
+    .../escudosFVF/1055_grande.png (código 1055) y .../Clubes/00100_0010163127_Escudo_3.png (código c10163127)."""
+    ruta = re.sub(r"^https?://[^/]+", "", url)
+    m = re.search(r"/(\d+)_grande\.png$", ruta)
+    if m:
+        return ruta, m.group(1)
+    m = re.search(r"_0*(\d+)_Escudo", ruta)
+    return ruta, "c" + (m.group(1) if m else re.sub(r"\W", "", ruta)[-12:])
+
+
+def leer_jornada(pagina):
+    """Página de una jornada (NFG_CmpJornada): de cada partido, los equipos, sus escudos,
+    la fecha y HORA (cuando ya está fijada) y el campo con su código."""
+    partidos = []
+    for fila in pagina.split('<tr style="background-color: #ffffff00;">')[1:]:
+        fila = re.sub(r"<style>.*?</style>", "", fila, flags=re.S)
+        nombres = [n for n in (limpio(x) for x in re.findall(r"<h4>(.*?)</h4>", fila, re.S)) if n]
+        if len(nombres) < 2:
+            continue
+        escudos = [ruta_escudo(x) for x in re.findall(r'<img src="([^"]+)"[^>]*class=escudo_widget', fila)]
+        horario = " ".join(limpio(x) for x in re.findall(r"<span class=horario[^>]*>(.*?)</span>", fila, re.S))
+        cuando = re.search(r"(\d\d-\d\d-\d{4})(?:\s+(\d\d:\d\d))?", horario)
+        campo = re.search(r'href="[^"]*(NFG_VisCampos\?[^"]*Codigo_Campo=(\d+))">(.*?)</a>', fila, re.S)
+        partidos.append({"local": nombre_bonito(nombres[0]), "visitante": nombre_bonito(nombres[1]),
+                         "escudos": escudos,
+                         "fecha": datetime.strptime(cuando.group(1), "%d-%m-%Y").date().isoformat() if cuando else None,
+                         "hora": cuando.group(2) if cuando and cuando.group(2) not in (None, "00:00") else None,
+                         "codcampo": html.unescape(campo.group(1)) if campo else None,   # dirección de la ficha del campo
+                         "nombre_campo": limpio(campo.group(3)) if campo else ""})
+    return partidos
+
+
+def leer_campo(codigo, comun, nombre_esperado=""):
+    """Ficha de un campo (una sola vez por campo): nombre con su pueblo y coordenadas exactas para el mapa.
+    'codigo' es el número del campo o la dirección completa de su ficha tal como viene en la Federación."""
+    ruta = codigo if str(codigo).startswith("NFG_") else f"NFG_VisCampos?cod_primaria=1000122&Codigo_Campo={codigo}"
+    clave = ruta.split("Codigo_Campo=")[-1] + ("" if "1000122" in ruta else "@" + ruta)
+    if clave in comun["fichas_campo"]:
+        return comun["fichas_campo"][clave]
+    pagina = descargar(ruta)
+    nombre = re.search(r"<h4 class=la_roja_regular_titulo1>(.*?)</h4>", pagina, re.S)
+    pueblo = re.search(r"<b>Herria:</b>\s*([^<]+)<", pagina)
+    loc = re.search(r"q=loc:(-?\d+\.\d+)\+(-?\d+\.\d+)", pagina)
+    nombre = titulo(limpio(nombre.group(1)).replace('"', "")) if nombre else ""
+    pueblo = titulo(limpio(pueblo.group(1))) if pueblo else ""
+    # Comprobación: la ficha tiene que ser del mismo campo que dice la jornada; si no, no se usa
+    comparar = lambda x: re.sub(r"[^a-z0-9]", "", x.lower())
+    if nombre_esperado and comparar(titulo(nombre_esperado))[:6] not in comparar(nombre):
+        print(f"  aviso: la ficha del campo {clave} ({nombre}) no coincide con «{nombre_esperado}»; no se usa", file=sys.stderr)
+        return {"nombre": titulo(nombre_esperado)}
+    if loc and abs(float(loc.group(1))) > 1:      # algunas fichas traen 0,0 o están a medio rellenar
+        ficha = {"nombre": nombre + (", " + pueblo if pueblo and pueblo.lower() not in nombre.lower() else ""),
+                 "mapa": f"{float(loc.group(1)):.6f},{float(loc.group(2)):.6f}"}
+    else:                                         # sin coordenadas no nos fiamos del pueblo: solo el nombre
+        ficha = {"nombre": nombre}
+    comun["fichas_campo"][clave] = ficha
+    return ficha
+
+
 def escudo_ligero(datos, destino_sin_ext):
     """Los escudos de la Federación llegan a pesar 300 KB; en la web se ven pequeños.
     Si está Pillow, se guardan en WebP de 96 px (unos 4 KB); si no, tal cual en PNG."""
@@ -300,25 +360,26 @@ def escudo_ligero(datos, destino_sin_ext):
         img.save(destino_sin_ext + ".webp", "WEBP", quality=88, method=6)
         return ".webp"
     except ImportError:
-        with open(destino_sin_ext + ".png", "wb") as f:
+        ext = ".png" if datos.startswith(b"\x89PNG") else ".jpg"
+        with open(destino_sin_ext + ext, "wb") as f:
             f.write(datos)
-        return ".png"
+        return ext
 
 
 def descargar_escudo(ruta, codigo):
     """Guarda el escudo de un club en img/escudos/ (solo la primera vez)."""
     carpeta = os.path.join(AQUI, "img", "escudos")
-    for ext in (".webp", ".png"):
+    for ext in (".webp", ".png", ".jpg"):
         if os.path.exists(os.path.join(carpeta, f"{codigo}{ext}")):
             return f"{codigo}{ext}"
     try:
-        with _opener.open("https://www.fvf-bff.eus" + ruta, timeout=40) as r:
+        with _opener.open(("https://www.fvf-bff.eus" if ruta.startswith("/") else "") + ruta, timeout=40) as r:
             datos = r.read()
         time.sleep(PAUSA)
     except Exception as e:
         print(f"  aviso: no se pudo bajar el escudo {codigo} ({e})", file=sys.stderr)
         return None
-    if not datos.startswith(b"\x89PNG"):
+    if not (datos.startswith(b"\x89PNG") or datos.startswith(b"\xff\xd8")):   # PNG o JPG
         return None
     os.makedirs(carpeta, exist_ok=True)
     return f"{codigo}" + escudo_ligero(datos, os.path.join(carpeta, str(codigo)))
@@ -329,13 +390,24 @@ def leer_acta_partido(codacta, local, visitante, comun):
     acta = leer_acta(descargar(f"NFG_CmpPartido?cod_primaria=1000120&CodActa={codacta}"))
     if acta.get("campo"):
         comun["campos"][local] = acta["campo"]
-    for nombre, (ruta, codigo) in zip((local, visitante), acta.pop("escudos", [])):
+    guardar_escudos(zip((local, visitante), acta.pop("escudos", [])), comun)
+    codcampo = acta.pop("codcampo", None)
+    if codcampo:
+        try:
+            ficha = leer_campo(codcampo, comun)
+            if ficha.get("mapa") and acta.get("campo"):
+                comun["mapas"][acta["campo"]] = ficha["mapa"]
+        except RuntimeError:
+            pass
+    return acta
+
+
+def guardar_escudos(pares, comun):
+    for nombre, (ruta, codigo) in pares:
         if codigo != "1047" and nombre not in comun["escudos"]:   # 1047 = CD Ortuella: ya tenemos el nuestro
             archivo = descargar_escudo(ruta, codigo)
             if archivo:
                 comun["escudos"][nombre] = archivo
-    acta.pop("codcampo", None)
-    return acta
 
 
 def actualizar_equipo(eq, anterior, comun):
@@ -387,20 +459,43 @@ def actualizar_equipo(eq, anterior, comun):
             acta["goles"] = []
         comun["actas"][clave] = acta
 
-    # Campo de cada rival: sale del acta de cualquier partido que haya jugado en casa
+    # Campo de cada partido fuera: en los ya jugados, el del acta de ese mismo partido; en los
+    # próximos, el de la página de la jornada (abajo). No se supone el campo "de siempre" del rival:
+    # algunos equipos juegan en campos distintos según la jornada.
     for p in partidos:
-        rival = p["local"]
-        if rival == nombre_fed or rival in comun["campos"]:
+        a = comun["actas"].get(str(p["acta"])) if p["acta"] else None
+        if p["local"] != nombre_fed and a and a.get("campo"):
+            p["campo"] = a["campo"]
+
+    # Próximas 3 jornadas: la página de la jornada trae la hora (cuando ya está fijada), el campo
+    # exacto y los escudos de todos los equipos del grupo. Así faltan pocos escudos tras un par de semanas.
+    hoy = datetime.now(timezone.utc).date().isoformat()
+    proximas = [p for p in partidos if p["fecha"] >= hoy][:3]
+    for p in proximas:
+        try:
+            jornada = leer_jornada(descargar(
+                f"NFG_CmpJornada?cod_primaria=1000120&CodCompeticion={eq['codcompeticion']}"
+                f"&CodGrupo={eq['codgrupo']}&CodTemporada={TEMPORADA}&CodJornada={p['jornada']}"))
+        except RuntimeError as e:
+            print(f"  aviso: jornada {p['jornada']} sin leer ({e})", file=sys.stderr)
             continue
-        r = next((r for r in resultados.values() if r["local"] == rival and r.get("acta")), None)
-        if r:
-            try:
-                leer_acta_partido(r["acta"], r["local"], r["visitante"], comun)
-            except RuntimeError as e:
-                print(f"  aviso: campo de {rival} sin leer ({e})", file=sys.stderr)
-    for p in partidos:
-        if p["local"] != nombre_fed and p["local"] in comun["campos"]:
-            p["campo"] = comun["campos"][p["local"]]
+        for x in jornada:
+            guardar_escudos(zip((x["local"], x["visitante"]), x["escudos"]), comun)
+            if (x["local"], x["visitante"]) != (p["local"], p["visitante"]):
+                continue
+            if x["hora"]:
+                p["hora"] = x["hora"]
+            if x["fecha"]:
+                p["fecha"] = x["fecha"]       # por si la Federación cambia el día
+            if x["codcampo"]:
+                try:
+                    ficha = leer_campo(x["codcampo"], comun, x["nombre_campo"])
+                except RuntimeError:
+                    ficha = {"nombre": titulo(x["nombre_campo"])}
+                if p["local"] != nombre_fed and ficha.get("nombre"):
+                    p["campo"] = ficha["nombre"]
+                if ficha.get("mapa"):
+                    comun["mapas"][p.get("campo") or ficha["nombre"]] = ficha["mapa"]
 
     try:
         porteros = leer_porteros(descargar(
@@ -446,7 +541,8 @@ def main():
     previos = {e["id"]: e for e in anterior.get("equipos", [])}
     # Datos compartidos por todos los equipos: actas leídas, escudos de los rivales y su campo
     comun = {"actas": anterior.get("actas", {}), "escudos": anterior.get("escudos", {}),
-             "campos": anterior.get("campos", {})}
+             "campos": anterior.get("campos", {}), "mapas": anterior.get("mapas", {}),
+             "fichas_campo": anterior.get("fichas_campo", {})}
     leidos, pendientes = {}, list(EQUIPOS)
     # Si un equipo falla, se vuelve a intentar al final, tras una pausa larga
     for vuelta in range(2):
@@ -475,7 +571,7 @@ def main():
     datos = {"temporada": TEMPORADA_TEXTO,
              "actualizado": datetime.now(timezone.utc).isoformat(timespec="minutes"),
              "equipos": equipos, "actas": comun["actas"], "escudos": comun["escudos"],
-             "campos": comun["campos"]}
+             "campos": comun["campos"], "mapas": comun["mapas"], "fichas_campo": comun["fichas_campo"]}
     with open(SALIDA, "w", encoding="utf-8") as f:
         f.write("/* Archivo generado automáticamente por actualizar_federacion.py. No editar a mano. */\n")
         f.write("window.FEDERACION = " + json.dumps(datos, ensure_ascii=False, indent=1) + ";\n")

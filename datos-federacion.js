@@ -1,7 +1,7 @@
 /* Archivo generado automáticamente por actualizar_federacion.py. No editar a mano. */
 window.FEDERACION = {
  "temporada": "2026/27",
- "actualizado": "2026-10-21T13:10+00:00",
+ "actualizado": "2026-10-21T14:23+00:00",
  "equipos": [
   {
    "id": "primer",
@@ -264,7 +264,8 @@ window.FEDERACION = {
      "visitante": "Gazteak",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "hora": "18:30"
     },
     {
      "jornada": 7,
@@ -292,8 +293,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "Salinillas, Balmaseda"
+     "acta": null
     },
     {
      "jornada": 10,
@@ -311,8 +311,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "Ibarreta, Barakaldo"
+     "acta": null
     },
     {
      "jornada": 12,
@@ -339,8 +338,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "Balandran, Karrantza Harana"
+     "acta": null
     },
     {
      "jornada": 15,
@@ -358,8 +356,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "La Siebe, Cruces-Barakaldo"
+     "acta": null
     },
     {
      "jornada": 17,
@@ -386,8 +383,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "Serralta, Lutxana - Barakaldo"
+     "acta": null
     },
     {
      "jornada": 20,
@@ -405,8 +401,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "San Vicente C.D.M., Barakaldo"
+     "acta": null
     },
     {
      "jornada": 22,
@@ -424,8 +419,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "San Pedro de Kabiezes, Santurtzi"
+     "acta": null
     },
     {
      "jornada": 24,
@@ -443,8 +437,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "Iparralde, Bilbao"
+     "acta": null
     },
     {
      "jornada": 26,
@@ -462,8 +455,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "Errotarte, Trapagaran"
+     "acta": null
     },
     {
      "jornada": 28,
@@ -481,8 +473,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "Maiona A, Bilbao"
+     "acta": null
     },
     {
      "jornada": 30,
@@ -491,8 +482,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "Parque Rivas, Portugalete"
+     "acta": null
     },
     {
      "jornada": 31,
@@ -510,8 +500,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "El Mortuero, Las Carreras"
+     "acta": null
     },
     {
      "jornada": 33,
@@ -529,8 +518,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "Buenos Aires, Espinosa de los Monteros"
+     "acta": null
     }
    ],
    "goleadores": [
@@ -1255,7 +1243,8 @@ window.FEDERACION = {
      "visitante": "La Arboleda",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "hora": "12:00"
     },
     {
      "jornada": 3,
@@ -1265,7 +1254,7 @@ window.FEDERACION = {
      "gl": null,
      "gv": null,
      "acta": null,
-     "campo": "Las Carmenes Barria, La Arboleda"
+     "campo": "P. Municipal - Villasana, Valle de Mena"
     },
     {
      "jornada": 4,
@@ -1310,8 +1299,7 @@ window.FEDERACION = {
      "visitante": "Ortuella B",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "El Malecon Berria, Muskiz"
+     "acta": null
     },
     {
      "jornada": 9,
@@ -1347,8 +1335,7 @@ window.FEDERACION = {
      "visitante": "Ortuella B",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "Basteita, Alonsotegi"
+     "acta": null
     },
     {
      "jornada": 13,
@@ -1411,8 +1398,7 @@ window.FEDERACION = {
      "visitante": "Ortuella B",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "Hurtado de Saratxo, Sodupe-Gueñes"
+     "acta": null
     },
     {
      "jornada": 20,
@@ -1421,8 +1407,7 @@ window.FEDERACION = {
      "visitante": "Ortuella B",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "Galindo 1, Sestao"
+     "acta": null
     },
     {
      "jornada": 21,
@@ -1458,8 +1443,7 @@ window.FEDERACION = {
      "visitante": "Ortuella B",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "San Miguel-Gallarta"
+     "acta": null
     },
     {
      "jornada": 25,
@@ -1477,8 +1461,7 @@ window.FEDERACION = {
      "visitante": "Ortuella B",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "Benjamin Martinez, Santurtzi"
+     "acta": null
     }
    ],
    "goleadores": [
@@ -1780,12 +1763,13 @@ window.FEDERACION = {
     },
     {
      "jornada": 4,
-     "fecha": "2026-10-25",
+     "fecha": "2026-10-24",
      "local": "Ortuella",
      "visitante": "Zuazo B",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "hora": "16:15"
     },
     {
      "jornada": 5,
@@ -1813,8 +1797,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "Las Carmenes Barria, La Arboleda"
+     "acta": null
     },
     {
      "jornada": 8,
@@ -1832,8 +1815,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "Ibarreta, Barakaldo"
+     "acta": null
     },
     {
      "jornada": 10,
@@ -1860,8 +1842,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "Los Llanos, Portugalete"
+     "acta": null
     },
     {
      "jornada": 13,
@@ -1879,8 +1860,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "San Vicente C.D.M., Barakaldo"
+     "acta": null
     },
     {
      "jornada": 15,
@@ -1907,8 +1887,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "Aitxarte, Bilbao"
+     "acta": null
     },
     {
      "jornada": 18,
@@ -1926,8 +1905,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "Ansio, Barakaldo"
+     "acta": null
     },
     {
      "jornada": 20,
@@ -1945,8 +1923,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "Galindo 2, Sestao"
+     "acta": null
     },
     {
      "jornada": 22,
@@ -1964,8 +1941,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "San Miguel-Zalla"
+     "acta": null
     },
     {
      "jornada": 24,
@@ -1983,8 +1959,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "San Pedro de Kabiezes, Santurtzi"
+     "acta": null
     },
     {
      "jornada": 26,
@@ -1993,8 +1968,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "Galindo 2, Sestao"
+     "acta": null
     },
     {
      "jornada": 27,
@@ -2012,8 +1986,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "Hurtado de Saratxo, Sodupe-Gueñes"
+     "acta": null
     },
     {
      "jornada": 29,
@@ -2031,8 +2004,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "Errotarte, Trapagaran"
+     "acta": null
     }
    ],
    "goleadores": [
@@ -2362,17 +2334,6 @@ window.FEDERACION = {
     },
     {
      "pos": 3,
-     "equipo": "Beti Lagunak",
-     "pts": 3,
-     "pj": 1,
-     "g": 1,
-     "e": 0,
-     "p": 0,
-     "gf": 3,
-     "gc": 0
-    },
-    {
-     "pos": 4,
      "equipo": "Peña ATH. Santurtzi B",
      "pts": 3,
      "pj": 1,
@@ -2383,7 +2344,7 @@ window.FEDERACION = {
      "gc": 0
     },
     {
-     "pos": 5,
+     "pos": 4,
      "equipo": "Trapagaran C",
      "pts": 3,
      "pj": 1,
@@ -2392,6 +2353,17 @@ window.FEDERACION = {
      "p": 0,
      "gf": 2,
      "gc": 1
+    },
+    {
+     "pos": 5,
+     "equipo": "Beti Lagunak",
+     "pts": 0,
+     "pj": 0,
+     "g": 0,
+     "e": 0,
+     "p": 0,
+     "gf": 0,
+     "gc": 0
     },
     {
      "pos": 6,
@@ -2428,17 +2400,6 @@ window.FEDERACION = {
     },
     {
      "pos": 9,
-     "equipo": "Arbuyo",
-     "pts": 0,
-     "pj": 1,
-     "g": 0,
-     "e": 0,
-     "p": 1,
-     "gf": 0,
-     "gc": 3
-    },
-    {
-     "pos": 10,
      "equipo": "Santurtzi B",
      "pts": 0,
      "pj": 1,
@@ -2449,7 +2410,7 @@ window.FEDERACION = {
      "gc": 3
     },
     {
-     "pos": 11,
+     "pos": 10,
      "equipo": "Zuazo B",
      "pts": 0,
      "pj": 1,
@@ -2460,7 +2421,7 @@ window.FEDERACION = {
      "gc": 5
     },
     {
-     "pos": 12,
+     "pos": 11,
      "equipo": "Zalla",
      "pts": 0,
      "pj": 1,
@@ -2473,6 +2434,17 @@ window.FEDERACION = {
     {
      "pos": 0,
      "equipo": "Aranguren B",
+     "pts": 0,
+     "pj": 0,
+     "g": 0,
+     "e": 0,
+     "p": 0,
+     "gf": 0,
+     "gc": 0
+    },
+    {
+     "pos": 0,
+     "equipo": "Arbuyo",
      "pts": 0,
      "pj": 0,
      "g": 0,
@@ -2506,12 +2478,13 @@ window.FEDERACION = {
     },
     {
      "jornada": 2,
-     "fecha": "2026-10-25",
+     "fecha": "2026-10-24",
      "local": "Ortuella",
      "visitante": "Santurtzi B",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "hora": "18:30"
     },
     {
      "jornada": 3,
@@ -2629,8 +2602,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "San Jorge, Santurtzi"
+     "acta": null
     },
     {
      "jornada": 16,
@@ -2666,8 +2638,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "La Siebe, Cruces-Barakaldo"
+     "acta": null
     },
     {
      "jornada": 20,
@@ -2676,8 +2647,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "Galindo 2, Sestao"
+     "acta": null
     },
     {
      "jornada": 21,
@@ -2731,8 +2701,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "San Juan - Santurtzi"
+     "acta": null
     }
    ],
    "goleadores": [
@@ -2922,7 +2891,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "PAB. Jose Mª Ruiz Mateos"
     },
     {
      "jornada": 2,
@@ -3039,8 +3009,7 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "Balandran, Karrantza Harana"
+     "acta": null
     }
    ],
    "goleadores": [],
@@ -5921,7 +5890,20 @@ window.FEDERACION = {
   "Peña ATH. Santurtzi B": "1282.webp",
   "Beti Lagunak": "1452.webp",
   "Ortuellako Jendea 1999": "1095.webp",
-  "Zalla": "1032.webp"
+  "Zalla": "1032.webp",
+  "Sopuerta": "c13_WA0009jpg.webp",
+  "Menes": "c10163127.webp",
+  "Aranguren B": "1129.webp",
+  "La Arboleda": "1055.webp",
+  "Inter Trapa Minero": "c10133140.webp",
+  "Portugalete D": "1003.webp",
+  "Dinamo San Juan A": "1095.webp",
+  "Atl Aranguren 13/14": "1129.webp",
+  "Itugarpe": "1485.webp",
+  "Peña Athletic 13 Gorria": "1282.webp",
+  "Sporting De Lutxana 13/14 Zuri": "1012.webp",
+  "Zazpi Landa 13/14": "1311.webp",
+  "Ibaiondo Ibaizabal 2013": "1621.webp"
  },
  "campos": {
   "Dinamo San Juan B": "San Juan - Santurtzi",
@@ -5963,5 +5945,37 @@ window.FEDERACION = {
   "Santurtzi B": "San Jorge, Santurtzi",
   "Beti Lagunak": "La Siebe, Cruces-Barakaldo",
   "Ortuellako Jendea 1999": "San Juan - Santurtzi"
+ },
+ "mapas": {
+  "Otxartaga-Berri, Ortuella": "43.313099,-3.061390",
+  "P.M. Zorroza, Bilbao": "43.278599,-2.974540",
+  "P. Municipal - Villasana, Valle de Mena": "43.098301,-3.289740",
+  "El Malecon Berria, Muskiz": "43.323799,-3.115030",
+  "COL. Vizcaya Pabellon, Zamudio": "43.281829,-2.897943"
+ },
+ "fichas_campo": {
+  "4231": {
+   "nombre": "Otxartaga-Berri, Ortuella",
+   "mapa": "43.313099,-3.061390"
+  },
+  "4394": {
+   "nombre": "P.M. Zorroza, Bilbao",
+   "mapa": "43.278599,-2.974540"
+  },
+  "4248": {
+   "nombre": "P. Municipal - Villasana, Valle de Mena",
+   "mapa": "43.098301,-3.289740"
+  },
+  "4374": {
+   "nombre": "El Malecon Berria, Muskiz",
+   "mapa": "43.323799,-3.115030"
+  },
+  "24025243": {
+   "nombre": "PAB. Jose Mª Ruiz Mateos"
+  },
+  "4389": {
+   "nombre": "COL. Vizcaya Pabellon, Zamudio",
+   "mapa": "43.281829,-2.897943"
+  }
  }
 };
