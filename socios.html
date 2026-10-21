@@ -25,7 +25,7 @@
 <meta name="theme-color" content="#0b2a5b">
 <meta name="apple-mobile-web-app-title" content="CD Ortuella">
 <link rel="preload" href="fuentes/big-shoulders-display.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="estilos.css?v=1945891f">
+<link rel="stylesheet" href="estilos.css?v=a65a24ea">
 </head>
 <body data-page="socios">
 <a class="skip" href="#contenido">Saltar al contenido</a>
@@ -62,18 +62,17 @@
 <section class="block alt" id="patrocina">
   <div class="wrap">
     <div class="sec-head">
-      <div><span class="kicker">Empresas</span><h2>Patrocinadores</h2></div>
-      <p>Gracias a quienes apoyan al Ortuella. ¿Tienes un negocio en la zona? Hay sitio para ti.</p>
+      <div><span class="kicker">Empresas</span><h2>Patrocina al Ortuella</h2></div>
+      <p>¿Tienes un negocio en la zona? Pon tu logo en la web del club y ayuda a todos sus equipos. <a href="patrocinadores.html">Ver patrocinadores</a></p>
     </div>
-    <div class="sponsor-row" id="sponsorList"></div>
-    <div class="helpers" id="helpersList"></div>
+    <div class="sp-grid" id="sponsorList"></div>
   </div>
 </section>
 </main>
 <div id="pie"></div>
-<script src="datos.js?v=98b56541"></script>
+<script src="datos.js?v=eac7d7a7"></script>
 <script src="datos-federacion.js"></script>
-<script src="comun.js?v=8fb34aad"></script>
+<script src="comun.js?v=5b78c12d"></script>
 <!-- Contador de visitas anónimo, sin cookies. Panel privado: https://cdortuella.goatcounter.com -->
 <script data-goatcounter="https://cdortuella.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 <script>
@@ -85,10 +84,7 @@
     var icon = /bufanda/i.test(it.nombre) ? "scarf" : "shirt";
     return '<div class="item"><div class="ph">' + (it.foto ? '<img src="' + esc(it.foto) + '" alt="' + esc(it.nombre) + '" loading="lazy">' : '<svg aria-hidden="true" viewBox="0 0 48 48"><use href="#' + icon + '"/></svg>') + '</div><div class="t"><b>' + esc(it.nombre) + "</b><small>" + (it.precio ? esc(it.precio) : "Precio por confirmar") + "</small></div></div>";
   }).join("");
-  var slots = C.patrocinadores.map(function (s) { return '<div class="logo">' + (s.logo ? '<img src="' + esc(s.logo) + '" alt="' + esc(s.nombre) + '">' : esc(s.nombre)) + "</div>"; });
-  while (slots.length < 4) slots.push('<a class="free" href="contacto.html"><div>¿Tu negocio aquí?<br>Patrocina al Ortuella</div></a>');
-  document.getElementById("sponsorList").innerHTML = slots.join("");
-  document.getElementById("helpersList").innerHTML = "<strong>Con el apoyo de:</strong>" + C.colaboradores.map(function (c) { return "<span>" + esc(c) + "</span>"; }).join("");
+  document.getElementById("sponsorList").innerHTML = C.patrocinadores.map(X.sponsorCard).join("") + '<a class="sp free" href="contacto.html"><span class="sp-box">¿Tu negocio aquí?</span><span class="sp-cap"><b>Patrocina al Ortuella</b><small>Escríbenos y te contamos</small></span></a>';
 })();
 </script>
 </body>

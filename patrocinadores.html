@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Patrocinadores · CD Ortuella</title>
+<meta name="description" content="Empresas e instituciones que patrocinan y apoyan al CD Ortuella.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://lehendakari02.github.io/web-cd-ortuella/patrocinadores.html">
+<!-- Vista previa al compartir el enlace (WhatsApp, Facebook, X...) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CD Ortuella">
+<meta property="og:title" content="Patrocinadores · CD Ortuella">
+<meta property="og:description" content="Empresas e instituciones que patrocinan y apoyan al CD Ortuella.">
+<meta property="og:url" content="https://lehendakari02.github.io/web-cd-ortuella/patrocinadores.html">
+<meta property="og:image" content="https://lehendakari02.github.io/web-cd-ortuella/img/compartir.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="es_ES">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="img/favicon.png" type="image/png">
+<!-- Icono y color al guardar la web en la pantalla de inicio del móvil -->
+<link rel="apple-touch-icon" href="img/icono-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b2a5b">
+<meta name="apple-mobile-web-app-title" content="CD Ortuella">
+<link rel="preload" href="fuentes/big-shoulders-display.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="estilos.css?v=a65a24ea">
+</head>
+<body data-page="patrocinadores">
+<a class="skip" href="#contenido">Saltar al contenido</a>
+<div id="cabecera"></div>
+<main id="contenido" tabindex="-1">
+<section class="page-hero">
+  <div class="wrap">
+    <div class="crumbs"><a href="./">Inicio</a> / Patrocinadores</div>
+    <h1>Patrocinadores</h1>
+    <p>Gracias a las empresas e instituciones que hacen posible el Ortuella, del primer equipo a la cantera.</p>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="kicker">Empresas</span><h2>Patrocinadores</h2></div>
+    </div>
+    <div class="sp-grid" id="spList"></div>
+  </div>
+</section>
+
+<section class="block alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="kicker">Instituciones y amigos</span><h2>Colaboran</h2></div>
+    </div>
+    <div class="sp-grid" id="colList"></div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <div class="sp-cta">
+      <div><h2>¿Quieres patrocinar al Ortuella?</h2>
+      <p>Tu empresa aparecerá en esta web, en todas sus páginas, y ayudarás a que el club siga adelante con todos sus equipos. Escríbenos y te contamos las opciones.</p></div>
+      <a class="btn" href="contacto.html">Quiero patrocinar</a>
+    </div>
+  </div>
+</section>
+</main>
+<div id="pie"></div>
+<script src="datos.js?v=eac7d7a7"></script>
+<script src="datos-federacion.js"></script>
+<script src="comun.js?v=5b78c12d"></script>
+<!-- Contador de visitas anónimo, sin cookies. Panel privado: https://cdortuella.goatcounter.com -->
+<script data-goatcounter="https://cdortuella.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script>
+(function () {
+  var X = window.CDO, C = X.C;
+  document.getElementById("spList").innerHTML = C.patrocinadores.map(X.sponsorCard).join("") + '<a class="sp free" href="contacto.html"><span class="sp-box">¿Tu negocio aquí?</span><span class="sp-cap"><b>Patrocina al Ortuella</b><small>Escríbenos y te contamos</small></span></a>';
+  document.getElementById("colList").innerHTML = C.colaboradores.map(X.sponsorCard).join("");
+})();
+</script>
+</body>
+</html>

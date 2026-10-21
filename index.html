@@ -25,7 +25,7 @@
 <meta name="theme-color" content="#0b2a5b">
 <meta name="apple-mobile-web-app-title" content="CD Ortuella">
 <link rel="preload" href="fuentes/big-shoulders-display.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="estilos.css?v=1945891f">
+<link rel="stylesheet" href="estilos.css?v=a65a24ea">
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -52,14 +52,20 @@
 <main id="contenido" tabindex="-1">
 <section class="hero">
   <div class="wrap">
-    <div>
-      <span class="eyebrow"><span>Otxartaga Berri · Ortuella</span><i class="sep"> · </i><span>Desde 1949</span></span>
-      <h1>Club Deportivo <span>Ortuella</span></h1>
-      <p class="lead">Más de 75 años de fútbol en Ortuella. Primer equipo, filial y cantera, todos de azul y blanco.</p>
-      <div class="btns">
-        <a class="btn" href="partidos.html">Partidos y resultados</a>
-        <a class="btn ghost" href="socios.html">Hazte socio</a>
+    <div class="flip" id="flip">
+      <div class="flip-in">
+        <div class="face club">
+          <span class="eyebrow"><span>Otxartaga Berri · Ortuella</span><i class="sep"> · </i><span>Desde 1949</span></span>
+          <h1>Club Deportivo <span>Ortuella</span></h1>
+          <p class="lead">Más de 75 años de fútbol en Ortuella. Primer equipo, filial y cantera, todos de azul y blanco.</p>
+          <div class="btns">
+            <a class="btn" href="partidos.html">Partidos y resultados</a>
+            <a class="btn ghost" href="socios.html">Hazte socio</a>
+          </div>
+        </div>
+        <div class="face dest" id="destacado" hidden></div>
       </div>
+      <div class="flip-dots" id="flipDots" hidden></div>
     </div>
     <div class="next" id="nextMatches" aria-label="Próximos partidos"></div>
   </div>
@@ -105,14 +111,42 @@
 </section>
 </main>
 <div id="pie"></div>
-<script src="datos.js?v=98b56541"></script>
+<script src="datos.js?v=eac7d7a7"></script>
 <script src="datos-federacion.js"></script>
-<script src="comun.js?v=8fb34aad"></script>
+<script src="comun.js?v=5b78c12d"></script>
 <!-- Contador de visitas anónimo, sin cookies. Panel privado: https://cdortuella.goatcounter.com -->
 <script data-goatcounter="https://cdortuella.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 <script>
 (function () {
   var X = window.CDO, C = X.C, esc = X.esc;
+  // Destacado: tarjeta que gira entre la novedad y el texto del club (5 s cada cara)
+  (function () {
+    var d = C.destacado, flip = document.getElementById("flip");
+    if (!d || (d.hasta && d.hasta < new Date().toISOString().slice(0, 10))) return;
+    var face = document.getElementById("destacado"), dots = document.getElementById("flipDots");
+    face.innerHTML = (d.foto ? '<a class="dest-pic" href="' + esc(d.enlace) + '" tabindex="-1"><img src="' + esc(d.foto) + '" alt="" decoding="async"></a>' : "") +
+      '<div class="dest-txt"><span class="eyebrow">' + esc(d.etiqueta || "Novedad") + '</span><h2>' + esc(d.titulo) + "</h2>" +
+      (d.texto ? '<p class="lead">' + esc(d.texto) + "</p>" : "") +
+      (d.enlace ? '<div class="btns"><a class="btn" href="' + esc(d.enlace) + '">' + esc(d.boton || "Ver más") + "</a></div>" : "") + "</div>";
+    face.hidden = false; dots.hidden = false;
+    dots.innerHTML = '<button type="button" aria-label="Ver la novedad"></button><button type="button" aria-label="Ver el club"></button>';
+    var showClub = false, paused = false, timer;
+    function render() {
+      flip.classList.toggle("on-club", showClub);
+      face.setAttribute("aria-hidden", showClub); flip.querySelector(".club").setAttribute("aria-hidden", !showClub);
+      [].forEach.call(flip.querySelectorAll(".face"), function (f) { [].forEach.call(f.querySelectorAll("a"), function (a) { a.tabIndex = (f.getAttribute("aria-hidden") === "true" || a.parentNode.className === "dest-pic") ? -1 : 0; }); });
+      [].forEach.call(dots.children, function (b, i) { b.setAttribute("aria-pressed", (i === 1) === showClub); });
+    }
+    function loop() { clearTimeout(timer); timer = setTimeout(function () { if (!paused) { showClub = !showClub; render(); } loop(); }, 5000); }
+    [].forEach.call(dots.children, function (b, i) { b.addEventListener("click", function () { showClub = i === 1; render(); loop(); }); });
+    // Pausa mientras el ratón o el foco están encima, para poder leer y pulsar
+    flip.addEventListener("mouseenter", function () { paused = true; });
+    flip.addEventListener("mouseleave", function () { paused = false; });
+    flip.addEventListener("focusin", function () { paused = true; });
+    flip.addEventListener("focusout", function () { paused = false; });
+    flip.classList.add("flipping"); render(); loop();
+  })();
+
   // Próximo partido del Senior A y del Senior B
   document.getElementById("nextMatches").innerHTML = ["primer", "b"].map(function (id) { var t = X.team(id); return t ? X.matchCard(t) : ""; }).join("");
   document.getElementById("strip").innerHTML = X.resultsStrip();

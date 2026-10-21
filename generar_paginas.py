@@ -72,14 +72,20 @@ PAGES["index"] = dict(
  title="CD Ortuella", desc="Club Deportivo Ortuella: partidos, resultados, clasificaciones, noticias y equipos. Desde 1949 en Otxartaga Berri.",
  body="""<section class="hero">
   <div class="wrap">
-    <div>
-      <span class="eyebrow"><span>Otxartaga Berri · Ortuella</span><i class="sep"> · </i><span>Desde 1949</span></span>
-      <h1>Club Deportivo <span>Ortuella</span></h1>
-      <p class="lead">Más de 75 años de fútbol en Ortuella. Primer equipo, filial y cantera, todos de azul y blanco.</p>
-      <div class="btns">
-        <a class="btn" href="partidos.html">Partidos y resultados</a>
-        <a class="btn ghost" href="socios.html">Hazte socio</a>
+    <div class="flip" id="flip">
+      <div class="flip-in">
+        <div class="face club">
+          <span class="eyebrow"><span>Otxartaga Berri · Ortuella</span><i class="sep"> · </i><span>Desde 1949</span></span>
+          <h1>Club Deportivo <span>Ortuella</span></h1>
+          <p class="lead">Más de 75 años de fútbol en Ortuella. Primer equipo, filial y cantera, todos de azul y blanco.</p>
+          <div class="btns">
+            <a class="btn" href="partidos.html">Partidos y resultados</a>
+            <a class="btn ghost" href="socios.html">Hazte socio</a>
+          </div>
+        </div>
+        <div class="face dest" id="destacado" hidden></div>
       </div>
+      <div class="flip-dots" id="flipDots" hidden></div>
     </div>
     <div class="next" id="nextMatches" aria-label="Próximos partidos"></div>
   </div>
@@ -126,6 +132,34 @@ PAGES["index"] = dict(
 """,
  script="""(function () {
   var X = window.CDO, C = X.C, esc = X.esc;
+  // Destacado: tarjeta que gira entre la novedad y el texto del club (5 s cada cara)
+  (function () {
+    var d = C.destacado, flip = document.getElementById("flip");
+    if (!d || (d.hasta && d.hasta < new Date().toISOString().slice(0, 10))) return;
+    var face = document.getElementById("destacado"), dots = document.getElementById("flipDots");
+    face.innerHTML = (d.foto ? '<a class="dest-pic" href="' + esc(d.enlace) + '" tabindex="-1"><img src="' + esc(d.foto) + '" alt="" decoding="async"></a>' : "") +
+      '<div class="dest-txt"><span class="eyebrow">' + esc(d.etiqueta || "Novedad") + '</span><h2>' + esc(d.titulo) + "</h2>" +
+      (d.texto ? '<p class="lead">' + esc(d.texto) + "</p>" : "") +
+      (d.enlace ? '<div class="btns"><a class="btn" href="' + esc(d.enlace) + '">' + esc(d.boton || "Ver más") + "</a></div>" : "") + "</div>";
+    face.hidden = false; dots.hidden = false;
+    dots.innerHTML = '<button type="button" aria-label="Ver la novedad"></button><button type="button" aria-label="Ver el club"></button>';
+    var showClub = false, paused = false, timer;
+    function render() {
+      flip.classList.toggle("on-club", showClub);
+      face.setAttribute("aria-hidden", showClub); flip.querySelector(".club").setAttribute("aria-hidden", !showClub);
+      [].forEach.call(flip.querySelectorAll(".face"), function (f) { [].forEach.call(f.querySelectorAll("a"), function (a) { a.tabIndex = (f.getAttribute("aria-hidden") === "true" || a.parentNode.className === "dest-pic") ? -1 : 0; }); });
+      [].forEach.call(dots.children, function (b, i) { b.setAttribute("aria-pressed", (i === 1) === showClub); });
+    }
+    function loop() { clearTimeout(timer); timer = setTimeout(function () { if (!paused) { showClub = !showClub; render(); } loop(); }, 5000); }
+    [].forEach.call(dots.children, function (b, i) { b.addEventListener("click", function () { showClub = i === 1; render(); loop(); }); });
+    // Pausa mientras el ratón o el foco están encima, para poder leer y pulsar
+    flip.addEventListener("mouseenter", function () { paused = true; });
+    flip.addEventListener("mouseleave", function () { paused = false; });
+    flip.addEventListener("focusin", function () { paused = true; });
+    flip.addEventListener("focusout", function () { paused = false; });
+    flip.classList.add("flipping"); render(); loop();
+  })();
+
   // Próximo partido del Senior A y del Senior B
   document.getElementById("nextMatches").innerHTML = ["primer", "b"].map(function (id) { var t = X.team(id); return t ? X.matchCard(t) : ""; }).join("");
   document.getElementById("strip").innerHTML = X.resultsStrip();
@@ -317,6 +351,16 @@ PAGES["equipos"] = dict(
       '<aside class="staff"><h3>Cuerpo técnico</h3><dl>' + pe.cuerpoTecnico.map(function (s) { return "<div><dt>" + esc(s[0]) + "</dt><dd>" + esc(s[1]) + "</dd></div>"; }).join("") + "</dl></aside></div></div></section>";
   }
 
+  // Botón «Al calendario» junto al título de Partidos: abre las dos opciones
+  var CAL_ICO = '<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4M12 13v5M9.5 15.5h5"/></svg>';
+  function calPop(t) {
+    var h = X.calHrefs(X.SLUG[t.id]);
+    return '<details class="cal-pop"><summary>' + CAL_ICO + '<span>Al calendario</span></summary><div class="cal-menu">' +
+      '<b>Partidos del ' + X.APODO[t.id] + ' en tu calendario</b><small>Se añaden solos y se actualizan con cada jornada.</small>' +
+      '<a class="btn blue" href="' + h.apple + '">iPhone o Mac</a><a class="btn line" href="' + h.google + '" target="_blank" rel="noopener">Google Calendar</a>' +
+      '<a class="more" href="partidos.html#calendario">Otros calendarios</a></div></details>';
+  }
+
   function teamPage(t) {
     var r = X.ourRow(t), pl = X.played(t), showResults = false;
     heading(X.APODO[t.id], t.categoria, X.APODO[t.id]);
@@ -333,7 +377,7 @@ PAGES["equipos"] = dict(
         '<div class="stat"><small>Últimos partidos</small>' + X.formDots(t) + "</div>" +
       "</div>" +
       '<div class="comp' + (t.clasificacion.length ? "" : " solo") + '">' + (t.clasificacion.length ? '<div><div class="panel"><h3>Clasificación</h3><div class="sub">' + esc(t.categoria) + '</div><div class="table-scroll"><table>' + X.TABLE_HEAD + "<tbody>" + X.tableRows(t) + "</tbody></table></div></div></div>" : "") +
-      '<div><div class="panel"><h3>Partidos</h3><div class="tabs" role="tablist"><button role="tab" id="tabNext" aria-selected="true">Próximos</button><button role="tab" id="tabRes" aria-selected="false">Resultados</button></div><ul class="games" id="games"></ul></div>' +
+      '<div><div class="panel"><div class="panel-head"><h3>Partidos</h3>' + calPop(t) + '</div><div class="tabs" role="tablist"><button role="tab" id="tabNext" aria-selected="true">Próximos</button><button role="tab" id="tabRes" aria-selected="false">Resultados</button></div><ul class="games" id="games"></ul></div>' +
       ((t.porteros || []).length ?
         '<div class="panel"><h3>Goleadores y porteros</h3><div class="tabs" role="tablist"><button role="tab" id="tabGol" aria-selected="true">Goleadores</button><button role="tab" id="tabPor" aria-selected="false">Porteros</button></div><ul class="scorers" id="scorers">' + X.scorersList(t) + "</ul></div>" :
         '<div class="panel"><h3>Goleadores</h3><ul class="scorers">' + X.scorersList(t) + "</ul></div>") +
@@ -493,6 +537,8 @@ SHOP_JS = """  document.getElementById("shopList").innerHTML = C.tienda.map(func
 """
 
 # ---------------------------------------------------------------- SOCIOS
+FREE_SLOT = """'<a class="sp free" href="contacto.html"><span class="sp-box">¿Tu negocio aquí?</span><span class="sp-cap"><b>Patrocina al Ortuella</b><small>Escríbenos y te contamos</small></span></a>'"""
+
 PAGES["socios"] = dict(
  title="Socios y tienda · CD Ortuella", desc="Hazte socio del CD Ortuella, compra la camiseta del 75 aniversario y patrocina al club.",
  body=hero("Hazte socio", "Cada carnet y cada bufanda ayudan a que el Ortuella siga adelante.", "Socios y tienda") + """
@@ -519,11 +565,10 @@ PAGES["socios"] = dict(
 <section class="block alt" id="patrocina">
   <div class="wrap">
     <div class="sec-head">
-      <div><span class="kicker">Empresas</span><h2>Patrocinadores</h2></div>
-      <p>Gracias a quienes apoyan al Ortuella. ¿Tienes un negocio en la zona? Hay sitio para ti.</p>
+      <div><span class="kicker">Empresas</span><h2>Patrocina al Ortuella</h2></div>
+      <p>¿Tienes un negocio en la zona? Pon tu logo en la web del club y ayuda a todos sus equipos. <a href="patrocinadores.html">Ver patrocinadores</a></p>
     </div>
-    <div class="sponsor-row" id="sponsorList"></div>
-    <div class="helpers" id="helpersList"></div>
+    <div class="sp-grid" id="sponsorList"></div>
   </div>
 </section>
 """,
@@ -531,10 +576,45 @@ PAGES["socios"] = dict(
   var X = window.CDO, C = X.C, esc = X.esc;
   document.getElementById("socioPrice").innerHTML = esc(C.socio.precio) + "<small>" + esc(C.socio.periodo) + "</small>";
   document.getElementById("socioOther").textContent = (C.socio.otros || []).map(function (o) { return o[0] + ": " + o[1] + " " + C.socio.periodo; }).join(" · ");
-""" + SHOP_JS + """  var slots = C.patrocinadores.map(function (s) { return '<div class="logo">' + (s.logo ? '<img src="' + esc(s.logo) + '" alt="' + esc(s.nombre) + '">' : esc(s.nombre)) + "</div>"; });
-  while (slots.length < 4) slots.push('<a class="free" href="contacto.html"><div>¿Tu negocio aquí?<br>Patrocina al Ortuella</div></a>');
-  document.getElementById("sponsorList").innerHTML = slots.join("");
-  document.getElementById("helpersList").innerHTML = "<strong>Con el apoyo de:</strong>" + C.colaboradores.map(function (c) { return "<span>" + esc(c) + "</span>"; }).join("");
+""" + SHOP_JS + """  document.getElementById("sponsorList").innerHTML = C.patrocinadores.map(X.sponsorCard).join("") + """ + FREE_SLOT + """;
+})();""")
+
+# ---------------------------------------------------------------- PATROCINADORES
+PAGES["patrocinadores"] = dict(
+ title="Patrocinadores · CD Ortuella", desc="Empresas e instituciones que patrocinan y apoyan al CD Ortuella.",
+ body=hero("Patrocinadores", "Gracias a las empresas e instituciones que hacen posible el Ortuella, del primer equipo a la cantera.", "Patrocinadores") + """
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="kicker">Empresas</span><h2>Patrocinadores</h2></div>
+    </div>
+    <div class="sp-grid" id="spList"></div>
+  </div>
+</section>
+
+<section class="block alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="kicker">Instituciones y amigos</span><h2>Colaboran</h2></div>
+    </div>
+    <div class="sp-grid" id="colList"></div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <div class="sp-cta">
+      <div><h2>¿Quieres patrocinar al Ortuella?</h2>
+      <p>Tu empresa aparecerá en esta web, en todas sus páginas, y ayudarás a que el club siga adelante con todos sus equipos. Escríbenos y te contamos las opciones.</p></div>
+      <a class="btn" href="contacto.html">Quiero patrocinar</a>
+    </div>
+  </div>
+</section>
+""",
+ script="""(function () {
+  var X = window.CDO, C = X.C;
+  document.getElementById("spList").innerHTML = C.patrocinadores.map(X.sponsorCard).join("") + """ + FREE_SLOT + """;
+  document.getElementById("colList").innerHTML = C.colaboradores.map(X.sponsorCard).join("");
 })();""")
 
 # ---------------------------------------------------------------- TIENDA
@@ -545,6 +625,7 @@ PAGES["tienda"] = dict(
   <div class="wrap">
     <div class="shop" id="shopList"></div>
     <p class="source">Para comprar, pásate por la oficina del club o escríbenos por redes sociales. ¿Quieres ayudar todavía más? <a href="socios.html">Hazte socio</a>.</p>
+    <p class="source">Ropa de juego, entreno y paseo del club: <a href="https://www.latiendademiclub.com/cdortuella/" target="_blank" rel="noopener">tienda online oficial (Ekipaciones)</a>.</p>
   </div>
 </section>
 """,
