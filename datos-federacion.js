@@ -1,7 +1,7 @@
 /* Archivo generado automáticamente por actualizar_federacion.py. No editar a mano. */
 window.FEDERACION = {
  "temporada": "2026/27",
- "actualizado": "2026-10-21T13:10+00:00",
+ "actualizado": "2026-10-21T13:28+00:00",
  "equipos": [
   {
    "id": "primer",
@@ -2362,17 +2362,6 @@ window.FEDERACION = {
     },
     {
      "pos": 3,
-     "equipo": "Beti Lagunak",
-     "pts": 3,
-     "pj": 1,
-     "g": 1,
-     "e": 0,
-     "p": 0,
-     "gf": 3,
-     "gc": 0
-    },
-    {
-     "pos": 4,
      "equipo": "Peña ATH. Santurtzi B",
      "pts": 3,
      "pj": 1,
@@ -2383,7 +2372,7 @@ window.FEDERACION = {
      "gc": 0
     },
     {
-     "pos": 5,
+     "pos": 4,
      "equipo": "Trapagaran C",
      "pts": 3,
      "pj": 1,
@@ -2392,6 +2381,17 @@ window.FEDERACION = {
      "p": 0,
      "gf": 2,
      "gc": 1
+    },
+    {
+     "pos": 5,
+     "equipo": "Beti Lagunak",
+     "pts": 0,
+     "pj": 0,
+     "g": 0,
+     "e": 0,
+     "p": 0,
+     "gf": 0,
+     "gc": 0
     },
     {
      "pos": 6,
@@ -2428,17 +2428,6 @@ window.FEDERACION = {
     },
     {
      "pos": 9,
-     "equipo": "Arbuyo",
-     "pts": 0,
-     "pj": 1,
-     "g": 0,
-     "e": 0,
-     "p": 1,
-     "gf": 0,
-     "gc": 3
-    },
-    {
-     "pos": 10,
      "equipo": "Santurtzi B",
      "pts": 0,
      "pj": 1,
@@ -2449,7 +2438,7 @@ window.FEDERACION = {
      "gc": 3
     },
     {
-     "pos": 11,
+     "pos": 10,
      "equipo": "Zuazo B",
      "pts": 0,
      "pj": 1,
@@ -2460,7 +2449,7 @@ window.FEDERACION = {
      "gc": 5
     },
     {
-     "pos": 12,
+     "pos": 11,
      "equipo": "Zalla",
      "pts": 0,
      "pj": 1,
@@ -2473,6 +2462,17 @@ window.FEDERACION = {
     {
      "pos": 0,
      "equipo": "Aranguren B",
+     "pts": 0,
+     "pj": 0,
+     "g": 0,
+     "e": 0,
+     "p": 0,
+     "gf": 0,
+     "gc": 0
+    },
+    {
+     "pos": 0,
+     "equipo": "Arbuyo",
      "pts": 0,
      "pj": 0,
      "g": 0,
