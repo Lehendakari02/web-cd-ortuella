@@ -42,6 +42,11 @@ EQUIPOS = [
      "codequipo": 13458, "codcompeticion": 24058483, "codgrupo": 24155611},
     {"id": "cadete", "nombre": "Cadete", "categoria": "Cadete Tercera División (3C) · Grupo 1",
      "codequipo": 13456, "codcompeticion": 24247513, "codgrupo": 24249031},
+    # Fútbol base (deporte escolar): página propia como los demás, pero fuera de la portada.
+    # Antes de empezar la liga no hay clasificación; por eso se da el nombre que usa la Federación.
+    {"id": "infantil", "nombre": "Infantil", "categoria": "Infantil Liga D (Bizkaia) · Grupo 1", "base": True,
+     "nombre_fed": "Ortuella2013-14", "nombre_web": "Ortuella",
+     "codequipo": 25186751, "codcompeticion": 25093697, "codgrupo": 25189413},
 ]
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
@@ -82,9 +87,13 @@ def nombre_bonito(s):
 
 
 def url_clasificacion(eq, jornada=None):
-    u = (f"NFG_VisClasificacion?cod_primaria=1000120&codcompeticion={eq['codcompeticion']}"
-         f"&codgrupo={eq['codgrupo']}&codtemporada={TEMPORADA}")
-    return u + (f"&CodJornada={jornada}" if jornada else "")
+    if jornada:
+        # Para una jornada concreta hay que usar la misma dirección que la propia web de la
+        # Federación (codjornada en minúsculas y sin codtemporada); si no, devuelve la última jornada.
+        return (f"NFG_VisClasificacion?cod_primaria=1000120&codgrupo={eq['codgrupo']}"
+                f"&codcompeticion={eq['codcompeticion']}&codjornada={jornada}")
+    return (f"NFG_VisClasificacion?cod_primaria=1000120&codcompeticion={eq['codcompeticion']}"
+            f"&codgrupo={eq['codgrupo']}&codtemporada={TEMPORADA}")
 
 
 def leer_clasificacion(pagina):
@@ -111,7 +120,9 @@ def leer_clasificacion(pagina):
 def leer_resultados_jornada(pagina, jornada):
     """Bloque 'Jardunaldia N (fecha)' con los resultados de esa jornada."""
     m = re.search(r"Jardunaldia\s+%d\s*\((\d\d-\d\d-\d{4})\)" % jornada, limpio(pagina))
-    fecha = datetime.strptime(m.group(1), "%d-%m-%Y").date().isoformat() if m else None
+    if not m:
+        return []   # la página trae otra jornada: mejor nada que guardar resultados en la jornada equivocada
+    fecha = datetime.strptime(m.group(1), "%d-%m-%Y").date().isoformat()
     partidos = []
     patron = (r"Codigo_Equipo=(\d+)\">(.*?)</a>.*?<b>\s*(\d+)\s*</b>\s*-\s*<b>\s*(\d+)\s*</b>.*?"
               r"CodActa=(\d+).*?Codigo_Equipo=(\d+)\">(.*?)</a>")
@@ -166,11 +177,11 @@ def actualizar_equipo(eq, anterior):
     print(f"- {eq['nombre']}")
     pagina = descargar(url_clasificacion(eq))
     clasificacion = leer_clasificacion(pagina)
-    if not clasificacion:
+    if not clasificacion and not eq.get("base"):
         raise RuntimeError("clasificación vacía: puede que la Federación haya cambiado su web")
     nuestra = next((f for f in clasificacion if f["codequipo"] == eq["codequipo"]), None)
-    nombre_fed = nuestra["equipo"] if nuestra else "Ortuella"
-    jugadas = max(f["pj"] for f in clasificacion)
+    nombre_fed = nuestra["equipo"] if nuestra else eq.get("nombre_fed", "Ortuella")
+    jugadas = max((f["pj"] for f in clasificacion), default=0)
 
     calendario = leer_calendario(descargar(
         f"NFG_VisCalendario_Vis?cod_primaria=1000120&codtemporada={TEMPORADA}"
@@ -195,12 +206,26 @@ def actualizar_equipo(eq, anterior):
         partidos.append({**p, "gl": r["gl"] if r else None, "gv": r["gv"] if r else None,
                          "acta": r["acta"] if r else None})
 
-    goleadores = leer_goleadores(descargar(
-        f"NFG_CMP_Goleadores?cod_primaria=1000120&codcompeticion={eq['codcompeticion']}"
-        f"&codtemporada={TEMPORADA}&codgrupo={eq['codgrupo']}"), nombre_fed.upper())
+    try:
+        goleadores = leer_goleadores(descargar(
+            f"NFG_CMP_Goleadores?cod_primaria=1000120&codcompeticion={eq['codcompeticion']}"
+            f"&codtemporada={TEMPORADA}&codgrupo={eq['codgrupo']}"), nombre_fed.upper())
+    except RuntimeError:
+        if not eq.get("base"):
+            raise
+        goleadores = anterior.get("goleadores", [])   # en el fútbol base la tabla llega vacía hasta que hay goles
+
+    # En la web se ve "Ortuella" aunque la Federación lo llame, por ejemplo, "Ortuella2013-14".
+    # Los resultados internos se guardan con el nombre de la Federación, que es con el que se buscan.
+    if eq.get("nombre_web"):
+        web = lambda n: eq["nombre_web"] if n == nombre_fed else n
+        partidos = [{**p, "local": web(p["local"]), "visitante": web(p["visitante"])} for p in partidos]
+        clasificacion = [{**f, "equipo": web(f["equipo"])} for f in clasificacion]
+        nombre_fed = eq["nombre_web"]
 
     return {
         "id": eq["id"], "nombre": eq["nombre"], "categoria": eq["categoria"], "nombreFederacion": nombre_fed,
+        **({"base": True} if eq.get("base") else {}),
         "clasificacion": [{k: v for k, v in f.items() if k != "codequipo"} for f in clasificacion],
         "partidos": partidos,
         "goleadores": goleadores,
@@ -210,7 +235,9 @@ def actualizar_equipo(eq, anterior):
 
 
 def main():
-    descargar("NFG_VisClasificacion?cod_primaria=1000120")  # primera visita: la Federación pone su cookie
+    # Antes se hacía aquí una "primera visita" a NFG_VisClasificacion sin equipo para coger la
+    # cookie, pero esa página siempre llega vacía y paraba todo. La cookie se coge en la primera
+    # página de verdad.
     anterior = cargar_anterior()
     previos = {e["id"]: e for e in anterior.get("equipos", [])}
     equipos, errores = [], []

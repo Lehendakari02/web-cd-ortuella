@@ -51,8 +51,7 @@ window.CLUB = {
 
   equiposBase: [
     { nombre: "Infantil", categoria: "Infantil Liga D (Bizkaia) · nacidos 2013-14" },
-    { nombre: "Alevín", categoria: "Deporte escolar", pendiente: true },
-    { nombre: "Benjamín", categoria: "Deporte escolar", pendiente: true }
+    { nombre: "Alevín", categoria: "Alevín Liga B (Bizkaia)", pendiente: true }
   ],
 
   directiva: [

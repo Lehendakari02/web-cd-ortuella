@@ -278,7 +278,7 @@ PAGES["equipos"] = dict(
       var r = X.ourRow(t);
       return '<a class="team-card" href="#' + X.SLUG[t.id] + '"><svg width="40" height="40" aria-hidden="true"><use href="#shirt"/></svg><h3>' + X.APODO[t.id] + "</h3><p>" + esc(t.categoria) + "</p>" +
         (r ? '<div class="pos-line">' + r.pos + "º · " + r.pts + " puntos</div>" : "") + '<span class="go">Ver equipo</span></a>';
-    }).join("") + '<a class="team-card" href="#base"><svg width="40" height="40" aria-hidden="true"><use href="#shirt"/></svg><h3>Fútbol base</h3><p>Infantil, alevín y benjamín</p><span class="go">Ver equipos</span></a></div></div></section>';
+    }).join("") + '<a class="team-card" href="#base"><svg width="40" height="40" aria-hidden="true"><use href="#shirt"/></svg><h3>Fútbol base</h3><p>Infantil y alevín</p><span class="go">Ver equipos</span></a></div></div></section>';
   }
 
   function base() {
@@ -323,7 +323,7 @@ PAGES["equipos"] = dict(
     var goals = t.goleadores.reduce(function (a, g) { return a + g.goles; }, 0);
     $("teamView").innerHTML = '<section class="block"><div class="wrap">' + photo(t) +
       '<div class="stats">' + (r ?
-        '<div class="stat"><b>' + r.pos + "º</b><small>Posición</small></div>" +
+        '<div class="stat"><b>' + (r.pj ? r.pos + "º" : "–") + "</b><small>Posición</small></div>" +
         '<div class="stat"><b>' + r.pts + "</b><small>Puntos</small></div>" +
         '<div class="stat"><b>' + r.gf + "-" + r.gc + "</b><small>Goles a favor y en contra</small></div>" :
         // Sin clasificación (fútbol base): lo que se saca de sus partidos

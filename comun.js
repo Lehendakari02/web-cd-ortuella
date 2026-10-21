@@ -16,9 +16,9 @@
   var today = new Date(); today.setHours(0, 0, 0, 0);
 
   // Nombre corto y enlace de cada equipo
-  var APODO = { primer: "Senior A", b: "Senior B", juvenil: "Juvenil", cadete: "Cadete", infantil: "Infantil", alevin: "Alevín", benjamin: "Benjamín" };
-  var SLUG = { primer: "senior-a", b: "senior-b", juvenil: "juvenil", cadete: "cadete", infantil: "infantil", alevin: "alevin", benjamin: "benjamin" };
-  // Fútbol base (Infantil, alevín, benjamín): tienen su página, pero no salen en la portada
+  var APODO = { primer: "Senior A", b: "Senior B", juvenil: "Juvenil", cadete: "Cadete", infantil: "Infantil", alevin: "Alevín" };
+  var SLUG = { primer: "senior-a", b: "senior-b", juvenil: "juvenil", cadete: "cadete", infantil: "infantil", alevin: "alevin" };
+  // Fútbol base (Infantil y alevín): tienen su página, pero no salen en la portada
   var federados = function () { return F.equipos.filter(function (t) { return !t.base; }); };
   var team = function (id) { return F.equipos.filter(function (t) { return t.id === id; })[0]; };
   var isUs = function (name, t) { return name === t.nombreFederacion; };
@@ -43,7 +43,7 @@
       { t: "Senior B", h: "equipos.html#senior-b", d: "Tercera División · Grupo 1" },
       { t: "Juvenil", h: "equipos.html#juvenil", d: "Juvenil Segunda División" },
       { t: "Cadete", h: "equipos.html#cadete", d: "Cadete Tercera División" },
-      { t: "Fútbol base", h: "equipos.html#base", d: "Infantil, alevín y benjamín" }
+      { t: "Fútbol base", h: "equipos.html#base", d: "Infantil y alevín" }
     ] },
     { t: "Noticias", h: "noticias.html" },
     { t: "Club", sub: [
