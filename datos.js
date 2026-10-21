@@ -12,7 +12,7 @@ window.CLUB = {
     etiqueta: "Ya a la venta",
     titulo: "Camiseta del 75 aniversario",
     texto: "Edición especial por los 75 años del club. 30 €.",
-    foto: "img/camiseta-75.webp",
+    foto: "img/camiseta-75-recorte.webp",
     boton: "Cómprala aquí",
     enlace: "tienda.html",
     hasta: null
@@ -182,7 +182,7 @@ window.CLUB = {
 
   tienda: [
     { nombre: "Camiseta 75 aniversario", precio: "30 €", foto: "img/camiseta-75.webp" },
-    { nombre: "Bufanda del club", precio: "15 €", foto: null },
+    { nombre: "Bufanda 75 aniversario", precio: "15 €", foto: "img/bufanda.webp" },
     { nombre: "Paraguas", precio: null, foto: "img/paraguas.jpg" },
     { nombre: "Pin del escudo", precio: null, foto: "img/pin.jpg" }
   ],

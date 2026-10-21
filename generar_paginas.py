@@ -183,7 +183,7 @@ PAGES["index"] = dict(
   document.getElementById("quick").innerHTML = [
     ["socios.html", "Hazte socio", C.socio.precio + " " + C.socio.periodo + ". Apoya al primer equipo y a la cantera."],
     ["tienda.html", "Camiseta 75 aniversario", price("Camiseta") + ". Edición especial por los 75 años del club."],
-    ["tienda.html", "Bufanda del club", price("Bufanda") + ". Azul y blanca, para la grada de Otxartaga."],
+    ["tienda.html", "Bufanda 75 aniversario", price("Bufanda") + ". Azul y blanca, para la grada de Otxartaga."],
     ["contacto.html", "Juega en el Ortuella", "Inscripciones abiertas para la temporada. Llama al 696 51 24 69."]
   ].map(function (q) { return '<a href="' + q[0] + '"><b>' + q[1] + "</b><span>" + esc(q[2]) + "</span></a>"; }).join("");
 })();""")
