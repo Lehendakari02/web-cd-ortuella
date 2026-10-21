@@ -59,8 +59,11 @@ _opener.addheaders = [("User-Agent", "Mozilla/5.0 (compatible; CDOrtuellaWeb/1.0
                       ("Accept-Language", "es-ES,es;q=0.9")]
 
 
+ESPERAS = [5, 15, 30, 60, 90]   # segundos antes de cada reintento: la Federación a veces devuelve páginas vacías un rato
+
+
 def descargar(ruta):
-    for intento in range(4):
+    for intento in range(len(ESPERAS) + 1):
         try:
             with _opener.open(BASE + ruta, timeout=40) as r:
                 datos = r.read().decode("iso-8859-15", errors="replace")
@@ -68,11 +71,11 @@ def descargar(ruta):
             if len(datos) > 5000 and "Sarbide datuak" not in datos and "Datos de acceso" not in datos:
                 return datos
             # A veces la Federación devuelve una página vacía o pide la cookie otra vez
-            print(f"  aviso: respuesta vacía en {ruta}, reintento", file=sys.stderr)
-            time.sleep(3 * (intento + 1))
+            print(f"  aviso: respuesta vacía en {ruta}", file=sys.stderr)
         except Exception as e:  # red caída, servidor lento...
-            print(f"  aviso: fallo al leer {ruta} ({e}), reintento", file=sys.stderr)
-            time.sleep(5 * (intento + 1))
+            print(f"  aviso: fallo al leer {ruta} ({e})", file=sys.stderr)
+        if intento < len(ESPERAS):
+            time.sleep(ESPERAS[intento])
     raise RuntimeError(f"No se pudo leer {ruta}")
 
 
@@ -444,15 +447,29 @@ def main():
     # Datos compartidos por todos los equipos: actas leídas, escudos de los rivales y su campo
     comun = {"actas": anterior.get("actas", {}), "escudos": anterior.get("escudos", {}),
              "campos": anterior.get("campos", {})}
-    equipos, errores = [], []
-    for eq in EQUIPOS:
-        try:
-            equipos.append(actualizar_equipo(eq, previos.get(eq["id"], {}), comun))
-        except Exception as e:
-            errores.append(f"{eq['nombre']}: {e}")
-            print(f"  ERROR: {e}", file=sys.stderr)
-            if eq["id"] in previos:      # si falla, la web sigue mostrando los últimos datos buenos
-                equipos.append(previos[eq["id"]])
+    leidos, pendientes = {}, list(EQUIPOS)
+    # Si un equipo falla, se vuelve a intentar al final, tras una pausa larga
+    for vuelta in range(2):
+        if vuelta:
+            print(f"  Reintentando {len(pendientes)} equipo(s) dentro de 2 minutos", file=sys.stderr)
+            time.sleep(120)
+        fallidos = []
+        for eq in pendientes:
+            try:
+                leidos[eq["id"]] = actualizar_equipo(eq, previos.get(eq["id"], {}), comun)
+            except Exception as e:
+                fallidos.append((eq, e))
+                print(f"  ERROR en {eq['nombre']}: {e}", file=sys.stderr)
+        pendientes = [eq for eq, _ in fallidos]
+        if not pendientes:
+            break
+    errores = [f"{eq['nombre']}: {e}" for eq, e in fallidos]
+    equipos = []
+    for eq in EQUIPOS:                   # mismo orden de siempre
+        if eq["id"] in leidos:
+            equipos.append(leidos[eq["id"]])
+        elif eq["id"] in previos:        # si falla, la web sigue mostrando los últimos datos buenos
+            equipos.append(previos[eq["id"]])
     if not equipos:
         sys.exit("No se ha podido leer nada de la Federación. No se cambia nada.")
     datos = {"temporada": TEMPORADA_TEXTO,
