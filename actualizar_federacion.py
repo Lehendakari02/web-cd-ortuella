@@ -4,7 +4,8 @@ Actualiza los datos de la web del CD Ortuella con la información pública de la
 Federación Vizcaína de Fútbol (www.fvf-bff.eus).
 
 Genera el archivo datos-federacion.js con, para cada equipo:
-clasificación, calendario, resultados y goleadores del club.
+clasificación, calendario, resultados, goleadores y porteros del club, y las actas de
+nuestros partidos (goles, tarjetas, alineaciones, cambios), el campo de cada rival y sus escudos.
 Después regenera los calendarios del móvil (carpeta calendario/).
 
 Uso:  python3 actualizar_federacion.py
@@ -164,6 +165,118 @@ def leer_goleadores(pagina, equipo_fed):
     return sorted(goles, key=lambda g: -g["goles"])
 
 
+MINUTO = r"\((\d+)'(?:\s*\+\s*(\d+))?\)"   # (28') o, en el descuento, (45'+2)
+
+
+def minuto(m):
+    """Minuto de un evento del acta; el descuento va aparte para poder ordenar."""
+    if not m:
+        return {"min": None}
+    return {"min": int(m.group(1)), **({"mas": int(m.group(2))} if m.group(2) else {})}
+
+
+def titulo(s):
+    """'OTXARTAGA-BERRI' -> 'Otxartaga-Berri', 'EL MORTUERO' -> 'El Mortuero', 'CAMPO DE LA PAZ' -> 'Campo de la Paz'"""
+    menores = {"de", "del", "la", "las", "los", "el", "y"}
+    s = re.sub(r"-?\b\d{5}\b", "", s)          # sin código postal ("Balmaseda-48800")
+    return " ".join(w.upper() if "." in w else w.lower() if i and w.lower() in menores
+                    else "-".join(x.capitalize() for x in w.split("-")) for i, w in enumerate(s.split()))
+
+
+def nombre_persona(s):
+    """'CEA MUÑOZ, MIKEL' -> 'Mikel Cea Muñoz' (con 'de', 'del', 'la'... en minúscula)."""
+    apellidos, _, nombre = limpio(s).partition(",")
+    menores = {"de", "del", "la", "las", "los", "y", "da", "dos", "van"}
+    palabras = f"{nombre.strip()} {apellidos.strip()}".split()
+    return " ".join(w.lower() if i and w.lower() in menores else "-".join(x.capitalize() for x in w.split("-"))
+                    for i, w in enumerate(palabras))
+
+
+def leer_porteros(pagina, equipo_fed):
+    """Tabla pública de porteros: minutos jugados y goles encajados."""
+    porteros = []
+    for tr in re.findall(r"<tr[^>]*>(.*?)</tr>", pagina, re.S):
+        c = [limpio(x) for x in re.findall(r"<td[^>]*>(.*?)</td>", tr, re.S)]
+        if len(c) >= 5 and c[1].replace('"', "").strip().upper() == equipo_fed.upper() and c[3].isdigit() and c[4].isdigit():
+            porteros.append({"nombre": nombre_persona(c[0]), "minutos": int(c[3]), "goles": int(c[4])})
+    return sorted(porteros, key=lambda g: -g["minutos"])
+
+
+def _lista_jugadores(tabla):
+    return [{"dorsal": int(d) if d.isdigit() else None, "nombre": nombre_persona(n)}
+            for d, n in re.findall(r"<tr[^>]*>\s*<td[^>]*>\s*(\d*)\s*</td>\s*<td[^>]*>(.*?)</td>\s*</tr>", tabla, re.S)]
+
+
+def leer_acta(pagina):
+    """Acta de un partido: campo, escudos, alineaciones, goles, tarjetas y cambios.
+    El marcador del acta está ofuscado (la Federación pone números falsos); el resultado
+    bueno sale de la clasificación. Aquí el lado de cada gol se saca de las alineaciones."""
+    acta = {}
+    m = re.search(r"Futbol Zelaia:</strong>\s*<a[^>]*Codigo_Campo=(\d+)[^>]*>(.*?)</a>", pagina, re.S)
+    ciudad = re.search(r"Hiria:\s*([^<]+)<", pagina)
+    if m:
+        campo = titulo(limpio(m.group(2)).replace('"', ""))
+        ciudad = titulo(limpio(ciudad.group(1))) if ciudad else ""
+        acta["campo"] = campo + (", " + ciudad if ciudad and ciudad.lower() not in campo.lower() else "")
+        acta["codcampo"] = int(m.group(1))
+    acta["escudos"] = re.findall(r'src="(/pnfg/pimg/[^"]*escudos[^"]*?(\d+)_grande\.png)"', pagina)[:2]
+
+    # Cada equipo tiene su bloque: Titularrak (titulares), Ordezkoak (suplentes),
+    # Ordezkapenak (cambios) y Txartelak (tarjetas). El primero es el local.
+    bloques = pagina.split("<strong>Titularrak</strong>")[1:3]
+    if len(bloques) < 2:
+        return acta
+    alineaciones, cambios, tarjetas, quien = {}, [], [], {}
+    for lado, b in zip(("local", "visitante"), bloques):
+        b = b.split("dashboard-stat")[0] if lado == "local" else b
+        titulares, _, resto = b.partition("<strong>Ordezkoak</strong>")
+        suplentes = resto.split("Langile Teknikoak")[0] if resto else ""
+        alineaciones[lado] = {"titulares": _lista_jugadores(titulares.split("</table>")[0]),
+                              "suplentes": _lista_jugadores(suplentes.split("</table>")[0])}
+        for j in alineaciones[lado]["titulares"] + alineaciones[lado]["suplentes"]:
+            quien[j["nombre"]] = lado
+        cam = b.split("<h4>Ordezkapenak</h4>")[1].split("<h4>")[0] if "<h4>Ordezkapenak</h4>" in b else ""
+        for t in re.findall(r"<table[^>]*>(.*?)</table>", cam, re.S):
+            filas = re.findall(r"<tr>(.*?)</tr>", t, re.S)
+            if len(filas) != 2:
+                continue
+            entra = limpio(re.findall(r"<td[^>]*>(.*?)</td>", filas[0], re.S)[1])
+            sale_td = re.findall(r"<td[^>]*>(.*?)</td>", filas[1], re.S)[1]
+            mm = re.search(MINUTO, sale_td)
+            cambios.append({**minuto(mm), "lado": lado,
+                            "sale": nombre_persona(re.sub(MINUTO, "", sale_td)), "entra": nombre_persona(entra)})
+        tar = b.split("<h4>Txartelak</h4>")[1].split("</table>")[0] if "<h4>Txartelak</h4>" in b else ""
+        for img, texto in re.findall(r"<img[^>]*src=\"[^\"]*/(tarj_[a-z_]+)\.gif\"[^>]*>.*?<td[^>]*>(.*?)</td>", tar, re.S):
+            mm = re.search(MINUTO, texto)
+            tipo = "doble" if "dob" in img or "2am" in img else "roja" if "roj" in img else "amarilla"
+            nombre = nombre_persona(re.sub(MINUTO, "", texto))
+            t = {**minuto(mm), "lado": lado, "jugador": nombre, "tipo": tipo}
+            if nombre not in quien:
+                t["tecnico"] = True     # tarjeta a un entrenador o delegado: no cuenta como jugador
+            tarjetas.append(t)
+
+    goles = []
+    seccion = pagina.split(">Golak</div>")[1].split("</table>")[0] if ">Golak</div>" in pagina else ""
+    for tr in re.findall(r"<tr>(.*?)</tr>", seccion, re.S):
+        tds = re.findall(r"<td[^>]*>(.*?)</td>", tr, re.S)
+        if len(tds) < 2:
+            continue
+        mm = re.search(MINUTO, tds[1])
+        jugador = nombre_persona(re.sub(MINUTO, "", tds[1]))
+        color = re.search(r"fa-futbol\" style=\"color:\s*([^;\"]+)", tds[0])
+        color = color.group(1).strip().lower() if color else ""
+        tipo = "pen" if "21, 114" in color or "blue" in color else "pp" if color == "red" else None
+        lado = quien.get(jugador)
+        if tipo == "pp" and lado:
+            lado = "visitante" if lado == "local" else "local"   # en propia puerta cuenta para el otro
+        g = {**minuto(mm), "lado": lado, "jugador": jugador}
+        if tipo:
+            g["tipo"] = tipo
+        goles.append(g)
+    acta.update({"goles": goles, "tarjetas": tarjetas, "alineaciones": alineaciones, "cambios": cambios})
+    return acta
+
+
 def cargar_anterior():
     try:
         with open(SALIDA, encoding="utf-8") as f:
@@ -173,7 +286,56 @@ def cargar_anterior():
         return {}
 
 
-def actualizar_equipo(eq, anterior):
+def escudo_ligero(datos, destino_sin_ext):
+    """Los escudos de la Federación llegan a pesar 300 KB; en la web se ven pequeños.
+    Si está Pillow, se guardan en WebP de 96 px (unos 4 KB); si no, tal cual en PNG."""
+    try:
+        from io import BytesIO
+        from PIL import Image
+        img = Image.open(BytesIO(datos)).convert("RGBA")
+        img.thumbnail((96, 96))
+        img.save(destino_sin_ext + ".webp", "WEBP", quality=88, method=6)
+        return ".webp"
+    except ImportError:
+        with open(destino_sin_ext + ".png", "wb") as f:
+            f.write(datos)
+        return ".png"
+
+
+def descargar_escudo(ruta, codigo):
+    """Guarda el escudo de un club en img/escudos/ (solo la primera vez)."""
+    carpeta = os.path.join(AQUI, "img", "escudos")
+    for ext in (".webp", ".png"):
+        if os.path.exists(os.path.join(carpeta, f"{codigo}{ext}")):
+            return f"{codigo}{ext}"
+    try:
+        with _opener.open("https://www.fvf-bff.eus" + ruta, timeout=40) as r:
+            datos = r.read()
+        time.sleep(PAUSA)
+    except Exception as e:
+        print(f"  aviso: no se pudo bajar el escudo {codigo} ({e})", file=sys.stderr)
+        return None
+    if not datos.startswith(b"\x89PNG"):
+        return None
+    os.makedirs(carpeta, exist_ok=True)
+    return f"{codigo}" + escudo_ligero(datos, os.path.join(carpeta, str(codigo)))
+
+
+def leer_acta_partido(codacta, local, visitante, comun):
+    """Lee un acta y apunta, de paso, el campo del equipo local y los escudos de los dos."""
+    acta = leer_acta(descargar(f"NFG_CmpPartido?cod_primaria=1000120&CodActa={codacta}"))
+    if acta.get("campo"):
+        comun["campos"][local] = acta["campo"]
+    for nombre, (ruta, codigo) in zip((local, visitante), acta.pop("escudos", [])):
+        if codigo != "1047" and nombre not in comun["escudos"]:   # 1047 = CD Ortuella: ya tenemos el nuestro
+            archivo = descargar_escudo(ruta, codigo)
+            if archivo:
+                comun["escudos"][nombre] = archivo
+    acta.pop("codcampo", None)
+    return acta
+
+
+def actualizar_equipo(eq, anterior, comun):
     print(f"- {eq['nombre']}")
     pagina = descargar(url_clasificacion(eq))
     clasificacion = leer_clasificacion(pagina)
@@ -206,6 +368,44 @@ def actualizar_equipo(eq, anterior):
         partidos.append({**p, "gl": r["gl"] if r else None, "gv": r["gv"] if r else None,
                          "acta": r["acta"] if r else None})
 
+    # Actas de nuestros partidos jugados (solo las que aún no tenemos)
+    for p in partidos:
+        clave = str(p["acta"]) if p["acta"] else None
+        if not clave or clave in comun["actas"]:
+            continue
+        try:
+            acta = leer_acta_partido(p["acta"], p["local"], p["visitante"], comun)
+        except RuntimeError as e:
+            print(f"  aviso: acta {clave} sin leer ({e})", file=sys.stderr)
+            continue
+        cuenta = lambda lado: sum(1 for g in acta.get("goles", []) if g["lado"] == lado)
+        if (cuenta("local"), cuenta("visitante")) != (p["gl"], p["gv"]):
+            print(f"  aviso: los goles del acta {clave} no cuadran con el resultado; no se ponen", file=sys.stderr)
+            acta["goles"] = []
+        comun["actas"][clave] = acta
+
+    # Campo de cada rival: sale del acta de cualquier partido que haya jugado en casa
+    for p in partidos:
+        rival = p["local"]
+        if rival == nombre_fed or rival in comun["campos"]:
+            continue
+        r = next((r for r in resultados.values() if r["local"] == rival and r.get("acta")), None)
+        if r:
+            try:
+                leer_acta_partido(r["acta"], r["local"], r["visitante"], comun)
+            except RuntimeError as e:
+                print(f"  aviso: campo de {rival} sin leer ({e})", file=sys.stderr)
+    for p in partidos:
+        if p["local"] != nombre_fed and p["local"] in comun["campos"]:
+            p["campo"] = comun["campos"][p["local"]]
+
+    try:
+        porteros = leer_porteros(descargar(
+            f"NFG_CMP_Porteros?cod_primaria=1000120&codcompeticion={eq['codcompeticion']}"
+            f"&codtemporada={TEMPORADA}&codgrupo={eq['codgrupo']}"), nombre_fed.upper())
+    except RuntimeError:
+        porteros = anterior.get("porteros", [])
+
     try:
         goleadores = leer_goleadores(descargar(
             f"NFG_CMP_Goleadores?cod_primaria=1000120&codcompeticion={eq['codcompeticion']}"
@@ -229,6 +429,7 @@ def actualizar_equipo(eq, anterior):
         "clasificacion": [{k: v for k, v in f.items() if k != "codequipo"} for f in clasificacion],
         "partidos": partidos,
         "goleadores": goleadores,
+        "porteros": porteros,
         "resultados": list(resultados.values()),   # copia interna, para no volver a pedirlos
         "enlace": "https://www.fvf-bff.eus/pnfg/NPcd/" + url_clasificacion(eq),
     }
@@ -240,10 +441,13 @@ def main():
     # página de verdad.
     anterior = cargar_anterior()
     previos = {e["id"]: e for e in anterior.get("equipos", [])}
+    # Datos compartidos por todos los equipos: actas leídas, escudos de los rivales y su campo
+    comun = {"actas": anterior.get("actas", {}), "escudos": anterior.get("escudos", {}),
+             "campos": anterior.get("campos", {})}
     equipos, errores = [], []
     for eq in EQUIPOS:
         try:
-            equipos.append(actualizar_equipo(eq, previos.get(eq["id"], {})))
+            equipos.append(actualizar_equipo(eq, previos.get(eq["id"], {}), comun))
         except Exception as e:
             errores.append(f"{eq['nombre']}: {e}")
             print(f"  ERROR: {e}", file=sys.stderr)
@@ -253,7 +457,8 @@ def main():
         sys.exit("No se ha podido leer nada de la Federación. No se cambia nada.")
     datos = {"temporada": TEMPORADA_TEXTO,
              "actualizado": datetime.now(timezone.utc).isoformat(timespec="minutes"),
-             "equipos": equipos}
+             "equipos": equipos, "actas": comun["actas"], "escudos": comun["escudos"],
+             "campos": comun["campos"]}
     with open(SALIDA, "w", encoding="utf-8") as f:
         f.write("/* Archivo generado automáticamente por actualizar_federacion.py. No editar a mano. */\n")
         f.write("window.FEDERACION = " + json.dumps(datos, ensure_ascii=False, indent=1) + ";\n")

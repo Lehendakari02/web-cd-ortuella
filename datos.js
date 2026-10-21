@@ -43,8 +43,110 @@ window.CLUB = {
   // Equipos sin datos en la Federación (fútbol base escolar)
   // Plantilla de cada equipo (de las capturas de la app de la Federación). Ejemplo:
   // juvenil: { jugadores: [[1, "Nombre Apellido", "Porteros"], [4, "Nombre Apellido", "Defensas"]], tecnicos: [["Entrenador", "Nombre"]] }
-  // Si un equipo tiene plantilla, sale en su página; el Senior A sigue con la convocatoria hasta tener la suya.
-  plantillas: {},
+  // Plantillas sacadas de la app de la Federación (capturas de Julen, 21-10). El fútbol base, cuando se publiquen.
+  // Los porteros salen de la tabla de porteros de la Federación; los demás van como "Jugadores" (la app no da demarcación).
+  plantillas: {
+    primer: {
+      jugadores: [
+        [null, "Ibai Acosta dos Santos", "Jugadores"],
+        [null, "Eder Almeida Ranedo", "Jugadores"],
+        [null, "Eneko Cabezas Cuesta", "Jugadores"],
+        [null, "Aitzol Coloma Colina", "Porteros"],
+        [null, "Ander Elices Patiño", "Jugadores"],
+        [null, "Izotz Esteban Llinares", "Jugadores"],
+        [null, "Julen Gago Ruiz", "Jugadores"],
+        [null, "Ander Garcia Antunez", "Jugadores"],
+        [null, "Gorka Gonzalez Bustamante", "Jugadores"],
+        [null, "Gorka Iglesias Gonzalez", "Jugadores"],
+        [null, "Aitor Lombera Agra", "Jugadores"],
+        [null, "Endika Lorenzo Quintanar", "Jugadores"],
+        [null, "Aritz Martin Valderrama", "Jugadores"],
+        [null, "Julen Martinez Gutierrez", "Jugadores"],
+        [null, "Asier Martinez Lombera", "Porteros"],
+        [null, "Aitor Periañez Rodriguez", "Jugadores"],
+        [null, "Oier Romero Marcos", "Jugadores"],
+        [null, "Asier Totorica Castellanos", "Jugadores"],
+        [null, "Sergio Ureta Lombera", "Jugadores"],
+        [null, "Lander Vaquero Vazquez", "Jugadores"],
+        [null, "Eder Vico Fuente", "Jugadores"]
+      ],
+      tecnicos: [["Entrenador", "Gorka Prieto Feliz"], ["Entrenador", "Juan L Coloma Perez"], ["Entrenador", "Endika Pascual Sanchez"], ["Delegado", "Juan Carlos Puertas Trasahedo"], ["Delegado", "Endika Sanchez Caro"]]
+    },
+    b: {
+      jugadores: [
+        [null, "Iker Bartolomé Nieto", "Jugadores"],
+        [null, "Landing Bayo", "Jugadores"],
+        [null, "Oier de Diego Ulibarri", "Jugadores"],
+        [null, "Aritz de Maria Lopez", "Jugadores"],
+        [null, "Endika Diaz Perez", "Jugadores"],
+        [null, "Jon Ander Diez Gonzalez", "Jugadores"],
+        [null, "Angelo Cristiano Geremias da Silva", "Jugadores"],
+        [null, "Xabier Gonzalez Lopez", "Jugadores"],
+        [null, "Iker Guadilla Estevez", "Jugadores"],
+        [null, "Kevin Guadilla Estevez", "Jugadores"],
+        [null, "Gonzalo Iglesias Tamayo", "Porteros"],
+        [null, "Youssouf Jaiteh", "Jugadores"],
+        [null, "Yusupha Janneh", "Jugadores"],
+        [null, "Maren Lafuente Ibinaga", "Jugadores"],
+        [null, "Illan Martin Espino", "Jugadores"],
+        [null, "Unai Martinez Lansorena", "Jugadores"],
+        [null, "Xabel Menendez Vaz", "Jugadores"],
+        [null, "Endika Pascual Sanchez", "Jugadores"],
+        [null, "Yeray Rincon Gonzalez", "Jugadores"],
+        [null, "Joseba Santurtun Molinero", "Jugadores"],
+        [null, "Julen Uria Abasolo", "Jugadores"],
+        [null, "Alain Vazquez Gutierrez", "Jugadores"]
+      ],
+      tecnicos: [["Entrenador", "Paul Acosta Domínguez"], ["Delegado", "Aitor Valle Ogazon"]]
+    },
+    juvenil: {
+      jugadores: [
+        [null, "Julen Agredano Gayoso", "Jugadores"],
+        [null, "Jon Alonso-Mardones Alvarez", "Jugadores"],
+        [null, "Julen Aparicio Esteban", "Jugadores"],
+        [null, "Iker de los Mozos Romay", "Jugadores"],
+        [null, "Adur Erdozain Lopez", "Jugadores"],
+        [null, "Roberto Erraiz Iglesias", "Jugadores"],
+        [null, "Xabier Fernandez Segador", "Jugadores"],
+        [null, "Alvaro Fernandez Tarrio", "Jugadores"],
+        [null, "Izei Gomez Galan", "Porteros"],
+        [null, "Unai Guerrero Barrios", "Jugadores"],
+        [null, "Aitor Herrero Campos", "Jugadores"],
+        [null, "Aritz Iglesias Miguelez", "Jugadores"],
+        [null, "Urko Martin Santisteban", "Jugadores"],
+        [null, "Aingeru Moriña Rivera", "Porteros"],
+        [null, "Eneko Novelle Llorente", "Jugadores"],
+        [null, "Aitor Ouro Barcia", "Jugadores"],
+        [null, "Tasio Sagastizabal Garcia", "Jugadores"],
+        [null, "Ibai Sevilla Cano", "Jugadores"],
+        [null, "Alain Zugazabeitia Fernández", "Jugadores"]
+      ],
+      tecnicos: [["Entrenador", "Oier Romero Marcos"], ["Delegado", "Jokin Garcia Martinez"]]
+    },
+    cadete: {
+      jugadores: [
+        [2, "Iñigo Rodriguez Ramirez", "Jugadores"],
+        [3, "Ibai Gonzalez Llanos", "Jugadores"],
+        [4, "David Sanchez Terrazas", "Jugadores"],
+        [5, "Ander Fernandez Avellanal", "Jugadores"],
+        [6, "Enaitz Gonzalez Delgado", "Jugadores"],
+        [7, "Aratz Guezuraga Larrea", "Jugadores"],
+        [8, "Unai Pinillos Carracedo", "Jugadores"],
+        [9, "Asier Marquez Fernandez", "Jugadores"],
+        [10, "Peio Salgado Carbo", "Jugadores"],
+        [11, "Unai García Angulo", "Jugadores"],
+        [12, "Iker Alzueta Mendez", "Jugadores"],
+        [13, "Hector Perez Diez", "Porteros"],
+        [14, "Aimar Martin Espino", "Jugadores"],
+        [15, "Xabier Agredano Manzano", "Jugadores"],
+        [17, "Xabier Fernandez Avellanal", "Jugadores"],
+        [18, "Iker Alonso Ruiz", "Jugadores"],
+        [20, "Jon de Brito Fernandez", "Jugadores"],
+        [23, "Izei Izagirre Iriondo", "Jugadores"]
+      ],
+      tecnicos: [["Entrenador", "Ugaitz Isla Turuelo"], ["Delegado", "Unai Hernando Garcia"]]
+    }
+  },
 
   // Foto de cada equipo en su página (carpeta img/equipos/). Ejemplo: cadete: "img/equipos/cadete.jpg"
   fotosEquipos: {},

@@ -230,7 +230,7 @@ PAGES["partidos"] = dict(
   render();
 
   // Suscripción al calendario: un archivo .ics por equipo, que se regenera con cada actualización
-  var CAL = [["todos", "Todos"], ["senior-a", "Senior A"], ["senior-b", "Senior B"], ["juvenil", "Juvenil"], ["cadete", "Cadete"]];
+  var CAL = [["todos", "Todos"]].concat(F.equipos.map(function (t) { return [X.SLUG[t.id], X.APODO[t.id]]; }));  // un calendario por equipo, también el fútbol base
   var calSel = "todos";
   function renderCal() {
     document.getElementById("calTeams").innerHTML = CAL.map(function (c) { return '<button class="chip" data-cal="' + c[0] + '" aria-pressed="' + (c[0] === calSel) + '">' + c[1] + "</button>"; }).join("");
@@ -298,7 +298,7 @@ PAGES["equipos"] = dict(
     var POS = ["Porteros", "Defensas", "Centrocampistas", "Delanteros"], by = {};
     pl.jugadores.forEach(function (j) { var k = j[2] || "Jugadores"; (by[k] = by[k] || []).push(j); });
     var groups = POS.filter(function (k) { return by[k]; }).concat(Object.keys(by).filter(function (k) { return POS.indexOf(k) < 0; }));
-    var one = function (j) { return '<div class="player"><span class="dorsal">' + esc(j[0] || "") + "</span><b>" + esc(j[1]) + "</b></div>"; };
+    var one = function (j) { return '<div class="player">' + (j[0] ? '<span class="dorsal">' + esc(j[0]) + "</span>" : "") + "<b>" + esc(j[1]) + "</b></div>"; };
     return '<section class="block alt"><div class="wrap"><div class="sec-head"><div><span class="kicker">Plantilla</span><h2>' + X.APODO[t.id] + "</h2></div><p>" + pl.jugadores.length + " jugadores · temporada " + esc(F.temporada) + "</p></div>" +
       '<div class="squad-wrap"><div class="squad">' + groups.map(function (k) { return '<div class="squad-label">' + esc(k) + "</div>" + by[k].map(one).join(""); }).join("") + "</div>" +
       ((pl.tecnicos || []).length ? '<aside class="staff"><h3>Cuerpo técnico</h3><dl>' + pl.tecnicos.map(function (s) { return "<div><dt>" + esc(s[0]) + "</dt><dd>" + esc(s[1]) + "</dd></div>"; }).join("") + "</dl></aside>" : "") + "</div></div></section>";
@@ -334,12 +334,23 @@ PAGES["equipos"] = dict(
       "</div>" +
       '<div class="comp' + (t.clasificacion.length ? "" : " solo") + '">' + (t.clasificacion.length ? '<div><div class="panel"><h3>Clasificación</h3><div class="sub">' + esc(t.categoria) + '</div><div class="table-scroll"><table>' + X.TABLE_HEAD + "<tbody>" + X.tableRows(t) + "</tbody></table></div></div></div>" : "") +
       '<div><div class="panel"><h3>Partidos</h3><div class="tabs" role="tablist"><button role="tab" id="tabNext" aria-selected="true">Próximos</button><button role="tab" id="tabRes" aria-selected="false">Resultados</button></div><ul class="games" id="games"></ul></div>' +
-      '<div class="panel"><h3>Goleadores</h3><ul class="scorers">' + X.scorersList(t) + "</ul></div>" +
+      ((t.porteros || []).length ?
+        '<div class="panel"><h3>Goleadores y porteros</h3><div class="tabs" role="tablist"><button role="tab" id="tabGol" aria-selected="true">Goleadores</button><button role="tab" id="tabPor" aria-selected="false">Porteros</button></div><ul class="scorers" id="scorers">' + X.scorersList(t) + "</ul></div>" :
+        '<div class="panel"><h3>Goleadores</h3><ul class="scorers">' + X.scorersList(t) + "</ul></div>") +
       (X.cardsList(t) ? '<div class="panel"><h3>Tarjetas</h3>' + X.cardsList(t) + "</div>" : "") + "</div></div>" +
       '<p class="source">' + X.sourceNote(t) + "</p>" +
       '<div class="cal-team"><div><b>Los partidos del ' + X.APODO[t.id] + ' en tu calendario</b><p>Se añaden solos y se actualizan con cada jornada. <a href="partidos.html#calendario">Más opciones</a></p></div>' +
       '<div class="btns"><a class="btn blue" href="' + X.calHrefs(X.SLUG[t.id]).apple + '">iPhone o Mac</a><a class="btn line" href="' + X.calHrefs(X.SLUG[t.id]).google + '" target="_blank" rel="noopener">Google Calendar</a></div></div>' +
       "</div></section>" + (roster(t) || (t.id === "primer" ? squad() : ""));
+    // Pestañas Goleadores / Porteros, en el mismo hueco
+    if ($("tabGol")) {
+      var sc = function (porteros) {
+        $("tabGol").setAttribute("aria-selected", !porteros); $("tabPor").setAttribute("aria-selected", porteros);
+        $("scorers").innerHTML = porteros ? X.keepersList(t) : X.scorersList(t);
+      };
+      $("tabGol").onclick = function () { sc(false); };
+      $("tabPor").onclick = function () { sc(true); };
+    }
     var games = function () {
       $("tabNext").setAttribute("aria-selected", !showResults); $("tabRes").setAttribute("aria-selected", showResults);
       $("games").innerHTML = X.gamesList(t, showResults, showResults ? 0 : 8);
@@ -676,16 +687,17 @@ PAGES["partido"] = dict(
   var who = function (lado) { return lado === "local" ? p.local : p.visitante; };
   var ours = function (lado) { return X.isUs(who(lado), t); };
   // Goles y tarjetas en una sola cronología, por minuto
-  var ev = (a.goles || []).map(function (g) { return { min: g.min, lado: g.lado, txt: esc(g.jugador) + (g.tipo === "pp" ? " <small>(en propia)</small>" : g.tipo === "pen" ? " <small>(penalti)</small>" : ""), ico: "gol" }; })
-    .concat((a.tarjetas || []).map(function (c) { return { min: c.min, lado: c.lado, txt: esc(c.jugador), ico: c.tipo }; }))
-    .sort(function (x, y) { return x.min - y.min; });
+  var mlab = function (x) { return x.min == null ? "" : x.min + (x.mas ? "+" + x.mas : "") + "'"; };
+  var ev = (a.goles || []).map(function (g) { return { min: g.min, mas: g.mas, lado: g.lado, txt: esc(g.jugador) + (g.tipo === "pp" ? " <small>(en propia)</small>" : g.tipo === "pen" ? " <small>(penalti)</small>" : ""), ico: "gol" }; })
+    .concat((a.tarjetas || []).map(function (c) { return { min: c.min, mas: c.mas, lado: c.lado, txt: esc(c.jugador) + (c.tecnico ? " <small>(banquillo)</small>" : ""), ico: c.tipo }; }))
+    .sort(function (x, y) { return (x.min + (x.mas || 0) / 100) - (y.min + (y.mas || 0) / 100); });
   var gl = 0, gv = 0;  // marcador en cada gol
   ev.forEach(function (e) { if (e.ico === "gol") { if (e.lado === "local") gl++; else gv++; e.txt += ' <b class="ev-sc">' + gl + "-" + gv + "</b>"; } });
   var ICO = { gol: '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ball"/></svg>', amarilla: '<i class="card y"></i>', roja: '<i class="card r"></i>', doble: '<i class="card y"></i><i class="card r"></i>' };
   var LBL = { gol: "Gol", amarilla: "Amarilla", roja: "Roja", doble: "Segunda amarilla" };
   var line = function (e) {
     var body = '<span class="ev-ico" title="' + LBL[e.ico] + '">' + ICO[e.ico] + '</span><span class="ev-txt">' + e.txt + "</span>";
-    return '<li class="' + e.lado + (ours(e.lado) ? " us" : "") + '"><span class="ev-min">' + e.min + "'</span>" + body + "</li>";
+    return '<li class="' + e.lado + (ours(e.lado) ? " us" : "") + '"><span class="ev-min">' + mlab(e) + "</span>" + body + "</li>";
   };
   var html = "";
   if (ev.length) html += '<div class="panel fi-sec"><h3>Lo que pasó</h3><div class="ev-head"><span>' + esc(p.local) + "</span><span>" + esc(p.visitante) + '</span></div><ol class="ev">' + ev.map(line).join("") + "</ol></div>";
@@ -697,7 +709,7 @@ PAGES["partido"] = dict(
     var row = function (j) {
       var out = subs.filter(function (c) { return c.sale === j.nombre; })[0], inn = subs.filter(function (c) { return c.entra === j.nombre; })[0];
       return "<li><span class=\\"dorsal\\">" + esc(j.dorsal || "") + "</span>" + esc(j.nombre) + (j.capitan ? ' <abbr title="Capitán">C</abbr>' : "") + (j.portero ? ' <abbr title="Portero">POR</abbr>' : "") +
-        (out ? ' <small class="chg out" title="Cambiado en el minuto ' + out.min + '">▼ ' + out.min + "'</small>" : "") + (inn ? ' <small class="chg in" title="Entra en el minuto ' + inn.min + '">▲ ' + inn.min + "'</small>" : "") + "</li>";
+        (out ? ' <small class="chg out" title="Cambiado en el minuto ' + mlab(out) + '">▼ ' + mlab(out) + "</small>" : "") + (inn ? ' <small class="chg in" title="Entra en el minuto ' + mlab(inn) + '">▲ ' + mlab(inn) + "</small>" : "") + "</li>";
     };
     return '<div class="panel lu ' + lado + (ours(lado) ? " us" : "") + '"><h3>' + esc(who(lado)) + '</h3><ul class="lu-list">' + (al.titulares || []).map(row).join("") + "</ul>" +
       ((al.suplentes || []).length ? '<div class="lu-sub">Suplentes</div><ul class="lu-list">' + al.suplentes.map(row).join("") + "</ul>" : "") + "</div>";

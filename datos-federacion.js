@@ -1,7 +1,7 @@
 /* Archivo generado automáticamente por actualizar_federacion.py. No editar a mano. */
 window.FEDERACION = {
  "temporada": "2026/27",
- "actualizado": "2026-10-21T12:02+00:00",
+ "actualizado": "2026-10-21T12:26+00:00",
  "equipos": [
   {
    "id": "primer",
@@ -216,7 +216,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": 2,
      "gv": 1,
-     "acta": 10056640
+     "acta": 10056640,
+     "campo": "San Juan - Santurtzi"
     },
     {
      "jornada": 2,
@@ -234,7 +235,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": 0,
      "gv": 2,
-     "acta": 10056657
+     "acta": 10056657,
+     "campo": "Otxartaga-Berri, Ortuella"
     },
     {
      "jornada": 4,
@@ -252,7 +254,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": 0,
      "gv": 0,
-     "acta": 10056674
+     "acta": 10056674,
+     "campo": "Santa Ana, Sopuerta"
     },
     {
      "jornada": 6,
@@ -270,7 +273,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "P.M. Zorroza, Bilbao"
     },
     {
      "jornada": 8,
@@ -288,7 +292,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Salinillas, Balmaseda"
     },
     {
      "jornada": 10,
@@ -306,7 +311,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Ibarreta, Barakaldo"
     },
     {
      "jornada": 12,
@@ -333,7 +339,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Balandran, Karrantza Harana"
     },
     {
      "jornada": 15,
@@ -351,7 +358,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "La Siebe, Cruces-Barakaldo"
     },
     {
      "jornada": 17,
@@ -378,7 +386,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Serralta, Lutxana - Barakaldo"
     },
     {
      "jornada": 20,
@@ -396,7 +405,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "San Vicente C.D.M., Barakaldo"
     },
     {
      "jornada": 22,
@@ -414,7 +424,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "San Pedro de Kabiezes, Santurtzi"
     },
     {
      "jornada": 24,
@@ -432,7 +443,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Iparralde, Bilbao"
     },
     {
      "jornada": 26,
@@ -450,7 +462,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Errotarte, Trapagaran"
     },
     {
      "jornada": 28,
@@ -468,7 +481,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Maiona A, Bilbao"
     },
     {
      "jornada": 30,
@@ -477,7 +491,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Parque Rivas, Portugalete"
     },
     {
      "jornada": 31,
@@ -495,7 +510,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "El Mortuero, Las Carreras"
     },
     {
      "jornada": 33,
@@ -513,7 +529,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Buenos Aires, Espinosa de los Monteros"
     }
    ],
    "goleadores": [
@@ -546,6 +563,18 @@ window.FEDERACION = {
      "nombre": "Lander Vaquero Vazquez",
      "partidos": 4,
      "goles": 1
+    }
+   ],
+   "porteros": [
+    {
+     "nombre": "Aitzol Coloma Colina",
+     "minutos": 270,
+     "goles": 1
+    },
+    {
+     "nombre": "Asier Martinez Lombera",
+     "minutos": 180,
+     "goles": 2
     }
    ],
    "resultados": [
@@ -1216,7 +1245,8 @@ window.FEDERACION = {
      "visitante": "Ortuella B",
      "gl": 2,
      "gv": 1,
-     "acta": 10056943
+     "acta": 10056943,
+     "campo": "Galindo 1, Sestao"
     },
     {
      "jornada": 2,
@@ -1234,7 +1264,8 @@ window.FEDERACION = {
      "visitante": "Ortuella B",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Las Carmenes Barria, La Arboleda"
     },
     {
      "jornada": 4,
@@ -1315,7 +1346,8 @@ window.FEDERACION = {
      "visitante": "Ortuella B",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Basteita, Alonsotegi"
     },
     {
      "jornada": 13,
@@ -1378,7 +1410,8 @@ window.FEDERACION = {
      "visitante": "Ortuella B",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Hurtado de Saratxo, Sodupe-Gueñes"
     },
     {
      "jornada": 20,
@@ -1423,7 +1456,8 @@ window.FEDERACION = {
      "visitante": "Ortuella B",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "San Miguel-Gallarta"
     },
     {
      "jornada": 25,
@@ -1441,7 +1475,8 @@ window.FEDERACION = {
      "visitante": "Ortuella B",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Benjamin Martinez, Santurtzi"
     }
    ],
    "goleadores": [
@@ -1449,6 +1484,13 @@ window.FEDERACION = {
      "nombre": "Iker Guadilla Estevez",
      "partidos": 1,
      "goles": 1
+    }
+   ],
+   "porteros": [
+    {
+     "nombre": "Gonzalo Iglesias Tamayo",
+     "minutos": 90,
+     "goles": 2
     }
    ],
    "resultados": [
@@ -1712,7 +1754,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": 2,
      "gv": 1,
-     "acta": 10059311
+     "acta": 10059311,
+     "campo": "El Mortuero, Las Carreras"
     },
     {
      "jornada": 2,
@@ -1730,7 +1773,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": 1,
      "gv": 3,
-     "acta": 10059326
+     "acta": 10059326,
+     "campo": "Galindo 1, Sestao"
     },
     {
      "jornada": 4,
@@ -1748,7 +1792,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "P.M. Zorroza, Bilbao"
     },
     {
      "jornada": 6,
@@ -1766,7 +1811,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Las Carmenes Barria, La Arboleda"
     },
     {
      "jornada": 8,
@@ -1784,7 +1830,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Ibarreta, Barakaldo"
     },
     {
      "jornada": 10,
@@ -1811,7 +1858,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Los Llanos, Portugalete"
     },
     {
      "jornada": 13,
@@ -1829,7 +1877,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "San Vicente C.D.M., Barakaldo"
     },
     {
      "jornada": 15,
@@ -1856,7 +1905,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Aitxarte, Bilbao"
     },
     {
      "jornada": 18,
@@ -1874,7 +1924,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Ansio, Barakaldo"
     },
     {
      "jornada": 20,
@@ -1892,7 +1943,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Galindo 2, Sestao"
     },
     {
      "jornada": 22,
@@ -1910,7 +1962,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "San Miguel-Zalla"
     },
     {
      "jornada": 24,
@@ -1928,7 +1981,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "San Pedro de Kabiezes, Santurtzi"
     },
     {
      "jornada": 26,
@@ -1937,7 +1991,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Galindo 2, Sestao"
     },
     {
      "jornada": 27,
@@ -1955,7 +2010,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Hurtado de Saratxo, Sodupe-Gueñes"
     },
     {
      "jornada": 29,
@@ -1973,7 +2029,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Errotarte, Trapagaran"
     }
    ],
    "goleadores": [
@@ -1991,6 +2048,18 @@ window.FEDERACION = {
      "nombre": "Julen Aparicio Esteban",
      "partidos": 3,
      "goles": 1
+    }
+   ],
+   "porteros": [
+    {
+     "nombre": "Izei Gomez Galan",
+     "minutos": 180,
+     "goles": 3
+    },
+    {
+     "nombre": "Aingeru Moriña Rivera",
+     "minutos": 90,
+     "goles": 4
     }
    ],
    "resultados": [
@@ -2291,7 +2360,7 @@ window.FEDERACION = {
     },
     {
      "pos": 3,
-     "equipo": "Peña ATH. Santurtzi B",
+     "equipo": "Beti Lagunak",
      "pts": 3,
      "pj": 1,
      "g": 1,
@@ -2302,6 +2371,17 @@ window.FEDERACION = {
     },
     {
      "pos": 4,
+     "equipo": "Peña ATH. Santurtzi B",
+     "pts": 3,
+     "pj": 1,
+     "g": 1,
+     "e": 0,
+     "p": 0,
+     "gf": 3,
+     "gc": 0
+    },
+    {
+     "pos": 5,
      "equipo": "Trapagaran C",
      "pts": 3,
      "pj": 1,
@@ -2312,29 +2392,7 @@ window.FEDERACION = {
      "gc": 1
     },
     {
-     "pos": 5,
-     "equipo": "Beti Lagunak",
-     "pts": 0,
-     "pj": 0,
-     "g": 0,
-     "e": 0,
-     "p": 0,
-     "gf": 0,
-     "gc": 0
-    },
-    {
      "pos": 6,
-     "equipo": "Arbuyo",
-     "pts": 0,
-     "pj": 0,
-     "g": 0,
-     "e": 0,
-     "p": 0,
-     "gf": 0,
-     "gc": 0
-    },
-    {
-     "pos": 7,
      "equipo": "Portugalete D",
      "pts": 0,
      "pj": 0,
@@ -2345,7 +2403,7 @@ window.FEDERACION = {
      "gc": 0
     },
     {
-     "pos": 8,
+     "pos": 7,
      "equipo": "San Pedro A",
      "pts": 0,
      "pj": 0,
@@ -2356,7 +2414,7 @@ window.FEDERACION = {
      "gc": 0
     },
     {
-     "pos": 9,
+     "pos": 8,
      "equipo": "Somorrostro B",
      "pts": 0,
      "pj": 1,
@@ -2365,6 +2423,17 @@ window.FEDERACION = {
      "p": 1,
      "gf": 1,
      "gc": 2
+    },
+    {
+     "pos": 9,
+     "equipo": "Arbuyo",
+     "pts": 0,
+     "pj": 1,
+     "g": 0,
+     "e": 0,
+     "p": 1,
+     "gf": 0,
+     "gc": 3
     },
     {
      "pos": 10,
@@ -2430,7 +2499,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": 1,
      "gv": 5,
-     "acta": 10064381
+     "acta": 10064381,
+     "campo": "Ansio, Barakaldo"
     },
     {
      "jornada": 2,
@@ -2448,7 +2518,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "El Malecon Berria, Muskiz"
     },
     {
      "jornada": 4,
@@ -2556,7 +2627,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "San Jorge, Santurtzi"
     },
     {
      "jornada": 16,
@@ -2592,7 +2664,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "La Siebe, Cruces-Barakaldo"
     },
     {
      "jornada": 20,
@@ -2601,7 +2674,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Galindo 2, Sestao"
     },
     {
      "jornada": 21,
@@ -2655,7 +2729,8 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "San Juan - Santurtzi"
     }
    ],
    "goleadores": [
@@ -2672,6 +2747,13 @@ window.FEDERACION = {
     {
      "nombre": "Unai García Angulo",
      "partidos": 1,
+     "goles": 1
+    }
+   ],
+   "porteros": [
+    {
+     "nombre": "Hector Perez Diez",
+     "minutos": 80,
      "goles": 1
     }
    ],
@@ -2719,6 +2801,17 @@ window.FEDERACION = {
      "gl": 9,
      "gv": 0,
      "acta": 10064384
+    },
+    {
+     "jornada": 1,
+     "fecha": "2026-10-18",
+     "local": "Beti Lagunak",
+     "visitante": "Arbuyo",
+     "codlocal": 30149,
+     "codvisitante": 1810605,
+     "gl": 3,
+     "gv": 0,
+     "acta": 10064385
     }
    ],
    "enlace": "https://www.fvf-bff.eus/pnfg/NPcd/NFG_VisClasificacion?cod_primaria=1000120&codcompeticion=24247513&codgrupo=24249031&codtemporada=22"
@@ -2944,12 +3037,2929 @@ window.FEDERACION = {
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Balandran, Karrantza Harana"
     }
    ],
    "goleadores": [],
+   "porteros": [],
    "resultados": [],
    "enlace": "https://www.fvf-bff.eus/pnfg/NPcd/NFG_VisClasificacion?cod_primaria=1000120&codcompeticion=25093697&codgrupo=25189413&codtemporada=22"
   }
- ]
+ ],
+ "actas": {
+  "10056640": {
+   "campo": "San Juan - Santurtzi",
+   "goles": [
+    {
+     "min": 28,
+     "lado": "local",
+     "jugador": "Mikel Cea Muñoz"
+    },
+    {
+     "min": 38,
+     "lado": "local",
+     "jugador": "Uztaritz Caño Fernandez"
+    },
+    {
+     "min": 69,
+     "lado": "visitante",
+     "jugador": "Eder Vico Fuente"
+    }
+   ],
+   "tarjetas": [
+    {
+     "min": 32,
+     "lado": "local",
+     "jugador": "Mikel Cea Muñoz",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 68,
+     "lado": "local",
+     "jugador": "Iker Guisasola Casas",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 77,
+     "lado": "local",
+     "jugador": "Erlantz Ortega Martins",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 26,
+     "lado": "visitante",
+     "jugador": "Ander Garcia Antunez",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 56,
+     "lado": "visitante",
+     "jugador": "Eder Almeida Ranedo",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 64,
+     "lado": "visitante",
+     "jugador": "Gorka Gonzalez Bustamante",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 67,
+     "lado": "visitante",
+     "jugador": "Juan L Coloma Perez",
+     "tipo": "amarilla",
+     "tecnico": true
+    }
+   ],
+   "alineaciones": {
+    "local": {
+     "titulares": [
+      {
+       "dorsal": 1,
+       "nombre": "Asier Hornes Iglesias"
+      },
+      {
+       "dorsal": 2,
+       "nombre": "Sergio Gamero Lozano"
+      },
+      {
+       "dorsal": 3,
+       "nombre": "Endika Hidalgo Barredo"
+      },
+      {
+       "dorsal": 4,
+       "nombre": "Xabier Olabegoya Gonzalez"
+      },
+      {
+       "dorsal": 5,
+       "nombre": "Mikel Cea Muñoz"
+      },
+      {
+       "dorsal": 6,
+       "nombre": "Urtzi Gonzalez del Rio"
+      },
+      {
+       "dorsal": 7,
+       "nombre": "Iker Carcamo de la Cal"
+      },
+      {
+       "dorsal": 8,
+       "nombre": "Alain Jimenez Otaduy"
+      },
+      {
+       "dorsal": 9,
+       "nombre": "Eneko Fernandez Contreras"
+      },
+      {
+       "dorsal": 10,
+       "nombre": "Uztaritz Caño Fernandez"
+      },
+      {
+       "dorsal": 11,
+       "nombre": "Gaizka Muñoz Prieto"
+      }
+     ],
+     "suplentes": [
+      {
+       "dorsal": 13,
+       "nombre": "Oier Fernandez de Pinedo Muñoz"
+      },
+      {
+       "dorsal": 12,
+       "nombre": "Asier Moreno Uriel"
+      },
+      {
+       "dorsal": 14,
+       "nombre": "Aritz Fontanal Fernandez"
+      },
+      {
+       "dorsal": 15,
+       "nombre": "Iker Guisasola Casas"
+      },
+      {
+       "dorsal": 16,
+       "nombre": "Markel Molinuevo Fernandez de Valderrama"
+      },
+      {
+       "dorsal": 17,
+       "nombre": "Erlantz Ortega Martins"
+      },
+      {
+       "dorsal": 18,
+       "nombre": "Aitor Gonzalez Santero"
+      },
+      {
+       "dorsal": 19,
+       "nombre": "Eleder Crespo Lopez"
+      }
+     ]
+    },
+    "visitante": {
+     "titulares": [
+      {
+       "dorsal": 1,
+       "nombre": "Asier Martinez Lombera"
+      },
+      {
+       "dorsal": 2,
+       "nombre": "Ander Garcia Antunez"
+      },
+      {
+       "dorsal": 3,
+       "nombre": "Julen Gago Ruiz"
+      },
+      {
+       "dorsal": 4,
+       "nombre": "Aitor Periañez Rodriguez"
+      },
+      {
+       "dorsal": 5,
+       "nombre": "Sergio Ureta Lombera"
+      },
+      {
+       "dorsal": 6,
+       "nombre": "Gorka Iglesias Gonzalez"
+      },
+      {
+       "dorsal": 7,
+       "nombre": "Aritz Martin Valderrama"
+      },
+      {
+       "dorsal": 8,
+       "nombre": "Gorka Gonzalez Bustamante"
+      },
+      {
+       "dorsal": 9,
+       "nombre": "Oier Romero Marcos"
+      },
+      {
+       "dorsal": 10,
+       "nombre": "Eder Vico Fuente"
+      },
+      {
+       "dorsal": 11,
+       "nombre": "Lander Vaquero Vazquez"
+      }
+     ],
+     "suplentes": [
+      {
+       "dorsal": 23,
+       "nombre": "Aitzol Coloma Colina"
+      },
+      {
+       "dorsal": 12,
+       "nombre": "Asier Totorica Castellanos"
+      },
+      {
+       "dorsal": 14,
+       "nombre": "Eder Almeida Ranedo"
+      },
+      {
+       "dorsal": 15,
+       "nombre": "Ibai Acosta dos Santos"
+      },
+      {
+       "dorsal": 16,
+       "nombre": "Izotz Esteban Llinares"
+      },
+      {
+       "dorsal": 17,
+       "nombre": "Endika Lorenzo Quintanar"
+      }
+     ]
+    }
+   },
+   "cambios": [
+    {
+     "min": 45,
+     "lado": "local",
+     "sale": "Mikel Cea Muñoz",
+     "entra": "Iker Guisasola Casas"
+    },
+    {
+     "min": 61,
+     "lado": "local",
+     "sale": "Eneko Fernandez Contreras",
+     "entra": "Aitor Gonzalez Santero"
+    },
+    {
+     "min": 68,
+     "lado": "local",
+     "sale": "Uztaritz Caño Fernandez",
+     "entra": "Erlantz Ortega Martins"
+    },
+    {
+     "min": 68,
+     "lado": "local",
+     "sale": "Iker Carcamo de la Cal",
+     "entra": "Asier Moreno Uriel"
+    },
+    {
+     "min": 45,
+     "lado": "visitante",
+     "sale": "Gorka Iglesias Gonzalez",
+     "entra": "Asier Totorica Castellanos"
+    },
+    {
+     "min": 45,
+     "lado": "visitante",
+     "sale": "Oier Romero Marcos",
+     "entra": "Eder Almeida Ranedo"
+    },
+    {
+     "min": 45,
+     "lado": "visitante",
+     "sale": "Aritz Martin Valderrama",
+     "entra": "Ibai Acosta dos Santos"
+    },
+    {
+     "min": 80,
+     "lado": "visitante",
+     "sale": "Gorka Gonzalez Bustamante",
+     "entra": "Izotz Esteban Llinares"
+    }
+   ]
+  },
+  "10056649": {
+   "campo": "Otxartaga-Berri, Ortuella",
+   "goles": [
+    {
+     "min": 44,
+     "lado": "local",
+     "jugador": "Julen Martinez Gutierrez"
+    },
+    {
+     "min": 89,
+     "lado": "local",
+     "jugador": "Lander Vaquero Vazquez"
+    }
+   ],
+   "tarjetas": [
+    {
+     "min": 13,
+     "lado": "local",
+     "jugador": "Aritz Martin Valderrama",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 46,
+     "lado": "local",
+     "jugador": "Ibai Acosta dos Santos",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 86,
+     "lado": "local",
+     "jugador": "Asier Totorica Castellanos",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 8,
+     "lado": "visitante",
+     "jugador": "Hector Dominguez Garcia",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 42,
+     "lado": "visitante",
+     "jugador": "Ander Padilla Santamaria",
+     "tipo": "amarilla"
+    }
+   ],
+   "alineaciones": {
+    "local": {
+     "titulares": [
+      {
+       "dorsal": 1,
+       "nombre": "Asier Martinez Lombera"
+      },
+      {
+       "dorsal": 2,
+       "nombre": "Aritz Martin Valderrama"
+      },
+      {
+       "dorsal": 3,
+       "nombre": "Julen Gago Ruiz"
+      },
+      {
+       "dorsal": 4,
+       "nombre": "Aitor Periañez Rodriguez"
+      },
+      {
+       "dorsal": 5,
+       "nombre": "Eneko Cabezas Cuesta"
+      },
+      {
+       "dorsal": 6,
+       "nombre": "Gorka Iglesias Gonzalez"
+      },
+      {
+       "dorsal": 7,
+       "nombre": "Ander Elices Patiño"
+      },
+      {
+       "dorsal": 8,
+       "nombre": "Julen Martinez Gutierrez"
+      },
+      {
+       "dorsal": 9,
+       "nombre": "Lander Vaquero Vazquez"
+      },
+      {
+       "dorsal": 10,
+       "nombre": "Gorka Gonzalez Bustamante"
+      },
+      {
+       "dorsal": 11,
+       "nombre": "Ibai Acosta dos Santos"
+      }
+     ],
+     "suplentes": [
+      {
+       "dorsal": 23,
+       "nombre": "Aitzol Coloma Colina"
+      },
+      {
+       "dorsal": 12,
+       "nombre": "Asier Totorica Castellanos"
+      },
+      {
+       "dorsal": 14,
+       "nombre": "Eder Almeida Ranedo"
+      },
+      {
+       "dorsal": 15,
+       "nombre": "Oier Romero Marcos"
+      },
+      {
+       "dorsal": 16,
+       "nombre": "Sergio Ureta Lombera"
+      },
+      {
+       "dorsal": 17,
+       "nombre": "Yeray Rincon Gonzalez"
+      },
+      {
+       "dorsal": 18,
+       "nombre": "Endika Lorenzo Quintanar"
+      },
+      {
+       "dorsal": 19,
+       "nombre": "Aritz de Maria Lopez"
+      }
+     ]
+    },
+    "visitante": {
+     "titulares": [
+      {
+       "dorsal": 13,
+       "nombre": "Markel Fernandez Hidalgo"
+      },
+      {
+       "dorsal": 2,
+       "nombre": "Unai Amezua Perez"
+      },
+      {
+       "dorsal": 4,
+       "nombre": "Imanol Fernandez San Pedro"
+      },
+      {
+       "dorsal": 5,
+       "nombre": "Eneko Herrero Florido"
+      },
+      {
+       "dorsal": 6,
+       "nombre": "Ander Padilla Santamaria"
+      },
+      {
+       "dorsal": 8,
+       "nombre": "Asier Yuguero Rodriguez"
+      },
+      {
+       "dorsal": 15,
+       "nombre": "Asier Basarrate Renovales"
+      },
+      {
+       "dorsal": 17,
+       "nombre": "Alain Mengual Blesa"
+      },
+      {
+       "dorsal": 19,
+       "nombre": "Alvaro Laviña Becerril"
+      },
+      {
+       "dorsal": 20,
+       "nombre": "Gorka Sanz Alvarez"
+      },
+      {
+       "dorsal": 21,
+       "nombre": "Hector Dominguez Garcia"
+      }
+     ],
+     "suplentes": [
+      {
+       "dorsal": 1,
+       "nombre": "Enaitz Barcena Perez"
+      },
+      {
+       "dorsal": 3,
+       "nombre": "Erick Jose Gonzalez Bloise"
+      },
+      {
+       "dorsal": 7,
+       "nombre": "Jon Ander Jimenez Rios"
+      },
+      {
+       "dorsal": 9,
+       "nombre": "Gaizka Diaz Ortiz de Urbina"
+      },
+      {
+       "dorsal": 11,
+       "nombre": "Ander Heredia Blanco"
+      },
+      {
+       "dorsal": 12,
+       "nombre": "Unax Murias Moran"
+      },
+      {
+       "dorsal": 14,
+       "nombre": "Oier Via Gomez"
+      },
+      {
+       "dorsal": 16,
+       "nombre": "Oier Ferreiros Salas"
+      },
+      {
+       "dorsal": 18,
+       "nombre": "Iraitz Blanco Garin"
+      }
+     ]
+    }
+   },
+   "cambios": [
+    {
+     "min": 45,
+     "lado": "local",
+     "sale": "Eneko Cabezas Cuesta",
+     "entra": "Sergio Ureta Lombera"
+    },
+    {
+     "min": 65,
+     "lado": "local",
+     "sale": "Ibai Acosta dos Santos",
+     "entra": "Asier Totorica Castellanos"
+    },
+    {
+     "min": 74,
+     "lado": "local",
+     "sale": "Ander Elices Patiño",
+     "entra": "Yeray Rincon Gonzalez"
+    },
+    {
+     "min": 86,
+     "lado": "local",
+     "sale": "Gorka Gonzalez Bustamante",
+     "entra": "Eder Almeida Ranedo"
+    },
+    {
+     "min": 63,
+     "lado": "visitante",
+     "sale": "Imanol Fernandez San Pedro",
+     "entra": "Ander Heredia Blanco"
+    },
+    {
+     "min": 63,
+     "lado": "visitante",
+     "sale": "Gorka Sanz Alvarez",
+     "entra": "Oier Via Gomez"
+    },
+    {
+     "min": 63,
+     "lado": "visitante",
+     "sale": "Unai Amezua Perez",
+     "entra": "Jon Ander Jimenez Rios"
+    },
+    {
+     "min": 63,
+     "lado": "visitante",
+     "sale": "Hector Dominguez Garcia",
+     "entra": "Gaizka Diaz Ortiz de Urbina"
+    },
+    {
+     "min": 71,
+     "lado": "visitante",
+     "sale": "Asier Yuguero Rodriguez",
+     "entra": "Iraitz Blanco Garin"
+    }
+   ]
+  },
+  "10056657": {
+   "campo": "Otxartaga-Berri, Ortuella",
+   "goles": [
+    {
+     "min": 67,
+     "lado": "visitante",
+     "jugador": "Endika Lorenzo Quintanar"
+    },
+    {
+     "min": 79,
+     "lado": "visitante",
+     "jugador": "Yeray Rincon Gonzalez"
+    }
+   ],
+   "tarjetas": [
+    {
+     "min": 66,
+     "lado": "local",
+     "jugador": "Koldobika Barreras Berbel",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 73,
+     "lado": "local",
+     "jugador": "Iñigo Santurtun Molinero",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 22,
+     "lado": "visitante",
+     "jugador": "Aritz Martin Valderrama",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 29,
+     "lado": "visitante",
+     "jugador": "Lander Vaquero Vazquez",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 59,
+     "lado": "visitante",
+     "jugador": "Julen Martinez Gutierrez",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 67,
+     "lado": "visitante",
+     "jugador": "Asier Martinez Lombera",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 83,
+     "lado": "visitante",
+     "jugador": "Gorka Iglesias Gonzalez",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 89,
+     "lado": "visitante",
+     "jugador": "Yeray Rincon Gonzalez",
+     "tipo": "amarilla"
+    }
+   ],
+   "alineaciones": {
+    "local": {
+     "titulares": [
+      {
+       "dorsal": 1,
+       "nombre": "Eder Ruiz Gonzalez"
+      },
+      {
+       "dorsal": 2,
+       "nombre": "Adrian Lopez Bueno"
+      },
+      {
+       "dorsal": 3,
+       "nombre": "Iñigo Santurtun Molinero"
+      },
+      {
+       "dorsal": 4,
+       "nombre": "Julen Momoitio San Martin"
+      },
+      {
+       "dorsal": 5,
+       "nombre": "Koldobika Barreras Berbel"
+      },
+      {
+       "dorsal": 6,
+       "nombre": "Unai Rodriguez Perez"
+      },
+      {
+       "dorsal": 7,
+       "nombre": "Aingeru Cuervo Perez"
+      },
+      {
+       "dorsal": 8,
+       "nombre": "Jose David Cerezo Gomez"
+      },
+      {
+       "dorsal": 9,
+       "nombre": "Francisco Javier Morales Maestro"
+      },
+      {
+       "dorsal": 10,
+       "nombre": "Daniel Diez Yañez"
+      },
+      {
+       "dorsal": 11,
+       "nombre": "Eihar Galdames Martinez"
+      }
+     ],
+     "suplentes": [
+      {
+       "dorsal": 13,
+       "nombre": "Eder Campillo Mediavilla"
+      },
+      {
+       "dorsal": 12,
+       "nombre": "Iñaki Hernandez Morales"
+      },
+      {
+       "dorsal": 14,
+       "nombre": "Eder Gonzalez Rodriguez"
+      },
+      {
+       "dorsal": 15,
+       "nombre": "Adrian Martin Macho"
+      },
+      {
+       "dorsal": 16,
+       "nombre": "Asier Martin Reina"
+      },
+      {
+       "dorsal": 17,
+       "nombre": "Mikel Galdames Santos"
+      },
+      {
+       "dorsal": 18,
+       "nombre": "Oier Alonso Macaya"
+      },
+      {
+       "dorsal": 19,
+       "nombre": "Xabier Otaduy Rodriguez"
+      },
+      {
+       "dorsal": 20,
+       "nombre": "Unai Reina Lopez"
+      }
+     ]
+    },
+    "visitante": {
+     "titulares": [
+      {
+       "dorsal": 1,
+       "nombre": "Aitzol Coloma Colina"
+      },
+      {
+       "dorsal": 2,
+       "nombre": "Aritz Martin Valderrama"
+      },
+      {
+       "dorsal": 3,
+       "nombre": "Julen Gago Ruiz"
+      },
+      {
+       "dorsal": 4,
+       "nombre": "Aitor Periañez Rodriguez"
+      },
+      {
+       "dorsal": 5,
+       "nombre": "Sergio Ureta Lombera"
+      },
+      {
+       "dorsal": 6,
+       "nombre": "Gorka Iglesias Gonzalez"
+      },
+      {
+       "dorsal": 7,
+       "nombre": "Endika Lorenzo Quintanar"
+      },
+      {
+       "dorsal": 8,
+       "nombre": "Julen Martinez Gutierrez"
+      },
+      {
+       "dorsal": 9,
+       "nombre": "Lander Vaquero Vazquez"
+      },
+      {
+       "dorsal": 10,
+       "nombre": "Gorka Gonzalez Bustamante"
+      },
+      {
+       "dorsal": 11,
+       "nombre": "Ander Elices Patiño"
+      }
+     ],
+     "suplentes": [
+      {
+       "dorsal": 13,
+       "nombre": "Asier Martinez Lombera"
+      },
+      {
+       "dorsal": 12,
+       "nombre": "Asier Totorica Castellanos"
+      },
+      {
+       "dorsal": 14,
+       "nombre": "Aritz de Maria Lopez"
+      },
+      {
+       "dorsal": 15,
+       "nombre": "Ander Garcia Antunez"
+      },
+      {
+       "dorsal": 16,
+       "nombre": "Izotz Esteban Llinares"
+      },
+      {
+       "dorsal": 17,
+       "nombre": "Yeray Rincon Gonzalez"
+      },
+      {
+       "dorsal": 18,
+       "nombre": "Eneko Cabezas Cuesta"
+      },
+      {
+       "dorsal": 19,
+       "nombre": "Ibai Acosta dos Santos"
+      },
+      {
+       "dorsal": 20,
+       "nombre": "Eder Vico Fuente"
+      }
+     ]
+    }
+   },
+   "cambios": [
+    {
+     "min": 66,
+     "lado": "local",
+     "sale": "Eihar Galdames Martinez",
+     "entra": "Asier Martin Reina"
+    },
+    {
+     "min": 69,
+     "lado": "local",
+     "sale": "Daniel Diez Yañez",
+     "entra": "Unai Reina Lopez"
+    },
+    {
+     "min": 69,
+     "lado": "local",
+     "sale": "Aingeru Cuervo Perez",
+     "entra": "Mikel Galdames Santos"
+    },
+    {
+     "min": 74,
+     "lado": "local",
+     "sale": "Jose David Cerezo Gomez",
+     "entra": "Adrian Martin Macho"
+    },
+    {
+     "min": 74,
+     "lado": "local",
+     "sale": "Unai Rodriguez Perez",
+     "entra": "Xabier Otaduy Rodriguez"
+    },
+    {
+     "min": 45,
+     "lado": "visitante",
+     "sale": "Aitor Periañez Rodriguez",
+     "entra": "Izotz Esteban Llinares"
+    },
+    {
+     "min": 45,
+     "lado": "visitante",
+     "sale": "Aritz Martin Valderrama",
+     "entra": "Ander Garcia Antunez"
+    },
+    {
+     "min": 63,
+     "lado": "visitante",
+     "sale": "Ander Elices Patiño",
+     "entra": "Yeray Rincon Gonzalez"
+    },
+    {
+     "min": 63,
+     "lado": "visitante",
+     "sale": "Gorka Gonzalez Bustamante",
+     "entra": "Eder Vico Fuente"
+    },
+    {
+     "min": 83,
+     "lado": "visitante",
+     "sale": "Endika Lorenzo Quintanar",
+     "entra": "Asier Totorica Castellanos"
+    }
+   ]
+  },
+  "10056666": {
+   "campo": "Otxartaga-Berri, Ortuella",
+   "goles": [
+    {
+     "min": 8,
+     "lado": "local",
+     "jugador": "Ander Elices Patiño"
+    },
+    {
+     "min": 29,
+     "lado": "local",
+     "jugador": "Ander Elices Patiño"
+    },
+    {
+     "min": 58,
+     "lado": "visitante",
+     "jugador": "Aimar Rubio Franco"
+    },
+    {
+     "min": 73,
+     "lado": "local",
+     "jugador": "Yeray Rincon Gonzalez"
+    }
+   ],
+   "tarjetas": [
+    {
+     "min": 46,
+     "lado": "local",
+     "jugador": "Izotz Esteban Llinares",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 64,
+     "lado": "local",
+     "jugador": "Aritz de Maria Lopez",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 90,
+     "lado": "local",
+     "jugador": "Aitor Periañez Rodriguez",
+     "tipo": "amarilla"
+    },
+    {
+     "min": null,
+     "lado": "local",
+     "jugador": "Eder (90'+5) Almeida Ranedo",
+     "tipo": "amarilla",
+     "tecnico": true
+    },
+    {
+     "min": 90,
+     "lado": "local",
+     "jugador": "Gorka Gonzalez Bustamante",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 14,
+     "lado": "visitante",
+     "jugador": "Ibai Vazquez Diez",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 70,
+     "lado": "visitante",
+     "jugador": "Gorka Arroyo Gutierrez",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 71,
+     "lado": "visitante",
+     "jugador": "Eder Vallejo Marquina",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 85,
+     "lado": "visitante",
+     "jugador": "Diego Espinosa Pablos",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 88,
+     "lado": "visitante",
+     "jugador": "Endika Garcia Uriel",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 89,
+     "lado": "visitante",
+     "jugador": "Ekintza Alonso Arduengo",
+     "tipo": "amarilla"
+    }
+   ],
+   "alineaciones": {
+    "local": {
+     "titulares": [
+      {
+       "dorsal": 1,
+       "nombre": "Aitzol Coloma Colina"
+      },
+      {
+       "dorsal": 2,
+       "nombre": "Ander Garcia Antunez"
+      },
+      {
+       "dorsal": 3,
+       "nombre": "Julen Gago Ruiz"
+      },
+      {
+       "dorsal": 4,
+       "nombre": "Aitor Periañez Rodriguez"
+      },
+      {
+       "dorsal": 5,
+       "nombre": "Izotz Esteban Llinares"
+      },
+      {
+       "dorsal": 6,
+       "nombre": "Gorka Iglesias Gonzalez"
+      },
+      {
+       "dorsal": 7,
+       "nombre": "Endika Lorenzo Quintanar"
+      },
+      {
+       "dorsal": 8,
+       "nombre": "Aritz de Maria Lopez"
+      },
+      {
+       "dorsal": 9,
+       "nombre": "Lander Vaquero Vazquez"
+      },
+      {
+       "dorsal": 10,
+       "nombre": "Eder Vico Fuente"
+      },
+      {
+       "dorsal": 11,
+       "nombre": "Ander Elices Patiño"
+      }
+     ],
+     "suplentes": [
+      {
+       "dorsal": 13,
+       "nombre": "Asier Martinez Lombera"
+      },
+      {
+       "dorsal": 12,
+       "nombre": "Asier Totorica Castellanos"
+      },
+      {
+       "dorsal": 14,
+       "nombre": "Eder Almeida Ranedo"
+      },
+      {
+       "dorsal": 15,
+       "nombre": "Gorka Gonzalez Bustamante"
+      },
+      {
+       "dorsal": 16,
+       "nombre": "Yeray Rincon Gonzalez"
+      },
+      {
+       "dorsal": 17,
+       "nombre": "Julen Martinez Gutierrez"
+      },
+      {
+       "dorsal": 18,
+       "nombre": "Aritz Martin Valderrama"
+      },
+      {
+       "dorsal": 19,
+       "nombre": "Ibai Acosta dos Santos"
+      },
+      {
+       "dorsal": 20,
+       "nombre": "Jokin Garcia Martinez"
+      }
+     ]
+    },
+    "visitante": {
+     "titulares": [
+      {
+       "dorsal": 1,
+       "nombre": "Endika Garcia Uriel"
+      },
+      {
+       "dorsal": 2,
+       "nombre": "Fernando Joaquin Rodriguez Arias"
+      },
+      {
+       "dorsal": 3,
+       "nombre": "Amir Samedh Adel Oliva Avila"
+      },
+      {
+       "dorsal": 4,
+       "nombre": "Aingeru Huerta Hernandez"
+      },
+      {
+       "dorsal": 5,
+       "nombre": "Ibai Vazquez Diez"
+      },
+      {
+       "dorsal": 6,
+       "nombre": "Diego Espinosa Pablos"
+      },
+      {
+       "dorsal": 7,
+       "nombre": "Ander Orruño Astorquiza"
+      },
+      {
+       "dorsal": 8,
+       "nombre": "Diego Rodriguez Conde"
+      },
+      {
+       "dorsal": 9,
+       "nombre": "Eneko Lacruz Sahelices"
+      },
+      {
+       "dorsal": 10,
+       "nombre": "Aimar Rubio Franco"
+      },
+      {
+       "dorsal": 11,
+       "nombre": "Asier Martinez Lopez"
+      }
+     ],
+     "suplentes": [
+      {
+       "dorsal": 12,
+       "nombre": "Lander Sanz Fernandez"
+      },
+      {
+       "dorsal": 13,
+       "nombre": "Gorka Arroyo Gutierrez"
+      },
+      {
+       "dorsal": 14,
+       "nombre": "Ander Roca Hernandez"
+      },
+      {
+       "dorsal": 15,
+       "nombre": "Eder Vallejo Marquina"
+      },
+      {
+       "dorsal": 16,
+       "nombre": "Yeray Martin Diaz"
+      },
+      {
+       "dorsal": 17,
+       "nombre": "Rodrigo Garcia Martin"
+      },
+      {
+       "dorsal": 18,
+       "nombre": "Malik Isidro Sanneh"
+      },
+      {
+       "dorsal": 19,
+       "nombre": "Aitor Diaz Gutierrez"
+      },
+      {
+       "dorsal": 20,
+       "nombre": "Ekintza Alonso Arduengo"
+      }
+     ]
+    }
+   },
+   "cambios": [
+    {
+     "min": 55,
+     "lado": "local",
+     "sale": "Lander Vaquero Vazquez",
+     "entra": "Yeray Rincon Gonzalez"
+    },
+    {
+     "min": 67,
+     "lado": "local",
+     "sale": "Ander Elices Patiño",
+     "entra": "Asier Totorica Castellanos"
+    },
+    {
+     "min": 67,
+     "lado": "local",
+     "sale": "Eder Vico Fuente",
+     "entra": "Eder Almeida Ranedo"
+    },
+    {
+     "min": 67,
+     "lado": "local",
+     "sale": "Aritz de Maria Lopez",
+     "entra": "Gorka Gonzalez Bustamante"
+    },
+    {
+     "min": 81,
+     "lado": "local",
+     "sale": "Endika Lorenzo Quintanar",
+     "entra": "Ibai Acosta dos Santos"
+    },
+    {
+     "min": 46,
+     "lado": "visitante",
+     "sale": "Ibai Vazquez Diez",
+     "entra": "Ander Roca Hernandez"
+    },
+    {
+     "min": 55,
+     "lado": "visitante",
+     "sale": "Ander Orruño Astorquiza",
+     "entra": "Malik Isidro Sanneh"
+    },
+    {
+     "min": 68,
+     "lado": "visitante",
+     "sale": "Asier Martinez Lopez",
+     "entra": "Lander Sanz Fernandez"
+    },
+    {
+     "min": 68,
+     "lado": "visitante",
+     "sale": "Eneko Lacruz Sahelices",
+     "entra": "Ekintza Alonso Arduengo"
+    },
+    {
+     "min": 75,
+     "lado": "visitante",
+     "sale": "Aimar Rubio Franco",
+     "entra": "Rodrigo Garcia Martin"
+    }
+   ]
+  },
+  "10056674": {
+   "campo": "Santa Ana, Sopuerta",
+   "goles": [],
+   "tarjetas": [
+    {
+     "min": 39,
+     "lado": "local",
+     "jugador": "Jon Ander Bafino Urbaneta",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 66,
+     "lado": "local",
+     "jugador": "Jon Ander Bafino Urbaneta",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 69,
+     "lado": "local",
+     "jugador": "Eneko Puente Fernandez",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 89,
+     "lado": "local",
+     "jugador": "Imanol Santin Herrera",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 90,
+     "lado": "local",
+     "jugador": "Hodei Gonzalez Garay",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 90,
+     "lado": "local",
+     "jugador": "Alexis Alonso Vazquez",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 53,
+     "lado": "visitante",
+     "jugador": "Ibai Acosta dos Santos",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 75,
+     "lado": "visitante",
+     "jugador": "Aitor Periañez Rodriguez",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 85,
+     "lado": "visitante",
+     "jugador": "Ander Garcia Antunez",
+     "tipo": "amarilla"
+    },
+    {
+     "min": null,
+     "lado": "visitante",
+     "jugador": "Sergio (90'+3) Ureta Lombera",
+     "tipo": "amarilla",
+     "tecnico": true
+    }
+   ],
+   "alineaciones": {
+    "local": {
+     "titulares": [
+      {
+       "dorsal": 1,
+       "nombre": "Xabier Ortiz Costa"
+      },
+      {
+       "dorsal": 2,
+       "nombre": "Imanol Santin Herrera"
+      },
+      {
+       "dorsal": 3,
+       "nombre": "Kemen Arias Lopez"
+      },
+      {
+       "dorsal": 4,
+       "nombre": "Eneko Puente Fernandez"
+      },
+      {
+       "dorsal": 5,
+       "nombre": "Jon Alvarez Llinares"
+      },
+      {
+       "dorsal": 6,
+       "nombre": "Jon Gutierrez Rodriguez"
+      },
+      {
+       "dorsal": 7,
+       "nombre": "Alexis Alonso Vazquez"
+      },
+      {
+       "dorsal": 8,
+       "nombre": "David Pando Ruiz"
+      },
+      {
+       "dorsal": 9,
+       "nombre": "Jon Ortiz Murillo"
+      },
+      {
+       "dorsal": 10,
+       "nombre": "Lucas Fernandez Sanchez"
+      },
+      {
+       "dorsal": 11,
+       "nombre": "Jon Ander Bafino Urbaneta"
+      }
+     ],
+     "suplentes": [
+      {
+       "dorsal": 13,
+       "nombre": "Oier Louzao Alvarez"
+      },
+      {
+       "dorsal": 12,
+       "nombre": "Pablo Perez Ruiz"
+      },
+      {
+       "dorsal": 14,
+       "nombre": "Amets Lambarri Garai"
+      },
+      {
+       "dorsal": 15,
+       "nombre": "Lander Calderon Gonzalez"
+      },
+      {
+       "dorsal": 17,
+       "nombre": "Iñigo Gonzalez Buron"
+      },
+      {
+       "dorsal": 18,
+       "nombre": "Hodei Gonzalez Garay"
+      },
+      {
+       "dorsal": 19,
+       "nombre": "Jose Andres Andrade de Lemos"
+      },
+      {
+       "dorsal": 21,
+       "nombre": "Gorka San Juan Oviedo"
+      },
+      {
+       "dorsal": 22,
+       "nombre": "Borja Bustamante Arbaiza"
+      }
+     ]
+    },
+    "visitante": {
+     "titulares": [
+      {
+       "dorsal": 23,
+       "nombre": "Aitzol Coloma Colina"
+      },
+      {
+       "dorsal": 2,
+       "nombre": "Ander Garcia Antunez"
+      },
+      {
+       "dorsal": 3,
+       "nombre": "Julen Gago Ruiz"
+      },
+      {
+       "dorsal": 4,
+       "nombre": "Aitor Periañez Rodriguez"
+      },
+      {
+       "dorsal": 5,
+       "nombre": "Izotz Esteban Llinares"
+      },
+      {
+       "dorsal": 6,
+       "nombre": "Aritz de Maria Lopez"
+      },
+      {
+       "dorsal": 7,
+       "nombre": "Asier Totorica Castellanos"
+      },
+      {
+       "dorsal": 8,
+       "nombre": "Julen Martinez Gutierrez"
+      },
+      {
+       "dorsal": 9,
+       "nombre": "Endika Lorenzo Quintanar"
+      },
+      {
+       "dorsal": 10,
+       "nombre": "Gorka Gonzalez Bustamante"
+      },
+      {
+       "dorsal": 11,
+       "nombre": "Ibai Acosta dos Santos"
+      }
+     ],
+     "suplentes": [
+      {
+       "dorsal": 1,
+       "nombre": "Asier Martinez Lombera"
+      },
+      {
+       "dorsal": 12,
+       "nombre": "Eneko Cabezas Cuesta"
+      },
+      {
+       "dorsal": 14,
+       "nombre": "Eder Almeida Ranedo"
+      },
+      {
+       "dorsal": 15,
+       "nombre": "Aritz Martin Valderrama"
+      },
+      {
+       "dorsal": 16,
+       "nombre": "Oier Romero Marcos"
+      },
+      {
+       "dorsal": 17,
+       "nombre": "Sergio Ureta Lombera"
+      },
+      {
+       "dorsal": 18,
+       "nombre": "Gorka Iglesias Gonzalez"
+      },
+      {
+       "dorsal": 19,
+       "nombre": "Eder Vico Fuente"
+      },
+      {
+       "dorsal": 20,
+       "nombre": "Yeray Rincon Gonzalez"
+      }
+     ]
+    }
+   },
+   "cambios": [
+    {
+     "min": 66,
+     "lado": "local",
+     "sale": "Lucas Fernandez Sanchez",
+     "entra": "Iñigo Gonzalez Buron"
+    },
+    {
+     "min": 75,
+     "lado": "local",
+     "sale": "Jon Ortiz Murillo",
+     "entra": "Gorka San Juan Oviedo"
+    },
+    {
+     "min": null,
+     "lado": "local",
+     "sale": "Alexis (90+1') Alonso Vazquez",
+     "entra": "Jose Andres Andrade de Lemos"
+    },
+    {
+     "min": 66,
+     "lado": "visitante",
+     "sale": "Asier Totorica Castellanos",
+     "entra": "Yeray Rincon Gonzalez"
+    },
+    {
+     "min": 70,
+     "lado": "visitante",
+     "sale": "Julen Martinez Gutierrez",
+     "entra": "Gorka Iglesias Gonzalez"
+    },
+    {
+     "min": 70,
+     "lado": "visitante",
+     "sale": "Aritz de Maria Lopez",
+     "entra": "Eder Vico Fuente"
+    },
+    {
+     "min": 80,
+     "lado": "visitante",
+     "sale": "Ibai Acosta dos Santos",
+     "entra": "Aritz Martin Valderrama"
+    },
+    {
+     "min": 80,
+     "lado": "visitante",
+     "sale": "Gorka Gonzalez Bustamante",
+     "entra": "Oier Romero Marcos"
+    }
+   ]
+  },
+  "10056943": {
+   "campo": "Galindo 1, Sestao",
+   "goles": [
+    {
+     "min": 26,
+     "lado": "visitante",
+     "jugador": "Iker Guadilla Estevez"
+    },
+    {
+     "min": 45,
+     "mas": 2,
+     "lado": "local",
+     "jugador": "Mahamadou Sissoko"
+    },
+    {
+     "min": 86,
+     "lado": "local",
+     "jugador": "Edgar Fernandez Pacheco"
+    }
+   ],
+   "tarjetas": [
+    {
+     "min": 20,
+     "lado": "local",
+     "jugador": "Iñigo Aliste Lopez",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 36,
+     "lado": "local",
+     "jugador": "Pedro Ivan Paredes Adorno",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 53,
+     "lado": "local",
+     "jugador": "Unai Martinez Ochoa",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 88,
+     "lado": "local",
+     "jugador": "Edgar Fernandez Pacheco",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 30,
+     "lado": "visitante",
+     "jugador": "Iker Guadilla Estevez",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 38,
+     "lado": "visitante",
+     "jugador": "Landing Bayo",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 45,
+     "mas": 1,
+     "lado": "visitante",
+     "jugador": "Xabier Gonzalez Lopez",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 57,
+     "lado": "visitante",
+     "jugador": "Unai Martinez Lansorena",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 59,
+     "lado": "visitante",
+     "jugador": "Landing Bayo",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 71,
+     "lado": "visitante",
+     "jugador": "Paul Acosta Domínguez",
+     "tipo": "amarilla",
+     "tecnico": true
+    },
+    {
+     "min": 85,
+     "lado": "visitante",
+     "jugador": "Endika Diaz Perez",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 87,
+     "lado": "visitante",
+     "jugador": "Xabel Menendez Vaz",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 90,
+     "mas": 2,
+     "lado": "visitante",
+     "jugador": "Illan Martin Espino",
+     "tipo": "amarilla"
+    }
+   ],
+   "alineaciones": {
+    "local": {
+     "titulares": [
+      {
+       "dorsal": 1,
+       "nombre": "Beñat Alonso Jimenez"
+      },
+      {
+       "dorsal": 2,
+       "nombre": "Xabier Fernandez Conde"
+      },
+      {
+       "dorsal": 4,
+       "nombre": "Edgar Fernandez Pacheco"
+      },
+      {
+       "dorsal": 7,
+       "nombre": "Badr Mtalaa"
+      },
+      {
+       "dorsal": 9,
+       "nombre": "Lander Taboada Iglesias"
+      },
+      {
+       "dorsal": 10,
+       "nombre": "Pedro Ivan Paredes Adorno"
+      },
+      {
+       "dorsal": 11,
+       "nombre": "Luis Alberto Rebori Martinez"
+      },
+      {
+       "dorsal": 14,
+       "nombre": "Unai Martinez Ochoa"
+      },
+      {
+       "dorsal": 15,
+       "nombre": "Liher Vazquez Alvarez"
+      },
+      {
+       "dorsal": 20,
+       "nombre": "Mahamadou Sissoko"
+      },
+      {
+       "dorsal": 21,
+       "nombre": "Iñigo Aliste Lopez"
+      }
+     ],
+     "suplentes": [
+      {
+       "dorsal": 13,
+       "nombre": "Hugo Gorospe Ponton"
+      },
+      {
+       "dorsal": 12,
+       "nombre": "Assad Marouan Afellad"
+      },
+      {
+       "dorsal": 17,
+       "nombre": "Ander Martinez Ochoa"
+      },
+      {
+       "dorsal": 18,
+       "nombre": "Juan Gabriel Vazquez Pontes"
+      }
+     ]
+    },
+    "visitante": {
+     "titulares": [
+      {
+       "dorsal": 22,
+       "nombre": "Gonzalo Iglesias Tamayo"
+      },
+      {
+       "dorsal": 2,
+       "nombre": "Unai Martinez Lansorena"
+      },
+      {
+       "dorsal": 3,
+       "nombre": "Illan Martin Espino"
+      },
+      {
+       "dorsal": 4,
+       "nombre": "Iker Guadilla Estevez"
+      },
+      {
+       "dorsal": 5,
+       "nombre": "Xabier Gonzalez Lopez"
+      },
+      {
+       "dorsal": 6,
+       "nombre": "Youssouf Jaiteh"
+      },
+      {
+       "dorsal": 7,
+       "nombre": "Maren Lafuente Ibinaga"
+      },
+      {
+       "dorsal": 8,
+       "nombre": "Oier de Diego Ulibarri"
+      },
+      {
+       "dorsal": 9,
+       "nombre": "Endika Pascual Sanchez"
+      },
+      {
+       "dorsal": 10,
+       "nombre": "Jon Ander Diez Gonzalez"
+      },
+      {
+       "dorsal": 11,
+       "nombre": "Landing Bayo"
+      }
+     ],
+     "suplentes": [
+      {
+       "dorsal": 12,
+       "nombre": "Julen Uria Abasolo"
+      },
+      {
+       "dorsal": 14,
+       "nombre": "Xabel Menendez Vaz"
+      },
+      {
+       "dorsal": 15,
+       "nombre": "Endika Diaz Perez"
+      },
+      {
+       "dorsal": 16,
+       "nombre": "Yusupha Janneh"
+      },
+      {
+       "dorsal": 17,
+       "nombre": "Angelo Cristiano Geremias da Silva"
+      },
+      {
+       "dorsal": 18,
+       "nombre": "Joseba Santurtun Molinero"
+      }
+     ]
+    }
+   },
+   "cambios": [
+    {
+     "min": 66,
+     "lado": "local",
+     "sale": "Lander Taboada Iglesias",
+     "entra": "Ander Martinez Ochoa"
+    },
+    {
+     "min": 70,
+     "lado": "local",
+     "sale": "Unai Martinez Ochoa",
+     "entra": "Juan Gabriel Vazquez Pontes"
+    },
+    {
+     "min": 85,
+     "lado": "local",
+     "sale": "Xabier Fernandez Conde",
+     "entra": "Assad Marouan Afellad"
+    },
+    {
+     "min": 61,
+     "lado": "visitante",
+     "sale": "Jon Ander Diez Gonzalez",
+     "entra": "Angelo Cristiano Geremias da Silva"
+    },
+    {
+     "min": 61,
+     "lado": "visitante",
+     "sale": "Endika Pascual Sanchez",
+     "entra": "Endika Diaz Perez"
+    },
+    {
+     "min": 72,
+     "lado": "visitante",
+     "sale": "Maren Lafuente Ibinaga",
+     "entra": "Yusupha Janneh"
+    },
+    {
+     "min": 81,
+     "lado": "visitante",
+     "sale": "Youssouf Jaiteh",
+     "entra": "Joseba Santurtun Molinero"
+    },
+    {
+     "min": 81,
+     "lado": "visitante",
+     "sale": "Xabier Gonzalez Lopez",
+     "entra": "Xabel Menendez Vaz"
+    }
+   ]
+  },
+  "10059311": {
+   "campo": "El Mortuero, Las Carreras",
+   "goles": [
+    {
+     "min": 34,
+     "lado": "local",
+     "jugador": "Danel Ibañez Zamora"
+    },
+    {
+     "min": 79,
+     "lado": "visitante",
+     "jugador": "Unai Diaz Segura",
+     "tipo": "pp"
+    },
+    {
+     "min": 86,
+     "lado": "local",
+     "jugador": "Unax Elola Arribas"
+    }
+   ],
+   "tarjetas": [
+    {
+     "min": 35,
+     "lado": "local",
+     "jugador": "Xabi Mendizabal Otero",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 77,
+     "lado": "local",
+     "jugador": "Jon Marcos Mondelo",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 84,
+     "lado": "local",
+     "jugador": "Unai Diaz Segura",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 50,
+     "lado": "visitante",
+     "jugador": "Iker de los Mozos Romay",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 74,
+     "lado": "visitante",
+     "jugador": "Aitor Herrero Campos",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 87,
+     "lado": "visitante",
+     "jugador": "Unai Guerrero Barrios",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 87,
+     "lado": "visitante",
+     "jugador": "Unai Guerrero Barrios",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 90,
+     "lado": "visitante",
+     "jugador": "Oier Romero Marcos",
+     "tipo": "amarilla",
+     "tecnico": true
+    }
+   ],
+   "alineaciones": {
+    "local": {
+     "titulares": [
+      {
+       "dorsal": 1,
+       "nombre": "Mikel Sigüenza Perez"
+      },
+      {
+       "dorsal": 4,
+       "nombre": "Unai Diaz Segura"
+      },
+      {
+       "dorsal": 6,
+       "nombre": "Oier San Jose Jimenez"
+      },
+      {
+       "dorsal": 7,
+       "nombre": "Danel Ibañez Zamora"
+      },
+      {
+       "dorsal": 8,
+       "nombre": "Kimetz Alvarez Lopez"
+      },
+      {
+       "dorsal": 10,
+       "nombre": "Jon Marcos Mondelo"
+      },
+      {
+       "dorsal": 11,
+       "nombre": "Urko Cruz Sanchez"
+      },
+      {
+       "dorsal": 14,
+       "nombre": "Unai Arribas Garrido"
+      },
+      {
+       "dorsal": 19,
+       "nombre": "Owen Manuel Cruz Flores"
+      },
+      {
+       "dorsal": 20,
+       "nombre": "Xabi Mendizabal Otero"
+      },
+      {
+       "dorsal": 21,
+       "nombre": "Aratz Medina Estepar"
+      }
+     ],
+     "suplentes": [
+      {
+       "dorsal": 2,
+       "nombre": "Alexander Echeverry Pedroza"
+      },
+      {
+       "dorsal": 3,
+       "nombre": "Markel Veledo Extremera"
+      },
+      {
+       "dorsal": 5,
+       "nombre": "Eneko Azkona Perez"
+      },
+      {
+       "dorsal": 9,
+       "nombre": "Unax Elola Arribas"
+      },
+      {
+       "dorsal": 15,
+       "nombre": "Beñat Medina Causo"
+      },
+      {
+       "dorsal": 16,
+       "nombre": "Hodei Basagoiti Angulo"
+      },
+      {
+       "dorsal": 22,
+       "nombre": "Andoni Prieto Acedo"
+      }
+     ]
+    },
+    "visitante": {
+     "titulares": [
+      {
+       "dorsal": 13,
+       "nombre": "Izei Gomez Galan"
+      },
+      {
+       "dorsal": 2,
+       "nombre": "Jon Alonso-Mardones Alvarez"
+      },
+      {
+       "dorsal": 4,
+       "nombre": "Aitor Herrero Campos"
+      },
+      {
+       "dorsal": 5,
+       "nombre": "Xabier Fernandez Segador"
+      },
+      {
+       "dorsal": 6,
+       "nombre": "Adur Erdozain Lopez"
+      },
+      {
+       "dorsal": 7,
+       "nombre": "Iker de los Mozos Romay"
+      },
+      {
+       "dorsal": 8,
+       "nombre": "Unai Guerrero Barrios"
+      },
+      {
+       "dorsal": 10,
+       "nombre": "Urko Martin Santisteban"
+      },
+      {
+       "dorsal": 11,
+       "nombre": "Ibai Sevilla Cano"
+      },
+      {
+       "dorsal": 14,
+       "nombre": "Julen Aparicio Esteban"
+      },
+      {
+       "dorsal": 18,
+       "nombre": "Alvaro Fernandez Tarrio"
+      }
+     ],
+     "suplentes": [
+      {
+       "dorsal": 1,
+       "nombre": "Aingeru Moriña Rivera"
+      },
+      {
+       "dorsal": 16,
+       "nombre": "Aitor Ouro Barcia"
+      },
+      {
+       "dorsal": 17,
+       "nombre": "Roberto Erraiz Iglesias"
+      },
+      {
+       "dorsal": 19,
+       "nombre": "Alain Zugazabeitia Fernández"
+      },
+      {
+       "dorsal": 20,
+       "nombre": "Eneko Novelle Llorente"
+      },
+      {
+       "dorsal": 21,
+       "nombre": "Tasio Sagastizabal Garcia"
+      }
+     ]
+    }
+   },
+   "cambios": [
+    {
+     "min": 60,
+     "lado": "local",
+     "sale": "Danel Ibañez Zamora",
+     "entra": "Unax Elola Arribas"
+    },
+    {
+     "min": 78,
+     "lado": "local",
+     "sale": "Urko Cruz Sanchez",
+     "entra": "Eneko Azkona Perez"
+    },
+    {
+     "min": 78,
+     "lado": "local",
+     "sale": "Owen Manuel Cruz Flores",
+     "entra": "Markel Veledo Extremera"
+    },
+    {
+     "min": 87,
+     "lado": "local",
+     "sale": "Aratz Medina Estepar",
+     "entra": "Beñat Medina Causo"
+    },
+    {
+     "min": 46,
+     "lado": "visitante",
+     "sale": "Xabier Fernandez Segador",
+     "entra": "Roberto Erraiz Iglesias"
+    },
+    {
+     "min": 71,
+     "lado": "visitante",
+     "sale": "Julen Aparicio Esteban",
+     "entra": "Eneko Novelle Llorente"
+    },
+    {
+     "min": 78,
+     "lado": "visitante",
+     "sale": "Adur Erdozain Lopez",
+     "entra": "Aitor Ouro Barcia"
+    }
+   ]
+  },
+  "10059319": {
+   "campo": "Otxartaga-Berri, Ortuella",
+   "goles": [
+    {
+     "min": 6,
+     "lado": "visitante",
+     "jugador": "Eneko Uriarte Gutierrez"
+    },
+    {
+     "min": 20,
+     "lado": "visitante",
+     "jugador": "Xabier Fernandez Segador",
+     "tipo": "pp"
+    },
+    {
+     "min": 26,
+     "lado": "visitante",
+     "jugador": "Xabier Iturriaga Murillas"
+    },
+    {
+     "min": 70,
+     "lado": "visitante",
+     "jugador": "Eneko Uriarte Gutierrez"
+    },
+    {
+     "min": 80,
+     "lado": "local",
+     "jugador": "Ibai Sevilla Cano"
+    }
+   ],
+   "tarjetas": [
+    {
+     "min": 36,
+     "lado": "local",
+     "jugador": "Alain Zugazabeitia Fernández",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 48,
+     "lado": "local",
+     "jugador": "Jon Alonso-Mardones Alvarez",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 55,
+     "lado": "local",
+     "jugador": "Urko Martin Santisteban",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 80,
+     "lado": "local",
+     "jugador": "Roberto Erraiz Iglesias",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 87,
+     "lado": "local",
+     "jugador": "Aitor Ouro Barcia",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 50,
+     "lado": "visitante",
+     "jugador": "Xabier Iturriaga Murillas",
+     "tipo": "amarilla"
+    }
+   ],
+   "alineaciones": {
+    "local": {
+     "titulares": [
+      {
+       "dorsal": 1,
+       "nombre": "Aingeru Moriña Rivera"
+      },
+      {
+       "dorsal": 4,
+       "nombre": "Aitor Herrero Campos"
+      },
+      {
+       "dorsal": 5,
+       "nombre": "Xabier Fernandez Segador"
+      },
+      {
+       "dorsal": 10,
+       "nombre": "Urko Martin Santisteban"
+      },
+      {
+       "dorsal": 11,
+       "nombre": "Ibai Sevilla Cano"
+      },
+      {
+       "dorsal": 14,
+       "nombre": "Julen Aparicio Esteban"
+      },
+      {
+       "dorsal": 17,
+       "nombre": "Roberto Erraiz Iglesias"
+      },
+      {
+       "dorsal": 18,
+       "nombre": "Alvaro Fernandez Tarrio"
+      },
+      {
+       "dorsal": 19,
+       "nombre": "Alain Zugazabeitia Fernández"
+      },
+      {
+       "dorsal": 24,
+       "nombre": "Jon Alonso-Mardones Alvarez"
+      },
+      {
+       "dorsal": 25,
+       "nombre": "Tasio Sagastizabal Garcia"
+      }
+     ],
+     "suplentes": [
+      {
+       "dorsal": 9,
+       "nombre": "Eneko Novelle Llorente"
+      },
+      {
+       "dorsal": 20,
+       "nombre": "Izei Gomez Galan"
+      },
+      {
+       "dorsal": 21,
+       "nombre": "Aitor Ouro Barcia"
+      },
+      {
+       "dorsal": 22,
+       "nombre": "Iker de los Mozos Romay"
+      },
+      {
+       "dorsal": 23,
+       "nombre": "Adur Erdozain Lopez"
+      }
+     ]
+    },
+    "visitante": {
+     "titulares": [
+      {
+       "dorsal": 1,
+       "nombre": "Iraitz Igor Gonzalez Marañon"
+      },
+      {
+       "dorsal": 2,
+       "nombre": "Danel Perdon Rio"
+      },
+      {
+       "dorsal": 3,
+       "nombre": "Xabier Iturriaga Murillas"
+      },
+      {
+       "dorsal": 6,
+       "nombre": "Lander Gordoa Arce"
+      },
+      {
+       "dorsal": 7,
+       "nombre": "Eneko Azcona Acero"
+      },
+      {
+       "dorsal": 9,
+       "nombre": "Jon Martin Antxia"
+      },
+      {
+       "dorsal": 10,
+       "nombre": "Eneko Uriarte Gutierrez"
+      },
+      {
+       "dorsal": 16,
+       "nombre": "Ibon Larrinaga Undabeitia"
+      },
+      {
+       "dorsal": 17,
+       "nombre": "Kerman Perea Asteinza"
+      },
+      {
+       "dorsal": 22,
+       "nombre": "Jon Gomez Gonzalez"
+      },
+      {
+       "dorsal": 24,
+       "nombre": "Andoni Coll Gonzalez"
+      }
+     ],
+     "suplentes": [
+      {
+       "dorsal": 5,
+       "nombre": "Nicolas Guerendiain Fernandez"
+      },
+      {
+       "dorsal": 13,
+       "nombre": "Aitor Pinedo Barañano"
+      },
+      {
+       "dorsal": 14,
+       "nombre": "Aritz Bengoetxea Sainz de Murieta"
+      },
+      {
+       "dorsal": 19,
+       "nombre": "Iker Madariaga Garcia"
+      },
+      {
+       "dorsal": 21,
+       "nombre": "Javier Ruiz Bilbao"
+      },
+      {
+       "dorsal": 23,
+       "nombre": "Ander Lopez Barrio"
+      }
+     ]
+    }
+   },
+   "cambios": [
+    {
+     "min": 45,
+     "lado": "local",
+     "sale": "Tasio Sagastizabal Garcia",
+     "entra": "Iker de los Mozos Romay"
+    },
+    {
+     "min": 56,
+     "lado": "local",
+     "sale": "Alain Zugazabeitia Fernández",
+     "entra": "Adur Erdozain Lopez"
+    },
+    {
+     "min": 61,
+     "lado": "local",
+     "sale": "Xabier Fernandez Segador",
+     "entra": "Izei Gomez Galan"
+    },
+    {
+     "min": 61,
+     "lado": "local",
+     "sale": "Urko Martin Santisteban",
+     "entra": "Eneko Novelle Llorente"
+    },
+    {
+     "min": 74,
+     "lado": "local",
+     "sale": "Jon Alonso-Mardones Alvarez",
+     "entra": "Aitor Ouro Barcia"
+    },
+    {
+     "min": 60,
+     "lado": "visitante",
+     "sale": "Jon Martin Antxia",
+     "entra": "Ander Lopez Barrio"
+    },
+    {
+     "min": 61,
+     "lado": "visitante",
+     "sale": "Xabier Iturriaga Murillas",
+     "entra": "Aritz Bengoetxea Sainz de Murieta"
+    },
+    {
+     "min": 61,
+     "lado": "visitante",
+     "sale": "Eneko Azcona Acero",
+     "entra": "Iker Madariaga Garcia"
+    },
+    {
+     "min": 71,
+     "lado": "visitante",
+     "sale": "Jon Gomez Gonzalez",
+     "entra": "Nicolas Guerendiain Fernandez"
+    }
+   ]
+  },
+  "10059326": {
+   "campo": "Galindo 1, Sestao",
+   "goles": [
+    {
+     "min": 2,
+     "lado": "visitante",
+     "jugador": "Ibai Sevilla Cano"
+    },
+    {
+     "min": 17,
+     "lado": "local",
+     "jugador": "Unai Lastra Santos"
+    },
+    {
+     "min": 32,
+     "lado": "visitante",
+     "jugador": "Urko Martin Santisteban"
+    },
+    {
+     "min": 79,
+     "lado": "visitante",
+     "jugador": "Julen Aparicio Esteban"
+    }
+   ],
+   "tarjetas": [
+    {
+     "min": 60,
+     "lado": "local",
+     "jugador": "Alejandro Cango Sánchez",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 70,
+     "lado": "local",
+     "jugador": "Ian Prieto Sancho",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 73,
+     "lado": "visitante",
+     "jugador": "Urko Martin Santisteban",
+     "tipo": "amarilla"
+    }
+   ],
+   "alineaciones": {
+    "local": {
+     "titulares": [
+      {
+       "dorsal": 13,
+       "nombre": "Ametz Ferreiro Anabitarte"
+      },
+      {
+       "dorsal": 2,
+       "nombre": "Diego Gonzalez Mosquera"
+      },
+      {
+       "dorsal": 3,
+       "nombre": "Eder Hoyos Vallejo"
+      },
+      {
+       "dorsal": 6,
+       "nombre": "Eneko Sangines Barreras"
+      },
+      {
+       "dorsal": 7,
+       "nombre": "Aritz Fernandez Garrido"
+      },
+      {
+       "dorsal": 8,
+       "nombre": "Oihan Ocio Sanchez"
+      },
+      {
+       "dorsal": 14,
+       "nombre": "Oihan Pereira Ayuso"
+      },
+      {
+       "dorsal": 15,
+       "nombre": "Aingeru Carrera Samperio"
+      },
+      {
+       "dorsal": 19,
+       "nombre": "Enaitz Moreno Filgueira"
+      },
+      {
+       "dorsal": 20,
+       "nombre": "Unai Lastra Santos"
+      },
+      {
+       "dorsal": 21,
+       "nombre": "Dylan Vargas Osorio"
+      }
+     ],
+     "suplentes": [
+      {
+       "dorsal": 4,
+       "nombre": "Julen Gómez López"
+      },
+      {
+       "dorsal": 5,
+       "nombre": "Iker Frion Dolado"
+      },
+      {
+       "dorsal": 9,
+       "nombre": "Ian Prieto Sancho"
+      },
+      {
+       "dorsal": 11,
+       "nombre": "Joritz Sanz Salgado"
+      },
+      {
+       "dorsal": 16,
+       "nombre": "Julen de la Cámara Hernández"
+      },
+      {
+       "dorsal": 17,
+       "nombre": "Jeremi Andres Añez Bermeo"
+      },
+      {
+       "dorsal": 22,
+       "nombre": "Alejandro Cango Sánchez"
+      }
+     ]
+    },
+    "visitante": {
+     "titulares": [
+      {
+       "dorsal": 13,
+       "nombre": "Izei Gomez Galan"
+      },
+      {
+       "dorsal": 2,
+       "nombre": "Jon Alonso-Mardones Alvarez"
+      },
+      {
+       "dorsal": 3,
+       "nombre": "Roberto Erraiz Iglesias"
+      },
+      {
+       "dorsal": 4,
+       "nombre": "Aitor Herrero Campos"
+      },
+      {
+       "dorsal": 5,
+       "nombre": "Alvaro Fernandez Tarrio"
+      },
+      {
+       "dorsal": 6,
+       "nombre": "Adur Erdozain Lopez"
+      },
+      {
+       "dorsal": 7,
+       "nombre": "Iker de los Mozos Romay"
+      },
+      {
+       "dorsal": 8,
+       "nombre": "Unai Guerrero Barrios"
+      },
+      {
+       "dorsal": 9,
+       "nombre": "Aritz Iglesias Miguelez"
+      },
+      {
+       "dorsal": 10,
+       "nombre": "Urko Martin Santisteban"
+      },
+      {
+       "dorsal": 11,
+       "nombre": "Ibai Sevilla Cano"
+      }
+     ],
+     "suplentes": [
+      {
+       "dorsal": 1,
+       "nombre": "Aingeru Moriña Rivera"
+      },
+      {
+       "dorsal": 12,
+       "nombre": "Xabier Fernandez Segador"
+      },
+      {
+       "dorsal": 14,
+       "nombre": "Julen Aparicio Esteban"
+      },
+      {
+       "dorsal": 15,
+       "nombre": "Eneko Novelle Llorente"
+      },
+      {
+       "dorsal": 16,
+       "nombre": "Tasio Sagastizabal Garcia"
+      },
+      {
+       "dorsal": 17,
+       "nombre": "Aitor Ouro Barcia"
+      },
+      {
+       "dorsal": 18,
+       "nombre": "Alain Zugazabeitia Fernández"
+      }
+     ]
+    }
+   },
+   "cambios": [
+    {
+     "min": 45,
+     "lado": "local",
+     "sale": "Eder Hoyos Vallejo",
+     "entra": "Julen Gómez López"
+    },
+    {
+     "min": 45,
+     "lado": "local",
+     "sale": "Diego Gonzalez Mosquera",
+     "entra": "Julen de la Cámara Hernández"
+    },
+    {
+     "min": 55,
+     "lado": "local",
+     "sale": "Enaitz Moreno Filgueira",
+     "entra": "Joritz Sanz Salgado"
+    },
+    {
+     "min": 63,
+     "lado": "local",
+     "sale": "Dylan Vargas Osorio",
+     "entra": "Alejandro Cango Sánchez"
+    },
+    {
+     "min": 74,
+     "lado": "visitante",
+     "sale": "Unai Guerrero Barrios",
+     "entra": "Julen Aparicio Esteban"
+    },
+    {
+     "min": 76,
+     "lado": "visitante",
+     "sale": "Aitor Herrero Campos",
+     "entra": "Alain Zugazabeitia Fernández"
+    },
+    {
+     "min": 76,
+     "lado": "visitante",
+     "sale": "Iker de los Mozos Romay",
+     "entra": "Tasio Sagastizabal Garcia"
+    }
+   ]
+  },
+  "10064381": {
+   "campo": "Ansio, Barakaldo",
+   "goles": [
+    {
+     "min": 18,
+     "lado": "visitante",
+     "jugador": "Unai Pinillos Carracedo"
+    },
+    {
+     "min": 22,
+     "lado": "visitante",
+     "jugador": "Asier Marquez Fernandez"
+    },
+    {
+     "min": 32,
+     "lado": "visitante",
+     "jugador": "Unai García Angulo"
+    },
+    {
+     "min": 35,
+     "lado": "visitante",
+     "jugador": "Unai Pinillos Carracedo"
+    },
+    {
+     "min": 67,
+     "lado": "visitante",
+     "jugador": "Asier Marquez Fernandez"
+    },
+    {
+     "min": 74,
+     "lado": "local",
+     "jugador": "Daniel Aragon Jimenez"
+    }
+   ],
+   "tarjetas": [
+    {
+     "min": 47,
+     "lado": "local",
+     "jugador": "Unai Rojo Rodenas",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 49,
+     "lado": "local",
+     "jugador": "Jon Imanol Alvarez Sosa",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 80,
+     "lado": "local",
+     "jugador": "Jon Imanol Alvarez Sosa",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 17,
+     "lado": "visitante",
+     "jugador": "Unai Pinillos Carracedo",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 20,
+     "lado": "visitante",
+     "jugador": "Xabier Fernandez Avellanal",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 66,
+     "lado": "visitante",
+     "jugador": "Izei Izagirre Iriondo",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 73,
+     "lado": "visitante",
+     "jugador": "Enaitz Gonzalez Delgado",
+     "tipo": "amarilla"
+    },
+    {
+     "min": 80,
+     "lado": "visitante",
+     "jugador": "Enaitz Gonzalez Delgado",
+     "tipo": "amarilla"
+    }
+   ],
+   "alineaciones": {
+    "local": {
+     "titulares": [
+      {
+       "dorsal": 1,
+       "nombre": "Oier Vegas Parrado"
+      },
+      {
+       "dorsal": 2,
+       "nombre": "Beñat Moll Olaran"
+      },
+      {
+       "dorsal": 3,
+       "nombre": "Unai Rojo Rodenas"
+      },
+      {
+       "dorsal": 4,
+       "nombre": "Julen Mesonero Sánchez"
+      },
+      {
+       "dorsal": 5,
+       "nombre": "Mikel Muñoz Barañano"
+      },
+      {
+       "dorsal": 7,
+       "nombre": "Iker Alonso Berincua"
+      },
+      {
+       "dorsal": 8,
+       "nombre": "Ander Alzaga Fernandez"
+      },
+      {
+       "dorsal": 9,
+       "nombre": "Simon Lambert Monkama Kofane"
+      },
+      {
+       "dorsal": 10,
+       "nombre": "Jon Imanol Alvarez Sosa"
+      },
+      {
+       "dorsal": 11,
+       "nombre": "Daniel Aragon Jimenez"
+      },
+      {
+       "dorsal": 16,
+       "nombre": "Saad El Guarrah Bouchtaoui"
+      }
+     ],
+     "suplentes": [
+      {
+       "dorsal": 18,
+       "nombre": "Aarón García García"
+      },
+      {
+       "dorsal": 6,
+       "nombre": "Markel Somavilla Ballesteros"
+      },
+      {
+       "dorsal": 12,
+       "nombre": "Lander Salgado Montero"
+      }
+     ]
+    },
+    "visitante": {
+     "titulares": [
+      {
+       "dorsal": 13,
+       "nombre": "Hector Perez Diez"
+      },
+      {
+       "dorsal": 2,
+       "nombre": "Iñigo Rodriguez Ramirez"
+      },
+      {
+       "dorsal": 4,
+       "nombre": "David Sanchez Terrazas"
+      },
+      {
+       "dorsal": 5,
+       "nombre": "Ander Fernandez Avellanal"
+      },
+      {
+       "dorsal": 7,
+       "nombre": "Aratz Guezuraga Larrea"
+      },
+      {
+       "dorsal": 8,
+       "nombre": "Unai Pinillos Carracedo"
+      },
+      {
+       "dorsal": 9,
+       "nombre": "Asier Marquez Fernandez"
+      },
+      {
+       "dorsal": 10,
+       "nombre": "Peio Salgado Carbo"
+      },
+      {
+       "dorsal": 11,
+       "nombre": "Unai García Angulo"
+      },
+      {
+       "dorsal": 17,
+       "nombre": "Xabier Fernandez Avellanal"
+      },
+      {
+       "dorsal": 23,
+       "nombre": "Izei Izagirre Iriondo"
+      }
+     ],
+     "suplentes": [
+      {
+       "dorsal": 3,
+       "nombre": "Ibai Gonzalez Llanos"
+      },
+      {
+       "dorsal": 6,
+       "nombre": "Enaitz Gonzalez Delgado"
+      },
+      {
+       "dorsal": 12,
+       "nombre": "Iker Alzueta Mendez"
+      },
+      {
+       "dorsal": 14,
+       "nombre": "Aimar Martin Espino"
+      },
+      {
+       "dorsal": 15,
+       "nombre": "Xabier Agredano Manzano"
+      },
+      {
+       "dorsal": 18,
+       "nombre": "Iker Alonso Ruiz"
+      },
+      {
+       "dorsal": 20,
+       "nombre": "Jon de Brito Fernandez"
+      }
+     ]
+    }
+   },
+   "cambios": [
+    {
+     "min": 39,
+     "lado": "local",
+     "sale": "Ander Alzaga Fernandez",
+     "entra": "Markel Somavilla Ballesteros"
+    },
+    {
+     "min": 40,
+     "lado": "local",
+     "sale": "Oier Vegas Parrado",
+     "entra": "Aarón García García"
+    },
+    {
+     "min": 40,
+     "lado": "local",
+     "sale": "Mikel Muñoz Barañano",
+     "entra": "Lander Salgado Montero"
+    },
+    {
+     "min": 50,
+     "lado": "visitante",
+     "sale": "Unai Pinillos Carracedo",
+     "entra": "Iker Alonso Ruiz"
+    },
+    {
+     "min": 50,
+     "lado": "visitante",
+     "sale": "Iñigo Rodriguez Ramirez",
+     "entra": "Jon de Brito Fernandez"
+    },
+    {
+     "min": 50,
+     "lado": "visitante",
+     "sale": "Peio Salgado Carbo",
+     "entra": "Enaitz Gonzalez Delgado"
+    },
+    {
+     "min": 68,
+     "lado": "visitante",
+     "sale": "Aratz Guezuraga Larrea",
+     "entra": "Aimar Martin Espino"
+    },
+    {
+     "min": 68,
+     "lado": "visitante",
+     "sale": "Asier Marquez Fernandez",
+     "entra": "Xabier Agredano Manzano"
+    }
+   ]
+  }
+ },
+ "escudos": {
+  "Dinamo San Juan B": "1095.webp",
+  "Sporting De Lutxana B": "1012.webp",
+  "Atletismo Ortuella": "1400.webp",
+  "Union Sport B": "1027.webp",
+  "Zazpi Landa": "1311.webp",
+  "Begoña B": "1030.webp",
+  "Balmaseda B": "1006.webp",
+  "Retuerto B": "1061.webp",
+  "Karrantza": "1072.webp",
+  "Gurutzeta B": "1072.webp",
+  "Gazteak": "1092.webp",
+  "Basurto B": "1024.webp",
+  "Trapagaran B": "1133.webp",
+  "Abanto B": "1017.webp",
+  "Asti-leku": "1169.webp",
+  "Trueba": "1169.webp",
+  "San Pedro B": "1025.webp",
+  "Arbuyo": "1063.webp",
+  "Larramendi B": "1016.webp",
+  "Somorrostro B": "1040.webp",
+  "Sodupe B": "1045.webp",
+  "Kastretxetxua": "1550.webp",
+  "Gallarta B": "1050.webp",
+  "Peña ATH. Santurtzi": "1282.webp",
+  "Begoñako Arteagabe": "1615.webp",
+  "Abanto": "1017.webp",
+  "Loyola Indauchu B": "1083.webp",
+  "Zazpi Landa A": "1311.webp",
+  "Sestao River B": "1384.webp",
+  "Dinamo San Juan": "1095.webp",
+  "Arrontegi A": "1156.webp",
+  "Asti-leku B": "1169.webp",
+  "Zuazo B": "1110.webp",
+  "Aranguren A": "1129.webp",
+  "San Pedro A": "1025.webp",
+  "Trapagaran C": "1133.webp",
+  "Santurtzi B": "1053.webp",
+  "Peña ATH. Santurtzi B": "1282.webp",
+  "Beti Lagunak": "1452.webp",
+  "Ortuellako Jendea 1999": "1095.webp",
+  "Zalla": "1032.webp"
+ },
+ "campos": {
+  "Dinamo San Juan B": "San Juan - Santurtzi",
+  "Ortuella": "Otxartaga-Berri, Ortuella",
+  "Atletismo Ortuella": "Otxartaga-Berri, Ortuella",
+  "Sopuerta": "Santa Ana, Sopuerta",
+  "Zazpi Landa": "P.M. Zorroza, Bilbao",
+  "Balmaseda B": "Salinillas, Balmaseda",
+  "Retuerto B": "Ibarreta, Barakaldo",
+  "Karrantza": "Balandran, Karrantza Harana",
+  "Gurutzeta B": "La Siebe, Cruces-Barakaldo",
+  "Sporting De Lutxana B": "Serralta, Lutxana - Barakaldo",
+  "Union Sport B": "San Vicente C.D.M., Barakaldo",
+  "Gazteak": "San Pedro de Kabiezes, Santurtzi",
+  "Basurto B": "Iparralde, Bilbao",
+  "Trapagaran B": "Errotarte, Trapagaran",
+  "Begoña B": "Maiona A, Bilbao",
+  "Asti-leku": "Parque Rivas, Portugalete",
+  "Abanto B": "El Mortuero, Las Carreras",
+  "Trueba": "Buenos Aires, Espinosa de los Monteros",
+  "San Pedro B": "Galindo 1, Sestao",
+  "Menes": "Las Carmenes Barria, La Arboleda",
+  "Larramendi B": "Basteita, Alonsotegi",
+  "Sodupe B": "Hurtado de Saratxo, Sodupe-Gueñes",
+  "Gallarta B": "San Miguel-Gallarta",
+  "Peña ATH. Santurtzi": "Benjamin Martinez, Santurtzi",
+  "Abanto": "El Mortuero, Las Carreras",
+  "Begoñako Arteagabe": "Galindo 1, Sestao",
+  "Zazpi Landa A": "P.M. Zorroza, Bilbao",
+  "Dinamo San Juan": "Las Carmenes Barria, La Arboleda",
+  "Arrontegi A": "Ibarreta, Barakaldo",
+  "Asti-leku B": "Los Llanos, Portugalete",
+  "Loyola Indauchu B": "Aitxarte, Bilbao",
+  "Zuazo B": "Ansio, Barakaldo",
+  "Sestao River B": "Galindo 2, Sestao",
+  "Aranguren A": "San Miguel-Zalla",
+  "San Pedro A": "Galindo 2, Sestao",
+  "Somorrostro B": "El Malecon Berria, Muskiz",
+  "Santurtzi B": "San Jorge, Santurtzi",
+  "Beti Lagunak": "La Siebe, Cruces-Barakaldo",
+  "Ortuellako Jendea 1999": "San Juan - Santurtzi"
+ }
 };
