@@ -615,6 +615,10 @@ a.sp.free:hover .sp-box { color: var(--blue); }
 .flip-in { display: grid; transition: transform .8s cubic-bezier(.45, .05, .25, 1); transform-style: preserve-3d; }
 .flip .face { grid-area: 1 / 1; min-width: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; align-self: center; }
 .flip.flipping .face.club { transform: rotateY(180deg); }
+/* La cara oculta se esconde de verdad a mitad del giro (no todos los navegadores respetan backface-visibility) */
+.flip.flipping .face { transition: visibility 0s .4s; }
+.flip.flipping .face.club, .flip.flipping.on-club .face.dest { visibility: hidden; }
+.flip.flipping.on-club .face.club { visibility: visible; }
 .flip.flipping.on-club .flip-in { transform: rotateY(180deg); }
 .face.dest { display: grid; grid-template-columns: minmax(0, 200px) minmax(0, 1fr); gap: 26px; align-items: center; }
 .dest-pic { display: block; aspect-ratio: 1; max-width: 100%; border-radius: 10px; overflow: hidden; background: #fff; box-shadow: 0 20px 44px rgba(0,0,0,.35); }

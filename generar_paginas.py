@@ -383,8 +383,6 @@ PAGES["equipos"] = dict(
         '<div class="panel"><h3>Goleadores</h3><ul class="scorers">' + X.scorersList(t) + "</ul></div>") +
       (X.cardsList(t) ? '<div class="panel"><h3>Tarjetas</h3>' + X.cardsList(t) + "</div>" : "") + "</div></div>" +
       '<p class="source">' + X.sourceNote(t) + "</p>" +
-      '<div class="cal-team"><div><b>Los partidos del ' + X.APODO[t.id] + ' en tu calendario</b><p>Se añaden solos y se actualizan con cada jornada. <a href="partidos.html#calendario">Más opciones</a></p></div>' +
-      '<div class="btns"><a class="btn blue" href="' + X.calHrefs(X.SLUG[t.id]).apple + '">iPhone o Mac</a><a class="btn line" href="' + X.calHrefs(X.SLUG[t.id]).google + '" target="_blank" rel="noopener">Google Calendar</a></div></div>' +
       "</div></section>" + (roster(t) || (t.id === "primer" ? squad() : ""));
     // Pestañas Goleadores / Porteros, en el mismo hueco
     if ($("tabGol")) {
