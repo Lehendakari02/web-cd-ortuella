@@ -1,13 +1,13 @@
 # Lee los datos de la Federación Vizcaína y actualiza la web sola.
-# De momento solo se lanza a mano (Actions → Actualizar datos de la Federación → Run workflow).
-# Cuando la prueba salga bien, se quita el # de las líneas de "schedule" para que se ejecute 2 veces al día.
+# Se ejecuta sola 2 veces al día (y también se puede lanzar a mano: Actions → Actualizar datos de la Federación → Run workflow).
+# Si la Federación no responde para algún equipo, ese equipo conserva sus últimos datos buenos hasta la siguiente pasada.
 name: Actualizar datos de la Federación
 
 on:
   workflow_dispatch:
-  # schedule:
-  #   - cron: "0 6 * * *"    # 8:00 en Madrid en horario de verano (7:00 en invierno)
-  #   - cron: "0 21 * * *"   # 23:00 en Madrid en horario de verano (22:00 en invierno)
+  schedule:
+    - cron: "0 6 * * *"    # 8:00 en Madrid en horario de verano (7:00 en invierno)
+    - cron: "0 21 * * *"   # 23:00 en Madrid en horario de verano (22:00 en invierno)
 
 permissions:
   contents: write
@@ -19,7 +19,7 @@ concurrency:
 jobs:
   actualizar:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
@@ -45,4 +45,5 @@ jobs:
           fi
           git -c user.name="Actualización automática" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
             commit -m "Datos de la Federación actualizados"
+          git pull --rebase   # por si mientras tanto se ha mergeado otro cambio en la web
           git push
