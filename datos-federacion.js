@@ -1,7 +1,7 @@
 /* Archivo generado automáticamente por actualizar_federacion.py. No editar a mano. */
 window.FEDERACION = {
  "temporada": "2026/27",
- "actualizado": "2026-10-19T22:53+00:00",
+ "actualizado": "2026-10-21T12:02+00:00",
  "equipos": [
   {
    "id": "primer",
@@ -214,36 +214,36 @@ window.FEDERACION = {
      "fecha": "2026-09-20",
      "local": "Dinamo San Juan B",
      "visitante": "Ortuella",
-     "gl": null,
-     "gv": null,
-     "acta": null
+     "gl": 2,
+     "gv": 1,
+     "acta": 10056640
     },
     {
      "jornada": 2,
      "fecha": "2026-09-27",
      "local": "Ortuella",
      "visitante": "Sporting De Lutxana B",
-     "gl": null,
-     "gv": null,
-     "acta": null
+     "gl": 2,
+     "gv": 0,
+     "acta": 10056649
     },
     {
      "jornada": 3,
      "fecha": "2026-10-04",
      "local": "Atletismo Ortuella",
      "visitante": "Ortuella",
-     "gl": null,
-     "gv": null,
-     "acta": null
+     "gl": 0,
+     "gv": 2,
+     "acta": 10056657
     },
     {
      "jornada": 4,
      "fecha": "2026-10-11",
      "local": "Ortuella",
      "visitante": "Union Sport B",
-     "gl": null,
-     "gv": null,
-     "acta": null
+     "gl": 3,
+     "gv": 1,
+     "acta": 10056666
     },
     {
      "jornada": 5,
@@ -549,6 +549,402 @@ window.FEDERACION = {
     }
    ],
    "resultados": [
+    {
+     "jornada": 1,
+     "fecha": "2026-09-20",
+     "local": "Gazteak",
+     "visitante": "Zazpi Landa",
+     "codlocal": 13898,
+     "codvisitante": 14833,
+     "gl": 1,
+     "gv": 3,
+     "acta": 10056635
+    },
+    {
+     "jornada": 1,
+     "fecha": "2026-09-20",
+     "local": "Sopuerta",
+     "visitante": "Basurto B",
+     "codlocal": 14416,
+     "codvisitante": 13049,
+     "gl": 1,
+     "gv": 3,
+     "acta": 10056636
+    },
+    {
+     "jornada": 1,
+     "fecha": "2026-09-20",
+     "local": "Union Sport B",
+     "visitante": "Balmaseda B",
+     "codlocal": 13098,
+     "codvisitante": 12745,
+     "gl": 1,
+     "gv": 1,
+     "acta": 10056637
+    },
+    {
+     "jornada": 1,
+     "fecha": "2026-09-20",
+     "local": "Atletismo Ortuella",
+     "visitante": "Trapagaran B",
+     "codlocal": 15228,
+     "codvisitante": 14089,
+     "gl": 1,
+     "gv": 3,
+     "acta": 10056638
+    },
+    {
+     "jornada": 1,
+     "fecha": "2026-09-20",
+     "local": "Sporting De Lutxana B",
+     "visitante": "Retuerto B",
+     "codlocal": 12849,
+     "codvisitante": 1807894,
+     "gl": 0,
+     "gv": 0,
+     "acta": 10056639
+    },
+    {
+     "jornada": 1,
+     "fecha": "2026-09-20",
+     "local": "Dinamo San Juan B",
+     "visitante": "Ortuella",
+     "codlocal": 13939,
+     "codvisitante": 13460,
+     "gl": 2,
+     "gv": 1,
+     "acta": 10056640
+    },
+    {
+     "jornada": 1,
+     "fecha": "2026-09-20",
+     "local": "Trueba",
+     "visitante": "Asti-leku",
+     "codlocal": 14780,
+     "codvisitante": 14336,
+     "gl": 1,
+     "gv": 1,
+     "acta": 10056641
+    },
+    {
+     "jornada": 1,
+     "fecha": "2026-09-20",
+     "local": "Gurutzeta B",
+     "visitante": "Karrantza",
+     "codlocal": 14127,
+     "codvisitante": 13772,
+     "gl": 1,
+     "gv": 2,
+     "acta": 10056642
+    },
+    {
+     "jornada": 1,
+     "fecha": "2026-09-20",
+     "local": "Begoña B",
+     "visitante": "Abanto B",
+     "codlocal": 13154,
+     "codvisitante": 30062,
+     "gl": 2,
+     "gv": 3,
+     "acta": 10056643
+    },
+    {
+     "jornada": 2,
+     "fecha": "2026-09-27",
+     "local": "Zazpi Landa",
+     "visitante": "Begoña B",
+     "codlocal": 14833,
+     "codvisitante": 13154,
+     "gl": 4,
+     "gv": 1,
+     "acta": 10056644
+    },
+    {
+     "jornada": 2,
+     "fecha": "2026-09-27",
+     "local": "Basurto B",
+     "visitante": "Gazteak",
+     "codlocal": 13049,
+     "codvisitante": 13898,
+     "gl": 1,
+     "gv": 1,
+     "acta": 10056645
+    },
+    {
+     "jornada": 2,
+     "fecha": "2026-09-27",
+     "local": "Balmaseda B",
+     "visitante": "Sopuerta",
+     "codlocal": 12745,
+     "codvisitante": 14416,
+     "gl": 1,
+     "gv": 0,
+     "acta": 10056646
+    },
+    {
+     "jornada": 2,
+     "fecha": "2026-09-27",
+     "local": "Trapagaran B",
+     "visitante": "Union Sport B",
+     "codlocal": 14089,
+     "codvisitante": 13098,
+     "gl": 1,
+     "gv": 4,
+     "acta": 10056647
+    },
+    {
+     "jornada": 2,
+     "fecha": "2026-09-27",
+     "local": "Retuerto B",
+     "visitante": "Atletismo Ortuella",
+     "codlocal": 1807894,
+     "codvisitante": 15228,
+     "gl": 2,
+     "gv": 3,
+     "acta": 10056648
+    },
+    {
+     "jornada": 2,
+     "fecha": "2026-09-27",
+     "local": "Ortuella",
+     "visitante": "Sporting De Lutxana B",
+     "codlocal": 13460,
+     "codvisitante": 12849,
+     "gl": 2,
+     "gv": 0,
+     "acta": 10056649
+    },
+    {
+     "jornada": 2,
+     "fecha": "2026-09-27",
+     "local": "Asti-leku",
+     "visitante": "Dinamo San Juan B",
+     "codlocal": 14336,
+     "codvisitante": 13939,
+     "gl": 1,
+     "gv": 1,
+     "acta": 10056650
+    },
+    {
+     "jornada": 2,
+     "fecha": "2026-09-27",
+     "local": "Karrantza",
+     "visitante": "Trueba",
+     "codlocal": 13772,
+     "codvisitante": 14780,
+     "gl": 2,
+     "gv": 2,
+     "acta": 10056651
+    },
+    {
+     "jornada": 2,
+     "fecha": "2026-09-27",
+     "local": "Abanto B",
+     "visitante": "Gurutzeta B",
+     "codlocal": 30062,
+     "codvisitante": 14127,
+     "gl": 3,
+     "gv": 1,
+     "acta": 10056652
+    },
+    {
+     "jornada": 3,
+     "fecha": "2026-10-04",
+     "local": "Zazpi Landa",
+     "visitante": "Basurto B",
+     "codlocal": 14833,
+     "codvisitante": 13049,
+     "gl": 3,
+     "gv": 1,
+     "acta": 10056653
+    },
+    {
+     "jornada": 3,
+     "fecha": "2026-10-04",
+     "local": "Gazteak",
+     "visitante": "Balmaseda B",
+     "codlocal": 13898,
+     "codvisitante": 12745,
+     "gl": 2,
+     "gv": 0,
+     "acta": 10056654
+    },
+    {
+     "jornada": 3,
+     "fecha": "2026-10-04",
+     "local": "Sopuerta",
+     "visitante": "Trapagaran B",
+     "codlocal": 14416,
+     "codvisitante": 14089,
+     "gl": 2,
+     "gv": 2,
+     "acta": 10056655
+    },
+    {
+     "jornada": 3,
+     "fecha": "2026-10-04",
+     "local": "Union Sport B",
+     "visitante": "Retuerto B",
+     "codlocal": 13098,
+     "codvisitante": 1807894,
+     "gl": 2,
+     "gv": 1,
+     "acta": 10056656
+    },
+    {
+     "jornada": 3,
+     "fecha": "2026-10-04",
+     "local": "Atletismo Ortuella",
+     "visitante": "Ortuella",
+     "codlocal": 15228,
+     "codvisitante": 13460,
+     "gl": 0,
+     "gv": 2,
+     "acta": 10056657
+    },
+    {
+     "jornada": 3,
+     "fecha": "2026-10-04",
+     "local": "Sporting De Lutxana B",
+     "visitante": "Asti-leku",
+     "codlocal": 12849,
+     "codvisitante": 14336,
+     "gl": 1,
+     "gv": 0,
+     "acta": 10056658
+    },
+    {
+     "jornada": 3,
+     "fecha": "2026-10-04",
+     "local": "Dinamo San Juan B",
+     "visitante": "Karrantza",
+     "codlocal": 13939,
+     "codvisitante": 13772,
+     "gl": 2,
+     "gv": 6,
+     "acta": 10056659
+    },
+    {
+     "jornada": 3,
+     "fecha": "2026-10-04",
+     "local": "Trueba",
+     "visitante": "Abanto B",
+     "codlocal": 14780,
+     "codvisitante": 30062,
+     "gl": 3,
+     "gv": 4,
+     "acta": 10056660
+    },
+    {
+     "jornada": 3,
+     "fecha": "2026-10-04",
+     "local": "Begoña B",
+     "visitante": "Gurutzeta B",
+     "codlocal": 13154,
+     "codvisitante": 14127,
+     "gl": 2,
+     "gv": 1,
+     "acta": 10056661
+    },
+    {
+     "jornada": 4,
+     "fecha": "2026-10-11",
+     "local": "Basurto B",
+     "visitante": "Begoña B",
+     "codlocal": 13049,
+     "codvisitante": 13154,
+     "gl": 2,
+     "gv": 0,
+     "acta": 10056662
+    },
+    {
+     "jornada": 4,
+     "fecha": "2026-10-11",
+     "local": "Balmaseda B",
+     "visitante": "Zazpi Landa",
+     "codlocal": 12745,
+     "codvisitante": 14833,
+     "gl": 1,
+     "gv": 1,
+     "acta": 10056663
+    },
+    {
+     "jornada": 4,
+     "fecha": "2026-10-11",
+     "local": "Trapagaran B",
+     "visitante": "Gazteak",
+     "codlocal": 14089,
+     "codvisitante": 13898,
+     "gl": 3,
+     "gv": 2,
+     "acta": 10056664
+    },
+    {
+     "jornada": 4,
+     "fecha": "2026-10-11",
+     "local": "Retuerto B",
+     "visitante": "Sopuerta",
+     "codlocal": 1807894,
+     "codvisitante": 14416,
+     "gl": 0,
+     "gv": 1,
+     "acta": 10056665
+    },
+    {
+     "jornada": 4,
+     "fecha": "2026-10-11",
+     "local": "Ortuella",
+     "visitante": "Union Sport B",
+     "codlocal": 13460,
+     "codvisitante": 13098,
+     "gl": 3,
+     "gv": 1,
+     "acta": 10056666
+    },
+    {
+     "jornada": 4,
+     "fecha": "2026-10-11",
+     "local": "Asti-leku",
+     "visitante": "Atletismo Ortuella",
+     "codlocal": 14336,
+     "codvisitante": 15228,
+     "gl": 2,
+     "gv": 0,
+     "acta": 10056667
+    },
+    {
+     "jornada": 4,
+     "fecha": "2026-10-11",
+     "local": "Karrantza",
+     "visitante": "Sporting De Lutxana B",
+     "codlocal": 13772,
+     "codvisitante": 12849,
+     "gl": 6,
+     "gv": 1,
+     "acta": 10056668
+    },
+    {
+     "jornada": 4,
+     "fecha": "2026-10-11",
+     "local": "Abanto B",
+     "visitante": "Dinamo San Juan B",
+     "codlocal": 30062,
+     "codvisitante": 13939,
+     "gl": 1,
+     "gv": 0,
+     "acta": 10056669
+    },
+    {
+     "jornada": 4,
+     "fecha": "2026-10-11",
+     "local": "Gurutzeta B",
+     "visitante": "Trueba",
+     "codlocal": 14127,
+     "codvisitante": 14780,
+     "gl": 4,
+     "gv": 2,
+     "acta": 10056670
+    },
     {
      "jornada": 5,
      "fecha": "2026-10-18",
@@ -1048,7 +1444,13 @@ window.FEDERACION = {
      "acta": null
     }
    ],
-   "goleadores": [],
+   "goleadores": [
+    {
+     "nombre": "Iker Guadilla Estevez",
+     "partidos": 1,
+     "goles": 1
+    }
+   ],
    "resultados": [
     {
      "jornada": 1,
@@ -1308,18 +1710,18 @@ window.FEDERACION = {
      "fecha": "2026-10-04",
      "local": "Abanto",
      "visitante": "Ortuella",
-     "gl": null,
-     "gv": null,
-     "acta": null
+     "gl": 2,
+     "gv": 1,
+     "acta": 10059311
     },
     {
      "jornada": 2,
      "fecha": "2026-10-11",
      "local": "Ortuella",
      "visitante": "Loyola Indauchu B",
-     "gl": null,
-     "gv": null,
-     "acta": null
+     "gl": 1,
+     "gv": 4,
+     "acta": 10059319
     },
     {
      "jornada": 3,
@@ -1594,179 +1996,179 @@ window.FEDERACION = {
    "resultados": [
     {
      "jornada": 1,
-     "fecha": null,
-     "local": "Sestao River B",
-     "visitante": "Dinamo San Juan",
-     "codlocal": 15140,
-     "codvisitante": 13942,
-     "gl": 5,
-     "gv": 2,
-     "acta": 10059323
-    },
-    {
-     "jornada": 1,
-     "fecha": null,
+     "fecha": "2026-10-04",
      "local": "Zazpi Landa A",
-     "visitante": "Aranguren A",
+     "visitante": "Sestao River B",
      "codlocal": 14837,
-     "codvisitante": 14077,
+     "codvisitante": 15140,
      "gl": 4,
-     "gv": 2,
-     "acta": 10059324
+     "gv": 5,
+     "acta": 10059307
     },
     {
      "jornada": 1,
-     "fecha": null,
+     "fecha": "2026-10-04",
      "local": "Zuazo B",
-     "visitante": "Arrontegi A",
+     "visitante": "Dinamo San Juan",
      "codlocal": 13998,
-     "codvisitante": 30122,
-     "gl": 0,
-     "gv": 6,
-     "acta": 10059325
-    },
-    {
-     "jornada": 1,
-     "fecha": null,
-     "local": "Begoñako Arteagabe",
-     "visitante": "Ortuella",
-     "codlocal": 1808879,
-     "codvisitante": 13458,
+     "codvisitante": 13942,
      "gl": 1,
-     "gv": 3,
-     "acta": 10059326
+     "gv": 11,
+     "acta": 10059308
     },
     {
      "jornada": 1,
-     "fecha": null,
+     "fecha": "2026-10-04",
+     "local": "Begoñako Arteagabe",
+     "visitante": "Aranguren A",
+     "codlocal": 1808879,
+     "codvisitante": 14077,
+     "gl": 0,
+     "gv": 7,
+     "acta": 10059309
+    },
+    {
+     "jornada": 1,
+     "fecha": "2026-10-04",
      "local": "Loyola Indauchu B",
-     "visitante": "San Pedro A",
+     "visitante": "Arrontegi A",
      "codlocal": 13823,
+     "codvisitante": 30122,
+     "gl": 2,
+     "gv": 3,
+     "acta": 10059310
+    },
+    {
+     "jornada": 1,
+     "fecha": "2026-10-04",
+     "local": "Abanto",
+     "visitante": "Ortuella",
+     "codlocal": 30061,
+     "codvisitante": 13458,
+     "gl": 2,
+     "gv": 1,
+     "acta": 10059311
+    },
+    {
+     "jornada": 1,
+     "fecha": "2026-10-04",
+     "local": "Trapagaran B",
+     "visitante": "San Pedro A",
+     "codlocal": 1809619,
      "codvisitante": 13063,
      "gl": 2,
-     "gv": 2,
-     "acta": 10059327
+     "gv": 1,
+     "acta": 10059312
     },
     {
      "jornada": 1,
-     "fecha": null,
-     "local": "Abanto",
+     "fecha": "2026-10-04",
+     "local": "Union Sport B",
      "visitante": "Asti-leku B",
-     "codlocal": 30061,
+     "codlocal": 13097,
      "codvisitante": 14335,
-     "gl": 4,
-     "gv": 1,
-     "acta": 10059328
+     "gl": 3,
+     "gv": 2,
+     "acta": 10059313
     },
     {
      "jornada": 1,
-     "fecha": null,
-     "local": "Trapagaran B",
-     "visitante": "Sodupe B",
-     "codlocal": 1809619,
-     "codvisitante": 22616357,
-     "gl": 4,
-     "gv": 1,
-     "acta": 10059329
-    },
-    {
-     "jornada": 1,
-     "fecha": null,
+     "fecha": "2026-10-04",
      "local": "Gazteak",
-     "visitante": "Union Sport B",
+     "visitante": "Sodupe B",
      "codlocal": 13905,
-     "codvisitante": 13097,
-     "gl": 1,
-     "gv": 2,
-     "acta": 10059330
+     "codvisitante": 22616357,
+     "gl": 6,
+     "gv": 1,
+     "acta": 10059314
     },
     {
      "jornada": 2,
-     "fecha": null,
+     "fecha": "2026-10-11",
      "local": "Sestao River B",
-     "visitante": "Dinamo San Juan",
+     "visitante": "Gazteak",
      "codlocal": 15140,
-     "codvisitante": 13942,
-     "gl": 5,
-     "gv": 2,
-     "acta": 10059323
-    },
-    {
-     "jornada": 2,
-     "fecha": null,
-     "local": "Zazpi Landa A",
-     "visitante": "Aranguren A",
-     "codlocal": 14837,
-     "codvisitante": 14077,
-     "gl": 4,
-     "gv": 2,
-     "acta": 10059324
-    },
-    {
-     "jornada": 2,
-     "fecha": null,
-     "local": "Zuazo B",
-     "visitante": "Arrontegi A",
-     "codlocal": 13998,
-     "codvisitante": 30122,
-     "gl": 0,
-     "gv": 6,
-     "acta": 10059325
-    },
-    {
-     "jornada": 2,
-     "fecha": null,
-     "local": "Begoñako Arteagabe",
-     "visitante": "Ortuella",
-     "codlocal": 1808879,
-     "codvisitante": 13458,
+     "codvisitante": 13905,
      "gl": 1,
      "gv": 3,
-     "acta": 10059326
+     "acta": 10059315
     },
     {
      "jornada": 2,
-     "fecha": null,
-     "local": "Loyola Indauchu B",
-     "visitante": "San Pedro A",
-     "codlocal": 13823,
-     "codvisitante": 13063,
+     "fecha": "2026-10-11",
+     "local": "Dinamo San Juan",
+     "visitante": "Zazpi Landa A",
+     "codlocal": 13942,
+     "codvisitante": 14837,
      "gl": 2,
-     "gv": 2,
-     "acta": 10059327
-    },
-    {
-     "jornada": 2,
-     "fecha": null,
-     "local": "Abanto",
-     "visitante": "Asti-leku B",
-     "codlocal": 30061,
-     "codvisitante": 14335,
-     "gl": 4,
      "gv": 1,
-     "acta": 10059328
+     "acta": 10059316
     },
     {
      "jornada": 2,
-     "fecha": null,
-     "local": "Trapagaran B",
-     "visitante": "Sodupe B",
-     "codlocal": 1809619,
-     "codvisitante": 22616357,
+     "fecha": "2026-10-11",
+     "local": "Aranguren A",
+     "visitante": "Zuazo B",
+     "codlocal": 14077,
+     "codvisitante": 13998,
      "gl": 4,
-     "gv": 1,
-     "acta": 10059329
+     "gv": 0,
+     "acta": 10059317
     },
     {
      "jornada": 2,
-     "fecha": null,
-     "local": "Gazteak",
-     "visitante": "Union Sport B",
-     "codlocal": 13905,
-     "codvisitante": 13097,
+     "fecha": "2026-10-11",
+     "local": "Arrontegi A",
+     "visitante": "Begoñako Arteagabe",
+     "codlocal": 30122,
+     "codvisitante": 1808879,
+     "gl": 5,
+     "gv": 4,
+     "acta": 10059318
+    },
+    {
+     "jornada": 2,
+     "fecha": "2026-10-11",
+     "local": "Ortuella",
+     "visitante": "Loyola Indauchu B",
+     "codlocal": 13458,
+     "codvisitante": 13823,
+     "gl": 1,
+     "gv": 4,
+     "acta": 10059319
+    },
+    {
+     "jornada": 2,
+     "fecha": "2026-10-11",
+     "local": "San Pedro A",
+     "visitante": "Abanto",
+     "codlocal": 13063,
+     "codvisitante": 30061,
      "gl": 1,
      "gv": 2,
-     "acta": 10059330
+     "acta": 10059320
+    },
+    {
+     "jornada": 2,
+     "fecha": "2026-10-11",
+     "local": "Asti-leku B",
+     "visitante": "Trapagaran B",
+     "codlocal": 14335,
+     "codvisitante": 1809619,
+     "gl": 3,
+     "gv": 4,
+     "acta": 10059321
+    },
+    {
+     "jornada": 2,
+     "fecha": "2026-10-11",
+     "local": "Sodupe B",
+     "visitante": "Union Sport B",
+     "codlocal": 22616357,
+     "codvisitante": 13097,
+     "gl": 2,
+     "gv": 4,
+     "acta": 10059322
     },
     {
      "jornada": 3,
@@ -2320,6 +2722,234 @@ window.FEDERACION = {
     }
    ],
    "enlace": "https://www.fvf-bff.eus/pnfg/NPcd/NFG_VisClasificacion?cod_primaria=1000120&codcompeticion=24247513&codgrupo=24249031&codtemporada=22"
+  },
+  {
+   "id": "infantil",
+   "nombre": "Infantil",
+   "categoria": "Infantil Liga D (Bizkaia) · Grupo 1",
+   "nombreFederacion": "Ortuella",
+   "base": true,
+   "clasificacion": [
+    {
+     "pos": 1,
+     "equipo": "Atl Aranguren 13/14",
+     "pts": 0,
+     "pj": 0,
+     "g": 0,
+     "e": 0,
+     "p": 0,
+     "gf": 0,
+     "gc": 0
+    },
+    {
+     "pos": 2,
+     "equipo": "Ibaiondo Ibaizabal 2013",
+     "pts": 0,
+     "pj": 0,
+     "g": 0,
+     "e": 0,
+     "p": 0,
+     "gf": 0,
+     "gc": 0
+    },
+    {
+     "pos": 3,
+     "equipo": "Itugarpe",
+     "pts": 0,
+     "pj": 0,
+     "g": 0,
+     "e": 0,
+     "p": 0,
+     "gf": 0,
+     "gc": 0
+    },
+    {
+     "pos": 4,
+     "equipo": "Karrantza",
+     "pts": 0,
+     "pj": 0,
+     "g": 0,
+     "e": 0,
+     "p": 0,
+     "gf": 0,
+     "gc": 0
+    },
+    {
+     "pos": 5,
+     "equipo": "Ortuella",
+     "pts": 0,
+     "pj": 0,
+     "g": 0,
+     "e": 0,
+     "p": 0,
+     "gf": 0,
+     "gc": 0
+    },
+    {
+     "pos": 6,
+     "equipo": "Peña Athletic 13 Gorria",
+     "pts": 0,
+     "pj": 0,
+     "g": 0,
+     "e": 0,
+     "p": 0,
+     "gf": 0,
+     "gc": 0
+    },
+    {
+     "pos": 7,
+     "equipo": "Sporting De Lutxana 13/14 Zuri",
+     "pts": 0,
+     "pj": 0,
+     "g": 0,
+     "e": 0,
+     "p": 0,
+     "gf": 0,
+     "gc": 0
+    },
+    {
+     "pos": 8,
+     "equipo": "Zazpi Landa 13/14",
+     "pts": 0,
+     "pj": 0,
+     "g": 0,
+     "e": 0,
+     "p": 0,
+     "gf": 0,
+     "gc": 0
+    }
+   ],
+   "partidos": [
+    {
+     "jornada": 1,
+     "fecha": "2026-10-31",
+     "local": "Peña Athletic 13 Gorria",
+     "visitante": "Ortuella",
+     "gl": null,
+     "gv": null,
+     "acta": null
+    },
+    {
+     "jornada": 2,
+     "fecha": "2026-11-07",
+     "local": "Ortuella",
+     "visitante": "Atl Aranguren 13/14",
+     "gl": null,
+     "gv": null,
+     "acta": null
+    },
+    {
+     "jornada": 3,
+     "fecha": "2026-11-14",
+     "local": "Itugarpe",
+     "visitante": "Ortuella",
+     "gl": null,
+     "gv": null,
+     "acta": null
+    },
+    {
+     "jornada": 4,
+     "fecha": "2026-11-21",
+     "local": "Ortuella",
+     "visitante": "Zazpi Landa 13/14",
+     "gl": null,
+     "gv": null,
+     "acta": null
+    },
+    {
+     "jornada": 5,
+     "fecha": "2026-11-28",
+     "local": "Ortuella",
+     "visitante": "Sporting De Lutxana 13/14 Zuri",
+     "gl": null,
+     "gv": null,
+     "acta": null
+    },
+    {
+     "jornada": 6,
+     "fecha": "2026-12-12",
+     "local": "Ibaiondo Ibaizabal 2013",
+     "visitante": "Ortuella",
+     "gl": null,
+     "gv": null,
+     "acta": null
+    },
+    {
+     "jornada": 7,
+     "fecha": "2026-12-19",
+     "local": "Ortuella",
+     "visitante": "Karrantza",
+     "gl": null,
+     "gv": null,
+     "acta": null
+    },
+    {
+     "jornada": 8,
+     "fecha": "2027-01-16",
+     "local": "Ortuella",
+     "visitante": "Peña Athletic 13 Gorria",
+     "gl": null,
+     "gv": null,
+     "acta": null
+    },
+    {
+     "jornada": 9,
+     "fecha": "2027-01-23",
+     "local": "Atl Aranguren 13/14",
+     "visitante": "Ortuella",
+     "gl": null,
+     "gv": null,
+     "acta": null
+    },
+    {
+     "jornada": 10,
+     "fecha": "2027-01-30",
+     "local": "Ortuella",
+     "visitante": "Itugarpe",
+     "gl": null,
+     "gv": null,
+     "acta": null
+    },
+    {
+     "jornada": 11,
+     "fecha": "2027-02-13",
+     "local": "Zazpi Landa 13/14",
+     "visitante": "Ortuella",
+     "gl": null,
+     "gv": null,
+     "acta": null
+    },
+    {
+     "jornada": 12,
+     "fecha": "2027-02-20",
+     "local": "Sporting De Lutxana 13/14 Zuri",
+     "visitante": "Ortuella",
+     "gl": null,
+     "gv": null,
+     "acta": null
+    },
+    {
+     "jornada": 13,
+     "fecha": "2027-02-27",
+     "local": "Ortuella",
+     "visitante": "Ibaiondo Ibaizabal 2013",
+     "gl": null,
+     "gv": null,
+     "acta": null
+    },
+    {
+     "jornada": 14,
+     "fecha": "2027-03-06",
+     "local": "Karrantza",
+     "visitante": "Ortuella",
+     "gl": null,
+     "gv": null,
+     "acta": null
+    }
+   ],
+   "goleadores": [],
+   "resultados": [],
+   "enlace": "https://www.fvf-bff.eus/pnfg/NPcd/NFG_VisClasificacion?cod_primaria=1000120&codcompeticion=25093697&codgrupo=25189413&codtemporada=22"
   }
  ]
 };

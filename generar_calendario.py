@@ -16,8 +16,8 @@ from datetime import date, timedelta
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 CARPETA = os.path.join(AQUI, "calendario")
-APODO = {"primer": "Senior A", "b": "Senior B", "juvenil": "Juvenil", "cadete": "Cadete"}
-SLUG = {"primer": "senior-a", "b": "senior-b", "juvenil": "juvenil", "cadete": "cadete"}
+APODO = {"primer": "Senior A", "b": "Senior B", "juvenil": "Juvenil", "cadete": "Cadete", "infantil": "Infantil", "alevin": "Alevín"}
+SLUG = {"primer": "senior-a", "b": "senior-b", "juvenil": "juvenil", "cadete": "cadete", "infantil": "infantil", "alevin": "alevin"}
 CAMPO = "Otxartaga Berri, Avenida de la Estación s/n, 48530 Ortuella (Bizkaia)"
 
 

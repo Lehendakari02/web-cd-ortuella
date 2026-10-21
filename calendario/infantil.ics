@@ -1,0 +1,178 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//CD Ortuella//Partidos//ES
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:CD Ortuella · Infantil
+X-WR-TIMEZONE:Europe/Madrid
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:cdortuella-infantil-j1@cdortuella
+DTSTAMP:20261021T120200Z
+DTSTART;VALUE=DATE:20261031
+DTEND;VALUE=DATE:20261101
+SUMMARY:⚽ Infantil: Peña Athletic 13 Gorria – Ortuella
+DESCRIPTION:Infantil · Jornada 1 · Infantil Liga D (Bizkaia) · Grupo 1\n
+ Fuera. Hora por confirmar.\nMás información: https://lehendakari02.githu
+ b.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-infantil-j2@cdortuella
+DTSTAMP:20261021T120200Z
+DTSTART;VALUE=DATE:20261107
+DTEND;VALUE=DATE:20261108
+SUMMARY:⚽ Infantil: Ortuella – Atl Aranguren 13/14
+DESCRIPTION:Infantil · Jornada 2 · Infantil Liga D (Bizkaia) · Grupo 1\n
+ En casa. Hora por confirmar.\nMás información: https://lehendakari02.git
+ hub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-infantil-j3@cdortuella
+DTSTAMP:20261021T120200Z
+DTSTART;VALUE=DATE:20261114
+DTEND;VALUE=DATE:20261115
+SUMMARY:⚽ Infantil: Itugarpe – Ortuella
+DESCRIPTION:Infantil · Jornada 3 · Infantil Liga D (Bizkaia) · Grupo 1\n
+ Fuera. Hora por confirmar.\nMás información: https://lehendakari02.githu
+ b.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-infantil-j4@cdortuella
+DTSTAMP:20261021T120200Z
+DTSTART;VALUE=DATE:20261121
+DTEND;VALUE=DATE:20261122
+SUMMARY:⚽ Infantil: Ortuella – Zazpi Landa 13/14
+DESCRIPTION:Infantil · Jornada 4 · Infantil Liga D (Bizkaia) · Grupo 1\n
+ En casa. Hora por confirmar.\nMás información: https://lehendakari02.git
+ hub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-infantil-j5@cdortuella
+DTSTAMP:20261021T120200Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+SUMMARY:⚽ Infantil: Ortuella – Sporting De Lutxana 13/14 Zuri
+DESCRIPTION:Infantil · Jornada 5 · Infantil Liga D (Bizkaia) · Grupo 1\n
+ En casa. Hora por confirmar.\nMás información: https://lehendakari02.git
+ hub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-infantil-j6@cdortuella
+DTSTAMP:20261021T120200Z
+DTSTART;VALUE=DATE:20261212
+DTEND;VALUE=DATE:20261213
+SUMMARY:⚽ Infantil: Ibaiondo Ibaizabal 2013 – Ortuella
+DESCRIPTION:Infantil · Jornada 6 · Infantil Liga D (Bizkaia) · Grupo 1\n
+ Fuera. Hora por confirmar.\nMás información: https://lehendakari02.githu
+ b.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-infantil-j7@cdortuella
+DTSTAMP:20261021T120200Z
+DTSTART;VALUE=DATE:20261219
+DTEND;VALUE=DATE:20261220
+SUMMARY:⚽ Infantil: Ortuella – Karrantza
+DESCRIPTION:Infantil · Jornada 7 · Infantil Liga D (Bizkaia) · Grupo 1\n
+ En casa. Hora por confirmar.\nMás información: https://lehendakari02.git
+ hub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-infantil-j8@cdortuella
+DTSTAMP:20261021T120200Z
+DTSTART;VALUE=DATE:20270116
+DTEND;VALUE=DATE:20270117
+SUMMARY:⚽ Infantil: Ortuella – Peña Athletic 13 Gorria
+DESCRIPTION:Infantil · Jornada 8 · Infantil Liga D (Bizkaia) · Grupo 1\n
+ En casa. Hora por confirmar.\nMás información: https://lehendakari02.git
+ hub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-infantil-j9@cdortuella
+DTSTAMP:20261021T120200Z
+DTSTART;VALUE=DATE:20270123
+DTEND;VALUE=DATE:20270124
+SUMMARY:⚽ Infantil: Atl Aranguren 13/14 – Ortuella
+DESCRIPTION:Infantil · Jornada 9 · Infantil Liga D (Bizkaia) · Grupo 1\n
+ Fuera. Hora por confirmar.\nMás información: https://lehendakari02.githu
+ b.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-infantil-j10@cdortuella
+DTSTAMP:20261021T120200Z
+DTSTART;VALUE=DATE:20270130
+DTEND;VALUE=DATE:20270131
+SUMMARY:⚽ Infantil: Ortuella – Itugarpe
+DESCRIPTION:Infantil · Jornada 10 · Infantil Liga D (Bizkaia) · Grupo 1\
+ nEn casa. Hora por confirmar.\nMás información: https://lehendakari02.gi
+ thub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-infantil-j11@cdortuella
+DTSTAMP:20261021T120200Z
+DTSTART;VALUE=DATE:20270213
+DTEND;VALUE=DATE:20270214
+SUMMARY:⚽ Infantil: Zazpi Landa 13/14 – Ortuella
+DESCRIPTION:Infantil · Jornada 11 · Infantil Liga D (Bizkaia) · Grupo 1\
+ nFuera. Hora por confirmar.\nMás información: https://lehendakari02.gith
+ ub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-infantil-j12@cdortuella
+DTSTAMP:20261021T120200Z
+DTSTART;VALUE=DATE:20270220
+DTEND;VALUE=DATE:20270221
+SUMMARY:⚽ Infantil: Sporting De Lutxana 13/14 Zuri – Ortuella
+DESCRIPTION:Infantil · Jornada 12 · Infantil Liga D (Bizkaia) · Grupo 1\
+ nFuera. Hora por confirmar.\nMás información: https://lehendakari02.gith
+ ub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-infantil-j13@cdortuella
+DTSTAMP:20261021T120200Z
+DTSTART;VALUE=DATE:20270227
+DTEND;VALUE=DATE:20270228
+SUMMARY:⚽ Infantil: Ortuella – Ibaiondo Ibaizabal 2013
+DESCRIPTION:Infantil · Jornada 13 · Infantil Liga D (Bizkaia) · Grupo 1\
+ nEn casa. Hora por confirmar.\nMás información: https://lehendakari02.gi
+ thub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-infantil-j14@cdortuella
+DTSTAMP:20261021T120200Z
+DTSTART;VALUE=DATE:20270306
+DTEND;VALUE=DATE:20270307
+SUMMARY:⚽ Infantil: Karrantza – Ortuella
+DESCRIPTION:Infantil · Jornada 14 · Infantil Liga D (Bizkaia) · Grupo 1\
+ nFuera. Hora por confirmar.\nMás información: https://lehendakari02.gith
+ ub.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+END:VEVENT
+END:VCALENDAR
