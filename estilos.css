@@ -612,7 +612,8 @@ a.sp.free:hover .sp-box { color: var(--blue); }
 
 /* Portada: tarjeta que gira entre el destacado y el texto del club */
 .flip { min-width: 0; perspective: 1600px; }
-.flip-in { display: grid; transition: transform .8s cubic-bezier(.45, .05, .25, 1); transform-style: preserve-3d; }
+/* Curva simétrica: a mitad de tiempo la tarjeta está justo de canto (90°), que es cuando se cambia de cara */
+.flip-in { display: grid; transition: transform .8s cubic-bezier(.65, 0, .35, 1); transform-style: preserve-3d; }
 .flip .face { grid-area: 1 / 1; min-width: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; align-self: center; }
 .flip.flipping .face.club { transform: rotateY(180deg); }
 /* La cara oculta se esconde de verdad a mitad del giro (no todos los navegadores respetan backface-visibility) */
