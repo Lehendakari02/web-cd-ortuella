@@ -12,7 +12,8 @@ Se ejecuta solo después de actualizar_federacion.py. Solo usa la biblioteca est
 import json
 import os
 import re
-from datetime import date, timedelta
+from datetime import date, datetime, time, timedelta, timezone
+from zoneinfo import ZoneInfo
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 CARPETA = os.path.join(AQUI, "calendario")
@@ -56,6 +57,14 @@ def plegar(linea):
     return "\r\n ".join(trozos)
 
 
+def horario(dia, hora):
+    """Con hora: evento de 2 horas (en hora UTC, que todos los calendarios entienden). Sin hora: día entero."""
+    if not hora:
+        return [f"DTSTART;VALUE=DATE:{dia:%Y%m%d}", f"DTEND;VALUE=DATE:{dia + timedelta(days=1):%Y%m%d}"]
+    inicio = datetime.combine(dia, time.fromisoformat(hora), ZoneInfo("Europe/Madrid")).astimezone(timezone.utc)
+    return [f"DTSTART:{inicio:%Y%m%dT%H%M%SZ}", f"DTEND:{inicio + timedelta(hours=2):%Y%m%dT%H%M%SZ}"]
+
+
 def evento(equipo, p, sello, web):
     dia = date.fromisoformat(p["fecha"])
     en_casa = es_nuestro(p["local"], equipo)
@@ -64,20 +73,21 @@ def evento(equipo, p, sello, web):
     else:
         titulo = f"{p['local']} – {p['visitante']}"
     detalle = (f"{APODO[equipo['id']]} · Jornada {p['jornada']} · {equipo['categoria']}\n"
-               f"{'En casa' if en_casa else 'Fuera'}. Hora por confirmar.\n"
+               f"{'En casa' if en_casa else 'Fuera'}. {'Hora: ' + p['hora'] if p.get('hora') else 'Hora por confirmar'}.\n"
                f"Más información: {web}/partidos.html")
     lineas = [
         "BEGIN:VEVENT",
         f"UID:cdortuella-{equipo['id']}-j{p['jornada']}@cdortuella",
         f"DTSTAMP:{sello}",
-        f"DTSTART;VALUE=DATE:{dia:%Y%m%d}",
-        f"DTEND;VALUE=DATE:{dia + timedelta(days=1):%Y%m%d}",
+        *horario(dia, p.get("hora")),
         f"SUMMARY:{texto_ics('⚽ ' + APODO[equipo['id']] + ': ' + titulo)}",
         f"DESCRIPTION:{texto_ics(detalle)}",
         "TRANSP:TRANSPARENT",
     ]
     if en_casa:
         lineas.append(f"LOCATION:{texto_ics(CAMPO)}")
+    elif p.get("campo"):
+        lineas.append(f"LOCATION:{texto_ics(p['campo'])}")
     lineas.append("END:VEVENT")
     return lineas
 
