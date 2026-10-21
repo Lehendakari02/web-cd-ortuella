@@ -1,7 +1,7 @@
 /* Archivo generado automáticamente por actualizar_federacion.py. No editar a mano. */
 window.FEDERACION = {
  "temporada": "2026/27",
- "actualizado": "2026-10-21T12:26+00:00",
+ "actualizado": "2026-10-21T13:10+00:00",
  "equipos": [
   {
    "id": "primer",
@@ -1310,7 +1310,8 @@ window.FEDERACION = {
      "visitante": "Ortuella B",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "El Malecon Berria, Muskiz"
     },
     {
      "jornada": 9,
@@ -1420,7 +1421,8 @@ window.FEDERACION = {
      "visitante": "Ortuella B",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "Galindo 1, Sestao"
     },
     {
      "jornada": 21,
