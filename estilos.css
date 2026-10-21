@@ -226,6 +226,8 @@ tr.first .pos { background: var(--blue); color: #fff; }
 .scorers { list-style: none; margin: 0; padding: 4px 20px 16px; display: grid; gap: 10px; }
 .scorers li { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: center; }
 .scorers b { font-weight: 600; font-size: 15px; }
+.scorers b small { display: block; font-weight: 400; font-size: 13px; color: var(--muted); margin-top: 2px; }
+.scorers .cap { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
 .scorers .g { font: 900 26px/1 var(--f-display); font-variant-numeric: tabular-nums; color: var(--blue); }
 .scorers .bar { grid-column: 1 / -1; height: 6px; background: var(--sky); border-radius: 3px; overflow: hidden; }
 .scorers .bar i { display: block; height: 100%; background: var(--blue); }
@@ -556,3 +558,9 @@ a.score:hover { outline: 2px solid var(--blue); outline-offset: 2px; }
 .cards-list .cnt { display: inline-flex; align-items: center; gap: 6px; flex: none; font: 800 17px/1 var(--f-display); font-variant-numeric: tabular-nums; }
 .cards-list .cnt .card + * { margin-left: 0; }
 @media (min-width: 761px) { .team-photo img { aspect-ratio: 21 / 9; } }
+
+/* Cronología del partido en el móvil: más sitio para nombres largos (Mahamadou...) */
+@media (max-width: 760px) {
+  .ev li { padding: 8px 10px; gap: 8px; font-size: 14px; }
+  .ev-txt { hyphens: auto; min-width: 0; }
+}

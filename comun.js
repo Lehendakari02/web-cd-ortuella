@@ -172,7 +172,7 @@
       var a = (F.actas || {})[p.acta]; if (!a) return;
       var lado = isUs(p.local, t) ? "local" : "visitante";
       (a.tarjetas || []).forEach(function (c) {
-        if (c.lado !== lado) return;
+        if (c.lado !== lado || c.tecnico) return;   // las del banquillo no cuentan como de jugador
         var x = n[c.jugador] = n[c.jugador] || { nombre: c.jugador, y: 0, r: 0 };
         if (c.tipo === "amarilla") x.y++; else x.r++;  // roja directa o segunda amarilla
       });
@@ -189,6 +189,17 @@
     if (!g.length) return '<li class="empty">Todavía no hay goleadores registrados en la Federación.</li>';
     return g.slice(0, limit || 8).map(function (x) {
       return "<li><b>" + esc(x.nombre) + '</b><span class="g">' + x.goles + '</span><span class="bar"><i style="width:' + (x.goles / max * 100) + '%"></i></span></li>';
+    }).join("");
+  }
+
+  // Porteros: goles encajados y minutos jugados (tabla pública de la Federación)
+  function keepersList(t) {
+    var g = t.porteros || [], max = g.length ? g[0].minutos : 1;
+    if (!g.length) return '<li class="empty">Todavía no hay datos de porteros en la Federación.</li>';
+    return '<li class="cap">Goles encajados · minutos jugados</li>' + g.map(function (x) {
+      var media = x.minutos ? (x.goles / x.minutos * 90).toFixed(1).replace(".", ",") : "–";
+      return "<li><b>" + esc(x.nombre) + "<small>" + x.minutos + " min · " + media + " por partido</small></b>" +
+        '<span class="g">' + x.goles + '</span><span class="bar"><i style="width:' + (x.minutos / max * 100) + '%"></i></span></li>';
     }).join("");
   }
 
@@ -258,5 +269,5 @@
   document.querySelectorAll(".season").forEach(function (el) { el.textContent = F.temporada || "2026/27"; });
 
   window.CDO = { C: C, SLUG: SLUG, formDots: formDots, crest: crest, F: F, esc: esc, fdate: fdate, day: day, APODO: APODO, team: team, isUs: isUs, played: played, upcoming: upcoming, outcome: outcome, ourRow: ourRow,
-    matchCard: matchCard, resultsStrip: resultsStrip, tableRows: tableRows, TABLE_HEAD: TABLE_HEAD, gamesList: gamesList, scorersList: scorersList, sourceNote: sourceNote, newsCard: newsCard, copyButtons: copyButtons, shareLink: shareLink, mapsLink: mapsLink, fichaUrl: fichaUrl, cardsList: cardsList, federados: federados, matchLine: matchLine, longDate: longDate, webUrl: webUrl, calHrefs: calHrefs };
+    matchCard: matchCard, resultsStrip: resultsStrip, tableRows: tableRows, TABLE_HEAD: TABLE_HEAD, gamesList: gamesList, scorersList: scorersList, keepersList: keepersList, sourceNote: sourceNote, newsCard: newsCard, copyButtons: copyButtons, shareLink: shareLink, mapsLink: mapsLink, fichaUrl: fichaUrl, cardsList: cardsList, federados: federados, matchLine: matchLine, longDate: longDate, webUrl: webUrl, calHrefs: calHrefs };
 })();
