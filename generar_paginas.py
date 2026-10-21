@@ -148,8 +148,8 @@ PAGES["index"] = dict(
   var price = function (name) { var it = (C.tienda || []).filter(function (x) { return x.nombre.indexOf(name) === 0; })[0]; return it && it.precio ? it.precio : ""; };
   document.getElementById("quick").innerHTML = [
     ["socios.html", "Hazte socio", C.socio.precio + " " + C.socio.periodo + ". Apoya al primer equipo y a la cantera."],
-    ["socios.html#tienda", "Camiseta 75 aniversario", price("Camiseta") + ". Edición especial por los 75 años del club."],
-    ["socios.html#tienda", "Bufanda del club", price("Bufanda") + ". Azul y blanca, para la grada de Otxartaga."],
+    ["tienda.html", "Camiseta 75 aniversario", price("Camiseta") + ". Edición especial por los 75 años del club."],
+    ["tienda.html", "Bufanda del club", price("Bufanda") + ". Azul y blanca, para la grada de Otxartaga."],
     ["contacto.html", "Juega en el Ortuella", "Inscripciones abiertas para la temporada. Llama al 696 51 24 69."]
   ].map(function (q) { return '<a href="' + q[0] + '"><b>' + q[1] + "</b><span>" + esc(q[2]) + "</span></a>"; }).join("");
 })();""")
@@ -485,6 +485,13 @@ PAGES["campo"] = dict(
 """,
  script="""document.getElementById("ticketList").innerHTML = (window.CDO.C.entradas || []).map(function (e) { return "<div><small>" + window.CDO.esc(e[0]) + "</small><b>" + window.CDO.esc(e[1]) + "</b></div>"; }).join("");""")
 
+# Productos de la tienda (se pintan en Socios y en Tienda)
+SHOP_JS = """  document.getElementById("shopList").innerHTML = C.tienda.map(function (it) {
+    var icon = /bufanda/i.test(it.nombre) ? "scarf" : "shirt";
+    return '<div class="item"><div class="ph">' + (it.foto ? '<img src="' + esc(it.foto) + '" alt="' + esc(it.nombre) + '" loading="lazy">' : '<svg aria-hidden="true" viewBox="0 0 48 48"><use href="#' + icon + '"/></svg>') + '</div><div class="t"><b>' + esc(it.nombre) + "</b><small>" + (it.precio ? esc(it.precio) : "Precio por confirmar") + "</small></div></div>";
+  }).join("");
+"""
+
 # ---------------------------------------------------------------- SOCIOS
 PAGES["socios"] = dict(
  title="Socios y tienda · CD Ortuella", desc="Hazte socio del CD Ortuella, compra la camiseta del 75 aniversario y patrocina al club.",
@@ -504,7 +511,7 @@ PAGES["socios"] = dict(
     <div id="tienda">
       <h3 class="mini">Tienda del club</h3>
       <div class="shop" id="shopList"></div>
-      <p class="source">Para comprar, pásate por la oficina del club o escríbenos por redes sociales.</p>
+      <p class="source">Para comprar, pásate por la oficina del club o escríbenos por redes sociales. <a href="tienda.html">Ver la tienda</a></p>
     </div>
   </div>
 </section>
@@ -524,15 +531,26 @@ PAGES["socios"] = dict(
   var X = window.CDO, C = X.C, esc = X.esc;
   document.getElementById("socioPrice").innerHTML = esc(C.socio.precio) + "<small>" + esc(C.socio.periodo) + "</small>";
   document.getElementById("socioOther").textContent = (C.socio.otros || []).map(function (o) { return o[0] + ": " + o[1] + " " + C.socio.periodo; }).join(" · ");
-  document.getElementById("shopList").innerHTML = C.tienda.map(function (it) {
-    var icon = /bufanda/i.test(it.nombre) ? "scarf" : "shirt";
-    return '<div class="item"><div class="ph">' + (it.foto ? '<img src="' + esc(it.foto) + '" alt="' + esc(it.nombre) + '" loading="lazy">' : '<svg aria-hidden="true" viewBox="0 0 48 48"><use href="#' + icon + '"/></svg>') + '</div><div class="t"><b>' + esc(it.nombre) + "</b><small>" + (it.precio ? esc(it.precio) : "Precio por confirmar") + "</small></div></div>";
-  }).join("");
-  var slots = C.patrocinadores.map(function (s) { return '<div class="logo">' + (s.logo ? '<img src="' + esc(s.logo) + '" alt="' + esc(s.nombre) + '">' : esc(s.nombre)) + "</div>"; });
+""" + SHOP_JS + """  var slots = C.patrocinadores.map(function (s) { return '<div class="logo">' + (s.logo ? '<img src="' + esc(s.logo) + '" alt="' + esc(s.nombre) + '">' : esc(s.nombre)) + "</div>"; });
   while (slots.length < 4) slots.push('<a class="free" href="contacto.html"><div>¿Tu negocio aquí?<br>Patrocina al Ortuella</div></a>');
   document.getElementById("sponsorList").innerHTML = slots.join("");
   document.getElementById("helpersList").innerHTML = "<strong>Con el apoyo de:</strong>" + C.colaboradores.map(function (c) { return "<span>" + esc(c) + "</span>"; }).join("");
 })();""")
+
+# ---------------------------------------------------------------- TIENDA
+PAGES["tienda"] = dict(
+ title="Tienda · CD Ortuella", desc="Camiseta del 75 aniversario, bufanda y más productos del CD Ortuella.",
+ body=hero("Tienda del club", "La camiseta del 75 aniversario, la bufanda y más. Cada compra ayuda al Ortuella.", "Tienda") + """
+<section class="block">
+  <div class="wrap">
+    <div class="shop" id="shopList"></div>
+    <p class="source">Para comprar, pásate por la oficina del club o escríbenos por redes sociales. ¿Quieres ayudar todavía más? <a href="socios.html">Hazte socio</a>.</p>
+  </div>
+</section>
+""",
+ script="""(function () {
+  var X = window.CDO, C = X.C, esc = X.esc;
+""" + SHOP_JS + """})();""")
 
 # ---------------------------------------------------------------- CONTACTO
 PAGES["contacto"] = dict(
