@@ -34,11 +34,22 @@ jobs:
         # Si falla un equipo, el script guarda los demás y avisa; la web sigue con los últimos datos buenos
         run: python3 actualizar_federacion.py || echo "::warning::No se pudieron actualizar todos los equipos"
 
+      - name: Instalar el navegador que dibuja las publicaciones de Instagram
+        run: |
+          python3 -m pip install --quiet playwright
+          python3 -m playwright install --with-deps chromium
+
+      - name: Generar las publicaciones de Instagram (redes/salida)
+        # Si falla, la web se guarda igual; n8n seguirá viendo las imágenes anteriores
+        run: python3 redes/generar_redes.py || echo "::warning::No se pudieron generar las publicaciones"
+
       - name: Guardar los cambios en la web
         run: |
           git add datos-federacion.js
           if [ -d calendario ]; then git add calendario/; fi
           if [ -d img/escudos ]; then git add img/escudos/; fi
+          if [ -d redes/salida ]; then git add redes/salida/; fi
+          if [ -d redes/escudos ]; then git add redes/escudos/; fi
           if git diff --cached --quiet; then
             echo "Sin cambios"
             exit 0

@@ -1,0 +1,101 @@
+/* Plantillas de las publicaciones de Instagram (las dibuja generar_redes.py).
+   Medidas pensadas para el post (1080×1350); la historia (1080×1920) usa lo mismo con más aire
+   arriba y abajo, donde Instagram pone su barra y la caja de respuesta. */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: var(--ancho); height: var(--alto); overflow: hidden; }
+body { position: relative; font-family: Montserrat, sans-serif; background: #101a33; color: #fff; }
+
+.fondo { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.fondo.desenfocado { inset: -40px; filter: blur(7px) saturate(.4); }
+.fondo.desenfocado::after { content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(14, 27, 56, .86), rgba(17, 31, 64, .80) 50%, rgba(12, 22, 46, .9)); }
+
+main { position: relative; height: 100%; display: flex; flex-direction: column; align-items: center; }
+.historia main { padding-top: 120px; padding-bottom: 140px; }
+
+/* ------------------------------------------------ tablas: título y patrocinadores */
+
+.titulo { margin-top: 140px; font-size: 128px; font-weight: 800; letter-spacing: 2px; line-height: 1;
+  padding-bottom: 18px; border-bottom: 6px solid #fff; text-shadow: 0 4px 14px rgba(0, 0, 0, .35); }
+.historia .titulo { margin-top: 170px; }
+
+.tabla { flex: 1; width: 100%; display: flex; flex-direction: column; justify-content: center; }
+
+.patrocinadores { width: 1000px; height: 160px; margin: 0 0 60px 40px; background: #f3f4f6;
+  clip-path: polygon(4% 0, 100% 0, 96% 100%, 0 100%); box-shadow: 0 6px 20px rgba(0, 0, 0, .4); }
+.historia .patrocinadores { margin-bottom: 110px; }
+.logos { height: 100%; padding: 0 70px; display: flex; align-items: center; justify-content: space-between; }
+.logos img { max-height: 108px; max-width: 200px; object-fit: contain; }
+
+/* ------------------------------------------------ ORDUTEGIA */
+
+.ordutegia .tabla { gap: 30px; padding: 0 70px 0 108px; }
+.historia.ordutegia .tabla { gap: 46px; }
+.ordutegia .fila { display: flex; gap: 22px; height: 72px; }
+.ordutegia .cat, .ordutegia .dato { display: flex; align-items: center; color: #1b2340; font-weight: 800;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, .3); }
+.ordutegia .cat { flex: none; width: 285px; justify-content: center; background: #fff; font-size: 38px; letter-spacing: 1px; }
+.ordutegia .dato { flex: 1; min-width: 0; justify-content: center; position: relative; padding: 0 80px 0 20px;
+  background: linear-gradient(180deg, #f6f7f9, #e3e6ea); font-size: 32px; letter-spacing: .5px; }
+.ordutegia .dato .texto { display: block; max-width: 100%; overflow: hidden; white-space: nowrap; text-align: center; }
+.ordutegia .icono { position: absolute; right: 18px; width: 50px; height: 50px; }
+
+/* ------------------------------------------------ EMAITZAK */
+
+.emaitzak .tabla { gap: 46px; align-items: center; }
+.historia.emaitzak .tabla { gap: 70px; }
+.emaitzak .tabla.n6, .emaitzak .tabla.n7 { gap: 30px; }
+.partido { position: relative; width: 880px; height: 104px; }
+.cinta { position: absolute; left: 0; right: 0; top: 18px; height: 74px; display: flex; align-items: center;
+  justify-content: space-between; padding: 0 18px 0 30px; background: #232a4f; font-size: 36px; font-weight: 800;
+  clip-path: polygon(0 0, 100% 0, 97% 100%, 3% 100%); }
+/* borde blanco de la cinta: una copia un poco más grande detrás */
+.partido::before { content: ""; position: absolute; left: -6px; right: -6px; top: 12px; height: 86px; background: #fff;
+  clip-path: polygon(0 0, 100% 0, 97% 100%, 3% 100%); }
+.cinta span { width: 262px; overflow: hidden; white-space: nowrap; }
+.cinta .visitante { margin-right: 12px; }
+.cinta .local { text-align: center; }
+.cinta .visitante { text-align: center; }
+.marcador { position: absolute; left: 50%; top: 0; width: 300px; height: 112px; margin-left: -150px; background: #fff;
+  clip-path: polygon(0 0, 100% 0, 88% 100%, 12% 100%); color: #232a4f; }
+.marcador .icono { position: absolute; left: 50%; top: 4px; width: 58px; margin-left: -29px; }
+.etq { position: absolute; top: 16px; font-size: 17px; font-weight: 800; }
+.etq.l { right: 186px; }
+.etq.v { left: 186px; }
+.gol { position: absolute; top: 34px; font-size: 70px; font-weight: 800; line-height: 1; width: 90px; text-align: center; }
+.gol.dos { font-size: 54px; top: 46px; }
+.gol.l { left: 40px; }
+.gol.v { right: 40px; }
+
+/* ------------------------------------------------ MATCH DAY */
+
+.matchday { color: #2b3a8f; }
+.matchday .velo { position: absolute; inset: 0; }
+.matchday.v0 .velo { background: linear-gradient(180deg, rgba(225, 230, 240, .55), rgba(225, 230, 240, .15) 45%, rgba(0, 0, 0, 0) 70%); }
+.matchday.v1 .velo { background: linear-gradient(180deg, rgba(185, 215, 240, .9), rgba(200, 222, 242, .7) 35%, rgba(200, 222, 242, .1) 60%); }
+.matchday .escudos { display: flex; gap: 60px; align-items: center; }
+.matchday .escudos img { height: 230px; width: 200px; object-fit: contain; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .3)); }
+
+/* variante 0: MATCH DAY en vertical a la izquierda */
+.v0 main { flex-direction: row; align-items: stretch; }
+.v0 .vertical { position: absolute; left: 110px; bottom: 80px; transform-origin: left bottom; transform: rotate(-90deg) translateY(100%);
+  display: flex; flex-direction: column; white-space: nowrap; }
+.v0 .vertical .grande { font-size: 172px; font-weight: 700; letter-spacing: 6px; line-height: .95; }
+.v0 .vertical .club { font-size: 72px; font-weight: 700; letter-spacing: 3px; padding-left: 4px; }
+.historia.v0 .vertical { bottom: 260px; }
+.v0 .lado { position: absolute; right: 70px; top: 140px; width: 560px; text-align: center; color: #fff;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, .45); }
+.historia.v0 .lado { top: 300px; }
+.v0 .lado .escudos { justify-content: center; margin-bottom: 60px; }
+.v0 .donde { overflow: hidden; white-space: nowrap; }
+.v0 .cuando, .v0 .donde { font-size: 54px; font-weight: 500; letter-spacing: 3px; line-height: 1.25; }
+
+/* variante 1: MATCH DAY en horizontal arriba */
+.v1 .cabecera { width: 100%; padding: 70px 80px 0; position: relative; }
+.historia.v1 .cabecera { padding-top: 250px; }
+.v1 .cuando { text-align: center; width: 340px; margin-left: auto; font-size: 50px; font-weight: 500; letter-spacing: 3px; line-height: 1.2; }
+.v1 .club { margin-top: 30px; font-size: 56px; font-weight: 800; }
+.v1 .grande { white-space: nowrap; font-size: 140px; font-weight: 800; line-height: 1; letter-spacing: 2px; margin-left: -6px; }
+.v1 .donde { overflow: hidden; white-space: nowrap; text-align: right; font-size: 50px; font-weight: 800; margin-top: 10px; }
+.v1 .escudos { margin-top: -10px; }
