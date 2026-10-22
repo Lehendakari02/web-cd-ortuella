@@ -66,5 +66,18 @@ Un flujo por pieza (por ejemplo ORDUTEGIA el jueves por la tarde, MATCH DAY el s
    - Post: crear el contenedor con `image_url` = `post` y `caption` = `texto`, y publicarlo.
    - Historia: crear el contenedor con `image_url` = `historia` y `media_type` = `STORIES`, y publicarlo.
 
+### Con revisión por Telegram (recomendado)
+
+Así el texto lo escribe una persona según el momento (inicio de liga, partido difícil…), sin IA ni tokens.
+Entre los pasos 3 y 4 de arriba:
+
+- **Telegram → Send Photo**: manda la imagen (`post`) al chat del club con el mensaje
+  "MATCH DAY listo. Texto propuesto: «{texto}». Responde con tu texto, o con OK para usar el propuesto".
+- **Telegram → Send and Wait for Response** (respuesta de texto libre): n8n espera la contestación.
+- **IF / Set**: si la respuesta es "OK", se usa `texto`; si no, lo que se haya escrito.
+- Publicar en Instagram (paso 4) con ese texto y avisar por Telegram: "Publicado ✅".
+
+El bot de Telegram se crea gratis con @BotFather y se conecta en n8n con su token.
+
 La API de Instagram exige que la cuenta sea profesional (de empresa o creador) y esté vinculada a una página de Facebook.
 Las imágenes son JPG y están en una dirección pública, que es lo que pide Instagram.
