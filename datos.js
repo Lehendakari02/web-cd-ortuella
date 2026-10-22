@@ -187,10 +187,15 @@ window.CLUB = {
     { nombre: "Pin del escudo", precio: null, foto: "img/pin.jpg" }
   ],
 
-  // Patrocinadores y colaboradores (los mismos que la web antigua del club + Markofer).
+  // Patrocinadores y colaboradores: los de la web antigua del club + los que salen en las
+  // publicaciones de Instagram (logos sacados de las plantillas de Canva, redes/canva/).
   // logo: null -> sale el nombre en una ficha hasta tener el logo bueno.
   patrocinadores: [
+    { nombre: "Tesoralia", detalle: null, logo: "img/patrocinadores/tesoralia.webp", web: null },
     { nombre: "Markofer", detalle: "Montajes y mantenimientos", logo: "img/markofer.webp", web: null },
+    { nombre: "Euskadi LowCost", detalle: null, logo: "img/patrocinadores/euskadi-lowcost.webp", web: null },
+    { nombre: "Restaurante Sukalde", detalle: "Restaurante", logo: "img/patrocinadores/sukalde.webp", web: null },
+    { nombre: "Irish Pub Black & White", detalle: "Irish pub · desde 1991", logo: "img/patrocinadores/irish-pub.webp", web: null },
     { nombre: "Academia Siglo XXIII", detalle: "Academia · Ortuella", logo: null, web: null },
     { nombre: "Andamios y Montacargas Europa", detalle: "Andamios · Ortuella", logo: "img/patrocinadores/andamios-europa.webp", web: null }
   ],
