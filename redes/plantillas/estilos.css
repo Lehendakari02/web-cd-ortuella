@@ -18,15 +18,15 @@ main { position: relative; height: 100%; display: flex; flex-direction: column; 
 
 .lienzo { position: absolute; inset: 0; width: 100%; height: 100%; }
 
-/* ------------------------------------------------ ORDUTEGIA (medidas de la plantilla de Canva) */
+/* ------------------------------------------------ ORDUTEGIA (anchos de la plantilla de Canva) */
 
-.ordutegia .fila { position: absolute; left: 0; height: 56px; width: 100%; }
-.ordutegia .cat, .ordutegia .dato { position: absolute; top: 0; height: 56px; display: flex; align-items: center;
-  justify-content: center; background: #f0efee; color: #011a36; font-weight: 800; font-size: 32px; letter-spacing: 1.5px; }
+.ordutegia .fila { position: absolute; left: 0; height: 66px; width: 100%; }
+.ordutegia .cat, .ordutegia .dato { position: absolute; top: 0; height: 66px; display: flex; align-items: center;
+  justify-content: center; background: #f0efee; color: #011a36; font-weight: 800; font-size: 35px; letter-spacing: 1.5px; }
 .ordutegia .cat { left: 108px; width: 257px; }
-.ordutegia .dato { left: 383px; width: 589px; padding: 0 70px 0 24px; }
+.ordutegia .dato { left: 383px; width: 589px; padding: 0 84px 0 24px; }
 .ordutegia .dato .texto { display: block; max-width: 100%; overflow: hidden; white-space: nowrap; text-align: center; }
-.ordutegia .icono { position: absolute; right: 12px; width: 44px; height: 44px; }
+.ordutegia .icono { position: absolute; right: 12px; width: 50px; height: 50px; }
 
 /* ------------------------------------------------ EMAITZAK (la cinta es la de la plantilla de Canva) */
 

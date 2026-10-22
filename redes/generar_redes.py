@@ -165,8 +165,20 @@ def pagina(cuerpo, formato, clase):
 
 # Dónde van las filas sobre los lienzos de Canva (preparar_fondos.py), en px desde arriba.
 # Son las medidas de las plantillas de Canva; en la historia, desplazadas como el título.
-FILAS_ORDUTEGIA = {"post": (324, None), "historia": (520, 1530)}   # primera fila (post) o zona donde centrarlas (historia); una cada 81 px
-ZONA_EMAITZAK = {"post": (284, 1152), "historia": (534, 1560)}   # de dónde a dónde pueden ir los resultados
+# Las filas se reparten por toda la zona entre el título y los patrocinadores (más separadas si hay pocas).
+ZONA_ORDUTEGIA = {"post": (300, 1045), "historia": (520, 1530)}
+ZONA_EMAITZAK = {"post": (290, 1150), "historia": (534, 1560)}
+ALTO_FILA = {"ordutegia": 66, "emaitzak": 80}
+PASO_MAXIMO = {"ordutegia": 125, "emaitzak": 200}
+
+
+def repartir(pieza, formato, n):
+    """Posición (px desde arriba) de cada fila: repartidas por la zona y centradas."""
+    desde, hasta = (ZONA_ORDUTEGIA if pieza == "ordutegia" else ZONA_EMAITZAK)[formato]
+    alto = ALTO_FILA[pieza]
+    paso = min(PASO_MAXIMO[pieza], (hasta - desde - alto) / max(n - 1, 1))
+    primera = desde + (hasta - desde - alto - paso * (n - 1)) / 2
+    return [round(primera + paso * i) for i in range(n)]
 
 
 def lienzo(pieza, formato):
@@ -179,6 +191,7 @@ def icono(nombre):
 
 def html_ordutegia(filas, config, formato):
     lineas = ""
+    posiciones = repartir("ordutegia", formato, len(filas))
     for i, (cat, p, equipo) in enumerate(filas):
         if p:
             hora = f" {p['hora']}" if p.get("hora") else ""
@@ -186,11 +199,7 @@ def html_ordutegia(filas, config, formato):
             dato += icono("casa" if en_casa(p, equipo) else "avion")
         else:
             dato = '<span class="texto">—</span>'
-        desde, hasta = FILAS_ORDUTEGIA[formato]
-        if hasta:
-            desde += (hasta - desde - (81 * (len(filas) - 1) + 56)) // 2
-        arriba = desde + 81 * i
-        lineas += f'<div class="fila" style="top:{arriba}px"><div class="cat">{html.escape(cat)}</div><div class="dato">{dato}</div></div>'
+        lineas += f'<div class="fila" style="top:{posiciones[i]}px"><div class="cat">{html.escape(cat)}</div><div class="dato">{dato}</div></div>'
     return pagina(lienzo("ordutegia", formato) + lineas, formato, "ordutegia")
 
 
@@ -199,16 +208,13 @@ def gol(n, lado):
 
 
 def html_emaitzak(filas, config, formato):
-    # Los resultados se reparten por la zona: juntos si son muchos, con más aire si son pocos
-    desde, hasta = ZONA_EMAITZAK[formato]
-    paso = min(150, (hasta - desde - 80) / max(len(filas) - 1, 1))
-    primera = desde + (hasta - desde - 80 - paso * (len(filas) - 1)) / 2
+    posiciones = repartir("emaitzak", formato, len(filas))
     fila = uri(os.path.join(REDES, "plantillas", "fila-emaitzak.png"))
     lineas = ""
     for i, (cat, p, equipo) in enumerate(filas):
         nuestro, otro = html.escape(cat), html.escape(corto(rival(p, equipo), config))
         local, visitante = (nuestro, otro) if en_casa(p, equipo) else (otro, nuestro)
-        lineas += (f'<div class="partido" style="top:{primera + paso * i:.0f}px"><img src="{fila}">'
+        lineas += (f'<div class="partido" style="top:{posiciones[i]}px"><img src="{fila}">'
                    f'<span class="equipo local ajustar">{local}</span><span class="equipo visitante ajustar">{visitante}</span>'
                    f'{gol(p["gl"], "l")}{gol(p["gv"], "v")}</div>')
     return pagina(lienzo("emaitzak", formato) + lineas, formato, "emaitzak")
