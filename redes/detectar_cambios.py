@@ -3,7 +3,8 @@
 Compara los datos de la Federación de antes y de después de una actualización y apunta los cambios
 en los próximos partidos de nuestros equipos, para avisar a la directiva por Telegram (lo hace n8n):
 
-  📅 un partido recibe fecha u hora     ⚠️ cambia el día, la hora o el campo     🆕 aparece un partido nuevo
+  📅 un partido recibe su hora          ⚠️ cambia el día, la hora o el campo
+  🆕 aparece un partido nuevo           ❌ desaparece un partido del calendario (anulado o retirado)
 
 Solo mira partidos que aún no se han jugado: al jugarse uno, la Federación le quita la hora y le
 vuelve a poner la fecha de la jornada, y eso no es un cambio que haya que avisar.
@@ -84,6 +85,22 @@ def detectar(antes, despues, config, hoy):
             avisos.append(("⚠️", f"{partido}\nLa Federación ha quitado la hora (pendiente de fijar): {ahora}", clave, ahora))
         else:
             avisos.append(("⚠️", f"{partido}\nAntes: {antes_txt}\nAhora: {ahora}", clave, ahora))
+
+    # Partidos por jugar que ya no están en el calendario. Si un equipo no se ha podido leer esta vez,
+    # el robot conserva sus datos de antes, así que no da falsos avisos.
+    nuevos = partidos_futuros(despues, hoy)
+    con_datos_ahora = {eq["id"] for eq in despues.get("equipos", []) if eq["partidos"]}
+    for clave, (v, eq) in viejos.items():
+        if clave in nuevos or eq["id"] not in con_datos_ahora:
+            continue
+        # Si el partido se ha jugado entre una pasada y otra, ya no es "futuro": no es que haya desaparecido
+        jugado = any((eq["id"], p["jornada"], p["local"], p["visitante"]) == clave
+                     for e in despues["equipos"] if e["id"] == eq["id"] for p in e["partidos"])
+        if jugado:
+            continue
+        partido = f"{nombres.get(eq['id'], eq['nombre'].upper())} · J{v['jornada']}: {v['local']} – {v['visitante']}"
+        antes_txt = f"{cuando(v)} · {campo(v, eq, antes, config)}".rstrip(" ·")
+        avisos.append(("❌", f"{partido}\nYa no aparece en el calendario de la Federación (estaba: {antes_txt})", clave, "fuera"))
     return avisos
 
 

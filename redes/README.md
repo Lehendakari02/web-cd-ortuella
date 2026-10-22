@@ -35,6 +35,7 @@ los mande al grupo de Telegram de la directiva:
 - 📅 un partido recibe su hora (y su día real);
 - ⚠️ cambia el día, la hora o el campo de un partido (con el antes y el después);
 - 🆕 aparece un partido nuevo en el calendario.
+- ❌ un partido por jugar desaparece del calendario (anulado o retirado).
 
 Los partidos ya jugados no avisan, y cuando un equipo carga su calendario por primera vez (p. ej. el
 alevín al empezar su liga) tampoco: sería todo el calendario de golpe. Se guardan los 50 últimos
