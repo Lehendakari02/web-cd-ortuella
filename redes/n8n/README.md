@@ -1,6 +1,6 @@
 # Flujo de n8n: publicaciones y avisos (modo ensayo)
 
-`flujo-ensayo.json` se importa en n8n (probado para la versión 2.44). Hace tres cosas, sin IA y sin coste:
+`flujo-ensayo.json` se importa en n8n (probado para la versión 2.44). Hace cuatro cosas, sin IA y sin coste:
 
 1. **Publicaciones** (8:30 y 23:30, hora de Madrid): manda al grupo de Telegram cada pieza *lista*
    (ORDUTEGIA, EMAITZAK, MATCH DAY A y B), **una sola vez por semana**, y pide el texto de la publicación.
@@ -13,6 +13,26 @@
 🧪 **Modo ensayo**: al pulsar *Publicar* no publica en Instagram, contesta «(ensayo) Se habría publicado…».
 Cuando haya token de Instagram, se cambian esos dos puntos (marcados con `🧪 ENSAYO` en el nodo
 *Interpretar*) por la publicación real.
+
+4. **Noticias de la web desde Instagram**: dos veces al día lee las publicaciones nuevas de la cuenta
+   (de los últimos 3 días) que no haya publicado el bot y las manda al grupo: la foto y, como respuesta a
+   ella, «¿La ponemos como noticia en la web?» con *Sí* / *No*. Con *Sí* propone un título (la primera
+   frase del pie; se cambia respondiendo a ese mensaje) y con *Poner en la web* lanza el robot de GitHub
+   **Añadir noticia**, que guarda una copia de la foto y publica la noticia (`redes/anadir_noticia.py`).
+   Mientras Instagram no esté conectado, se prueba con `/probar noticia` (llega hasta GitHub en modo prueba,
+   sin cambiar la web).
+
+### Credenciales de la parte de noticias
+
+- **GitHub** (se puede poner ya): en GitHub → Settings → Developer settings → *Fine-grained tokens* →
+  *Generate new token*: solo el repositorio `web-cd-ortuella`, permiso **Actions: Read and write**.
+  En n8n, nodo **Enviar a la web (GitHub)** → *Credential* → nueva **Header Auth** con
+  Name `Authorization` y Value `Bearer <el token>`.
+- **Instagram** (cuando esté el token de Meta): nodos **Leer publicaciones de Instagram** y **Leer una
+  publicación** → nueva **Query Auth** con Name `access_token` y Value el token. Después, en el nodo
+  **¿Instagram conectado?**, cambiar `INSTAGRAM_CONECTADO = false` por `true`.
+- Cuando el bot publique de verdad en Instagram, el id de cada publicación suya debe pasar por un nodo
+  *Remove Duplicates* con ámbito **workflow** (como *No repetir publicaciones*): así no se ofrece como noticia.
 
 ## Importarlo
 

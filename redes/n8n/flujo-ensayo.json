@@ -1,5 +1,5 @@
 {
-  "name": "CD Ortuella · Publicaciones y avisos (ENSAYO)",
+  "name": "CD Ortuella · Publicaciones, avisos y noticias (ENSAYO)",
   "nodes": [
     {
       "parameters": {
@@ -174,7 +174,7 @@
     },
     {
       "parameters": {
-        "content": "## 2 · Lo que se escribe en el grupo\n- **Respuesta citando una foto** del bot → es el texto: pide confirmación con botones.\n- **Botones** Publicar / Cancelar / historia.\n- **Comandos**: /estado, /ordutegia, /emaitzak, /matchday, /publicar <pieza>, /ayuda.\n\nEl resto de mensajes del grupo se ignora.\n\n🧪 **MODO ENSAYO**: en vez de publicar en Instagram, contesta «(ensayo) Se habría publicado».",
+        "content": "## 2 · Lo que se escribe en el grupo\n- **Respuesta citando una foto** del bot → es el texto: pide confirmación con botones.\n- **Botones** Publicar / Cancelar / historia.\n- **Comandos**: /estado, /horarios, /resultados, /matchday, /publicar horarios · resultados · match day A · match day B, /ayuda.\n\nEl resto de mensajes del grupo se ignora.\n\n🧪 **MODO ENSAYO**: en vez de publicar en Instagram, contesta «(ensayo) Se habría publicado».",
         "width": 600,
         "height": 300
       },
@@ -200,10 +200,10 @@
       "id": "e512a4f1-6583-5411-80ee-a63988481972",
       "name": "Telegram (grupo)",
       "type": "n8n-nodes-base.telegramTrigger",
-      "typeVersion": 1.2,
+      "typeVersion": 1.5,
       "position": [
         -560,
-        680
+        760
       ],
       "webhookId": "65eabb7f-178b-5d9f-8790-5494ede1c3e4"
     },
@@ -266,22 +266,73 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -320,
-        680
+        160,
+        760
       ],
       "onError": "continueRegularOutput"
     },
     {
       "parameters": {
-        "jsCode": "// Decide qué hacer con cada mensaje o botón del grupo. Sin IA y sin memoria: lo que hace falta\n// saber va escrito en los propios mensajes del bot («🆔 pieza» y el texto entre las rayas).\nconst upd = $('Telegram (grupo)').first().json;\nconst piezas = $input.first().json.piezas || {};\nconst salir = (...cosas) => cosas.map(json => ({ json }));\nconst mensaje = texto => ({ accion: 'mensaje', texto });\nconst RAYA = '────────────';\nconst pieza = tipo => piezas[tipo];\n\n// ---------- botones\nconst cb = upd.callback_query;\nif (cb) {\n  const [accion, tipo] = String(cb.data || '').split(':');\n  const p = pieza(tipo);\n  if (!p) return salir(mensaje('Esa publicación ya no está disponible (es de otra semana).'));\n  if (accion === 'pub') {\n    const partes = String((cb.message && cb.message.text) || '').split(RAYA);\n    const texto = (partes[1] || '').trim();\n    // 🧪 ENSAYO: aquí irá la publicación real en Instagram (post p.post con este texto)\n    return salir(\n      mensaje(`✅ (ensayo) Se habría publicado el post de ${p.nombre} con este texto:\\n\\n${texto}`),\n      { accion: 'foto_botones', foto: p.historia, texto: `¿Subo también la historia de ${p.nombre}?`,\n        boton1: '✅ Subir historia', dato1: `his:${tipo}`, boton2: 'No', dato2: `nohis:${tipo}` });\n  }\n  if (accion === 'can') return salir(mensaje(`❌ Cancelado. Para poner otro texto, responde otra vez a la foto de ${p.nombre}.`));\n  // 🧪 ENSAYO: aquí irá la historia real en Instagram (p.historia)\n  if (accion === 'his') return salir(mensaje(`✅ (ensayo) Se habría subido la historia de ${p.nombre}.`));\n  if (accion === 'nohis') return salir(mensaje('Vale, sin historia.'));\n  return [];\n}\n\n// ---------- mensajes\nconst msg = upd.message;\nif (!msg || !msg.text) return [];\nconst texto = msg.text.trim();\n\n// Respuesta citando una foto del bot → es el texto de la publicación. La pieza va en la línea «🆔».\nconst citada = msg.reply_to_message;\nif (citada && citada.from && citada.from.is_bot && citada.photo) {\n  const m = String(citada.caption || '').match(/🆔\\s*([a-z-]+)/);\n  const p = m && pieza(m[1]);\n  if (!p) return salir(mensaje('🤔 No sé de qué publicación es esa foto (puede ser de otra semana). Escribe /publicar y la pieza (por ejemplo /publicar matchday) y responde a la foto nueva.'));\n  if (texto.length > 2200) return salir(mensaje(`El texto tiene ${texto.length} caracteres y Instagram admite 2200. Acórtalo y vuelve a responder a la foto.`));\n  return salir({ accion: 'mensaje_botones',\n    texto: `📝 ${p.nombre}\\n${RAYA}\\n${texto}\\n${RAYA}\\n¿Publico con este texto?`,\n    boton1: '✅ Publicar', dato1: `pub:${p.tipo}`, boton2: '❌ Cancelar', dato2: `can:${p.tipo}` });\n}\n\n// Comandos\nif (!texto.startsWith('/')) return [];\nconst [orden, arg] = texto.split(/\\s+/);\nconst comando = orden.split('@')[0].toLowerCase();\nconst estado = p => p.lista ? 'lista ✅' : `no lista ⏳ (falta: ${(p.faltan || []).join('; ')})`;\nconst verPieza = p => ({ accion: 'foto', foto: p.post, texto: `${p.nombre}: ${estado(p)}` });\nconst lista = Object.values(piezas);\n\nif (comando === '/estado') {\n  if (!lista.length) return salir(mensaje('Esta semana no hay ninguna publicación con datos.'));\n  return salir(mensaje('📋 Publicaciones de esta semana:\\n' + lista.map(p => `• ${p.nombre}: ${estado(p)}`).join('\\n')));\n}\nif (['/ordutegia', '/emaitzak', '/matchday'].includes(comando)) {\n  const tipo = comando.slice(1);\n  const elegidas = lista.filter(p => p.tipo === tipo || (tipo === 'matchday' && p.tipo.startsWith('matchday')));\n  return elegidas.length ? salir(...elegidas.map(verPieza)) : salir(mensaje(`Esta semana no hay ${tipo.toUpperCase()}.`));\n}\nif (comando === '/publicar') {\n  const p = pieza((arg || '').toLowerCase());\n  if (!p) return salir(mensaje(`¿Cuál? Escribe /publicar y una de estas: ${Object.keys(piezas).join(', ') || '(ninguna esta semana)'}`));\n  return salir({ accion: 'preguntar', pieza: p });\n}\nif (comando === '/ayuda' || comando === '/start') {\n  return salir(mensaje('🤖 Comandos:\\n/estado → qué publicaciones están listas y qué falta\\n/ordutegia, /emaitzak, /matchday → ver la imagen\\n/publicar <pieza> → publicar una pieza aunque no esté lista (p. ej. /publicar emaitzak)\\n\\nPara poner el texto de una publicación, responde citando la foto que manda el bot.'));\n}\nreturn [];"
+        "jsCode": "// Decide qué hacer con cada mensaje o botón del grupo. Sin IA y sin memoria: lo que hace falta\n// saber va escrito en los propios mensajes del bot («🆔 pieza» y el texto entre las rayas).\nconst upd = $('Telegram (grupo)').first().json;\nconst piezas = $input.first().json.piezas || {};\nconst salir = (...cosas) => cosas.map(json => ({ json }));\nconst mensaje = texto => ({ accion: 'mensaje', texto });\nconst RAYA = '────────────';\nconst pieza = tipo => piezas[tipo];\n\n// ---------- botones\n// ---------- noticias desde Instagram (botones «nsi/nno:id» y «web/nweb:id»)\nconst cbN = upd.callback_query;\nif (cbN && /^(nsi|nno|web|nweb):/.test(String(cbN.data))) {\n  const [accion, id] = String(cbN.data).split(':');\n  const original = String((cbN.message && cbN.message.text) || '');\n  const marcar = nota => ({ accion: 'quitar_botones', messageId: cbN.message && cbN.message.message_id,\n    texto: original.replace(/\\n?¿La ponemos como noticia en la web\\?$/, '').replace(/\\nSi quieres otro[^\\n]*$/, '') + `\\n${nota}` });\n  if (accion === 'nno') return salir(marcar('No es noticia'));\n  if (accion === 'nweb') return salir(marcar('❌ Cancelado'));\n  const titulo = accion === 'web' ? ((original.split(RAYA)[1] || '').trim()) : null;\n  // Para proponer el título (nsi) o ponerla en la web (web) hace falta leer la publicación de Instagram\n  return salir(marcar(accion === 'nsi' ? '✅ Sí, es noticia' : '⏳ Poniéndola en la web…'),\n               { accion: 'leer_publicacion', id, siguiente: accion === 'nsi' ? 'titulo' : 'web', titulo });\n}\n\n// Cada botón lleva «acción:pieza:semana». Antes de llegar aquí, el nodo «Cada botón una sola vez» ya ha\n// descartado los repetidos: un mismo «Publicar» (o «Subir historia») de una pieza solo pasa una vez por semana.\nconst cb = upd.callback_query;\nif (cb) {\n  const [accion, tipo, semana] = String(cb.data || '').split(':');\n  const p = pieza(tipo);\n  if (!p || p.semana !== semana) return salir(mensaje('Esa publicación ya no está disponible (es de otra semana).'));\n  const original = String((cb.message && cb.message.text) || '');\n  // Deja el mensaje sin botones y con una marca de lo que se ha hecho\n  const quitarBotones = nota => {\n    const resto = original.replace(/\\n?¿(Publico con este texto|Subo también la historia[^?]*)\\?$/, '');\n    return { accion: 'quitar_botones', messageId: cb.message && cb.message.message_id,\n             texto: resto ? `${resto}\\n${nota}` : `Historia de ${p.nombre}: ${nota}` };\n  };\n  if (accion === 'pub') {\n    const texto = (original.split(RAYA)[1] || '').trim();\n    // 🧪 ENSAYO: aquí irá la publicación real en Instagram (post p.post con este texto)\n    return salir(\n      quitarBotones('✅ Publicado (ensayo)'),\n      mensaje(`✅ (ensayo) Se habría publicado el post de ${p.nombre} con este texto:\\n\\n${texto}`),\n      { accion: 'foto', foto: p.historia, texto: `Historia de ${p.nombre}` },\n      { accion: 'mensaje_botones', texto: `¿Subo también la historia de ${p.nombre}?`,\n        boton1: '✅ Subir historia', dato1: `his:${tipo}:${semana}`, boton2: 'No', dato2: `nohis:${tipo}:${semana}` });\n  }\n  if (accion === 'can') return salir(quitarBotones('❌ Cancelado'),\n    mensaje(`❌ Cancelado. Para poner otro texto, responde otra vez a la foto de ${p.nombre}.`));\n  // 🧪 ENSAYO: aquí irá la historia real en Instagram (p.historia)\n  if (accion === 'his') return salir(quitarBotones('✅ subida (ensayo)'),\n    mensaje(`✅ (ensayo) Se habría subido la historia de ${p.nombre}.`));\n  if (accion === 'nohis') return salir(quitarBotones('no se sube'));\n  return [];\n}\n\n// ---------- mensajes\nconst msg = upd.message;\nif (!msg || !msg.text) return [];\nconst texto = msg.text.trim();\n\n// Respuesta a un mensaje del bot con «🆔 ig:» → es otro título para la noticia\nconst citada = msg.reply_to_message;\nconst ig = citada && citada.from && citada.from.is_bot && String(citada.text || '').match(/🆔 ig:(\\S+)/);\nif (ig) return salir({ accion: 'proponer_titulo', id: ig[1], titulo: texto });\n\n// Respuesta citando una foto del bot → es el texto de la publicación. La pieza va en la línea «🆔».\nif (citada && citada.from && citada.from.is_bot && citada.photo) {\n  const m = String(citada.caption || '').match(/🆔\\s*([a-z-]+)/);\n  const p = m && pieza(m[1]);\n  if (!p) return salir(mensaje('🤔 No sé de qué publicación es esa foto (puede ser de otra semana). Escribe /publicar y la publicación (por ejemplo /publicar match day A) y responde a la foto nueva.'));\n  if (texto.length > 2200) return salir(mensaje(`El texto tiene ${texto.length} caracteres y Instagram admite 2200. Acórtalo y vuelve a responder a la foto.`));\n  return salir({ accion: 'mensaje_botones',\n    texto: `📝 ${p.nombre}\\n${RAYA}\\n${texto}\\n${RAYA}\\n¿Publico con este texto?`,\n    boton1: '✅ Publicar', dato1: `pub:${p.tipo}:${p.semana}`, boton2: '❌ Cancelar', dato2: `can:${p.tipo}:${p.semana}` });\n}\n\n// Comandos (en castellano; también valen los nombres en euskera de las imágenes)\nif (!texto.startsWith('/')) return [];\nconst [orden, ...resto] = texto.split(/\\s+/);\nconst comando = orden.split('@')[0].toLowerCase();\n// «match day A», «matchday-b», «resultados»… → la pieza de ultimo.json\nconst QUE = { horarios: 'ordutegia', ordutegia: 'ordutegia', resultados: 'emaitzak', emaitzak: 'emaitzak',\n              matchdaya: 'matchday', matchday: 'matchday', a: 'matchday', matchdayb: 'matchday-b', b: 'matchday-b' };\nconst cual = QUE[resto.join('').toLowerCase().replace(/[^a-z]/g, '')];\nconst NOMBRE = { ordutegia: 'Horarios (ORDUTEGIA)', emaitzak: 'Resultados (EMAITZAK)',\n                 matchday: 'Match day A', 'matchday-b': 'Match day B' };\nconst nombre = p => NOMBRE[p.tipo] || p.nombre;\nconst estado = p => p.lista ? 'lista ✅' : `no lista ⏳ (falta: ${(p.faltan || []).join('; ')})`;\nconst verPieza = p => ({ accion: 'foto', foto: p.post, texto: `${nombre(p)}: ${estado(p)}` });\nconst lista = Object.values(piezas);\n\nif (comando === '/estado') {\n  if (!lista.length) return salir(mensaje('Esta semana no hay ninguna publicación con datos.'));\n  return salir(mensaje('📋 Publicaciones de esta semana:\\n' + lista.map(p => `• ${nombre(p)}: ${estado(p)}`).join('\\n')));\n}\nconst VER = { '/horarios': ['ordutegia'], '/ordutegia': ['ordutegia'], '/resultados': ['emaitzak'], '/emaitzak': ['emaitzak'],\n              '/matchday': ['matchday', 'matchday-b'] };\nif (VER[comando]) {\n  const elegidas = VER[comando].map(pieza).filter(Boolean);\n  return elegidas.length ? salir(...elegidas.map(verPieza)) : salir(mensaje('Esta semana no hay esa publicación.'));\n}\nif (comando === '/publicar') {\n  const p = cual && pieza(cual);\n  if (!p) return salir(mensaje('¿Cuál? Escribe una de estas:\\n/publicar horarios\\n/publicar resultados\\n/publicar match day A\\n/publicar match day B' +\n    (cual ? '\\n\\n(Esa publicación no tiene datos esta semana.)' : '')));\n  return salir({ accion: 'preguntar', pieza: p });\n}\nif (comando === '/probar' && cual === undefined && resto.join(' ').toLowerCase() === 'noticia') {\n  return salir({ accion: 'nueva_publicacion', publicacion: { id: 'prueba' + Date.now().toString(36), prueba: true,\n    caption: '¡Homenaje a nuestros veteranos este sábado!\\n\\nA las 12:00 en Otxartaga Berri, antes del partido del Senior A. Os esperamos a todos 💙🤍\\n\\n#aupaortuella',\n    media_type: 'IMAGE', media_url: 'https://lehendakari02.github.io/web-cd-ortuella/img/campo.jpg',\n    permalink: 'https://www.instagram.com/cdortuella/', timestamp: new Date().toISOString() } });\n}\nif (comando === '/ayuda' || comando === '/start') {\n  return salir(mensaje('🤖 Comandos:\\n/estado → qué publicaciones están listas y qué falta\\n/horarios, /resultados, /matchday → ver la imagen\\n/publicar horarios · /publicar resultados · /publicar match day A · /publicar match day B → publicar aunque no esté lista\\n/probar noticia → probar cómo llega una noticia de Instagram\\n\\nPara poner el texto de una publicación, responde citando la foto que manda el bot.'));\n}\nreturn [];"
       },
       "id": "0f57af9e-5662-596d-8584-a5e15818ebb1",
       "name": "Interpretar",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -80,
-        680
+        400,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5244bad9-000b-5b45-871e-268c4d4a83b9",
+              "leftValue": "={{ $json.accion }}",
+              "rightValue": "quitar_botones",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1d84ccbe-48a5-52cf-bcb4-cd6125089be8",
+      "name": "¿Quitar botones?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "editMessageText",
+        "messageType": "message",
+        "chatId": "CHAT_ID_DEL_GRUPO",
+        "messageId": "={{ $json.messageId }}",
+        "text": "={{ $json.texto }}",
+        "additionalFields": {}
+      },
+      "id": "c61eb58c-adbd-56d4-ab33-08e517b491f9",
+      "name": "Quitar botones",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        440
       ]
     },
     {
@@ -313,8 +364,8 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        160,
-        520
+        640,
+        600
       ]
     },
     {
@@ -330,8 +381,59 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        400,
-        520
+        880,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3451c72d-c40c-5da0-a48e-0f8cc73aa184",
+              "leftValue": "={{ $json.accion }}",
+              "rightValue": "foto",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "6df47893-0abf-515d-a696-775c4533a6d2",
+      "name": "¿Foto?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "CHAT_ID_DEL_GRUPO",
+        "file": "={{ $json.foto }}",
+        "additionalFields": {
+          "caption": "={{ $json.texto }}"
+        }
+      },
+      "id": "22b5fa0a-08af-5d75-b7a3-90711bdb07ab",
+      "name": "Enseñar foto",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        760
       ]
     },
     {
@@ -363,8 +465,8 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        160,
-        680
+        640,
+        920
       ]
     },
     {
@@ -403,133 +505,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        400,
-        680
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "3451c72d-c40c-5da0-a48e-0f8cc73aa184",
-              "leftValue": "={{ $json.accion }}",
-              "rightValue": "foto",
-              "operator": {
-                "type": "string",
-                "operation": "equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "id": "6df47893-0abf-515d-a696-775c4533a6d2",
-      "name": "¿Foto?",
-      "type": "n8n-nodes-base.filter",
-      "typeVersion": 2.2,
-      "position": [
-        160,
-        840
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "sendPhoto",
-        "chatId": "CHAT_ID_DEL_GRUPO",
-        "file": "={{ $json.foto }}",
-        "additionalFields": {
-          "caption": "={{ $json.texto }}"
-        }
-      },
-      "id": "22b5fa0a-08af-5d75-b7a3-90711bdb07ab",
-      "name": "Enseñar foto",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        400,
-        840
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "e0fdbd53-1710-5f02-824d-7b247685dc83",
-              "leftValue": "={{ $json.accion }}",
-              "rightValue": "foto_botones",
-              "operator": {
-                "type": "string",
-                "operation": "equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "id": "7acdca59-10cd-51ef-84de-d7c8549dc0e6",
-      "name": "¿Foto con botones?",
-      "type": "n8n-nodes-base.filter",
-      "typeVersion": 2.2,
-      "position": [
-        160,
-        1000
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "sendPhoto",
-        "chatId": "CHAT_ID_DEL_GRUPO",
-        "file": "={{ $json.foto }}",
-        "additionalFields": {
-          "caption": "={{ $json.texto }}"
-        },
-        "replyMarkup": "inlineKeyboard",
-        "inlineKeyboard": {
-          "rows": [
-            {
-              "row": {
-                "buttons": [
-                  {
-                    "text": "={{ $json.boton1 }}",
-                    "additionalFields": {
-                      "callback_data": "={{ $json.dato1 }}"
-                    }
-                  },
-                  {
-                    "text": "={{ $json.boton2 }}",
-                    "additionalFields": {
-                      "callback_data": "={{ $json.dato2 }}"
-                    }
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      },
-      "id": "4618b11d-beba-565b-83d8-0c92081c44c1",
-      "name": "Preguntar historia",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        400,
-        1000
+        880,
+        920
       ]
     },
     {
@@ -561,8 +538,494 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
+        640,
+        1080
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "mensaje",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "9ae7d041-eee5-5758-ad0f-a24f423e68eb",
+      "name": "¿Es un mensaje?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -320,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "removeItemsSeenInPreviousExecutions",
+        "logic": "removeItemsWithAlreadySeenKeyValues",
+        "dedupeValue": "={{ /^(can|nweb):/.test($json.callback_query.data) ? $json.callback_query.data + ':' + $json.callback_query.message.message_id : $json.callback_query.data.replace(/^nohis:/, 'his:').replace(/^nno:/, 'nsi:') }}",
+        "options": {}
+      },
+      "id": "ee739cf5-ddb0-55df-a5aa-2972d2e6c992",
+      "name": "Cada botón una sola vez",
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        -80,
+        1060
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 3 · Noticias de la web desde Instagram\nDos veces al día lee las publicaciones nuevas de Instagram (últimos 3 días) que no haya publicado el bot y pregunta en el grupo si son noticia. Si es que sí, propone un título (se cambia respondiendo al mensaje) y, con «Poner en la web», el robot de GitHub guarda la foto y publica la noticia.\n\n🔌 Para activarlo: credencial de Instagram en «Leer publicaciones» y «Leer una publicación», y `INSTAGRAM_CONECTADO = true` en «¿Instagram conectado?».\n🧪 Mientras tanto: /probar noticia en el grupo.",
+        "width": 600,
+        "height": 300
+      },
+      "id": "044e35b1-7e8d-5fec-8d08-1e13f09bdc6b",
+      "name": "Nota 3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        -1060
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// 🔌 Cambiar a true cuando la cuenta de Instagram esté conectada (credencial en los nodos de Instagram)\nconst INSTAGRAM_CONECTADO = false;\nreturn INSTAGRAM_CONECTADO ? $input.all() : [];"
+      },
+      "id": "ebc483c5-a28b-53ee-8225-c7bcb7f61a10",
+      "name": "¿Instagram conectado?",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -320,
+        -700
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,children{media_type,media_url,thumbnail_url}&limit=15",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "options": {}
+      },
+      "id": "3c8c2e28-f94f-572a-bb9f-f40a5db7a020",
+      "name": "Leer publicaciones de Instagram",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -80,
+        -700
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Una por publicación, solo las de los últimos 3 días (la primera vez no se ofrece todo lo antiguo)\nconst desde = Date.now() - 3 * 864e5;\nreturn ($input.first().json.data || [])\n  .filter(p => new Date(p.timestamp) >= desde)\n  .map(publicacion => ({ json: { id: publicacion.id, publicacion } }));"
+      },
+      "id": "3500b0e0-8021-5f61-bd00-6b4ddfb8e956",
+      "name": "Publicaciones recientes",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
         160,
-        1160
+        -700
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "removeItemsSeenInPreviousExecutions",
+        "logic": "removeItemsWithAlreadySeenKeyValues",
+        "dedupeValue": "={{ $json.id }}",
+        "options": {
+          "scope": "workflow"
+        }
+      },
+      "id": "1e158068-b6ea-55d8-88f9-bb9d9d8bb507",
+      "name": "No repetir publicaciones",
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        400,
+        -700
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Foto + mensaje con «¿La ponemos como noticia en la web?». La línea «🆔 ig:» dice qué publicación es.\nconst foto = p => p.media_type === 'VIDEO' ? p.thumbnail_url\n  : p.media_type === 'CAROUSEL_ALBUM' ? (((p.children || {}).data || []).map(h => h.media_type === 'VIDEO' ? h.thumbnail_url : h.media_url).find(Boolean) || p.media_url)\n  : p.media_url;\n// (la pregunta sale como respuesta a su foto: si llegan varias a la vez, se sabe cuál va con cuál)\nreturn $input.all().map(item => {\n  const p = item.json.publicacion;\n  const dia = new Date(p.timestamp).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', timeZone: 'Europe/Madrid' });\n  const pie = String(p.caption || '(sin texto)');\n  const corto = pie.length > 700 ? pie.slice(0, 700) + '…' : pie;\n  return { json: { foto: foto(p), textoFoto: `📰 Nueva publicación en Instagram (${dia})`,\n    texto: `📰 ${corto}\\n\\n🆔 ig:${p.id}\\n¿La ponemos como noticia en la web?`,\n    boton1: '✅ Sí, es noticia', dato1: `nsi:${p.id}`, boton2: 'No', dato2: `nno:${p.id}` } };\n});"
+      },
+      "id": "08b21c6b-ad9c-522c-9c65-9a6a404d01bd",
+      "name": "Preguntar si es noticia",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        -700
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "CHAT_ID_DEL_GRUPO",
+        "file": "={{ $json.foto }}",
+        "additionalFields": {
+          "caption": "={{ $json.textoFoto }}"
+        }
+      },
+      "id": "d23e3c7c-abab-525a-808a-fe6e07d32b88",
+      "name": "Foto de la publicación",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        -700
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_DEL_GRUPO",
+        "text": "={{ $('Preguntar si es noticia').item.json.texto }}",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "={{ $('Preguntar si es noticia').item.json.boton1 }}",
+                    "additionalFields": {
+                      "callback_data": "={{ $('Preguntar si es noticia').item.json.dato1 }}"
+                    }
+                  },
+                  {
+                    "text": "={{ $('Preguntar si es noticia').item.json.boton2 }}",
+                    "additionalFields": {
+                      "callback_data": "={{ $('Preguntar si es noticia').item.json.dato2 }}"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "appendAttribution": false,
+          "reply_to_message_id": "={{ $json.message_id }}"
+        }
+      },
+      "id": "a91f62f6-7321-510e-8fc8-f27bdba3428e",
+      "name": "¿Es noticia?",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1120,
+        -700
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c670e747-c016-5e59-9382-f9f9f452d5cc",
+              "leftValue": "={{ $json.accion }}",
+              "rightValue": "nueva_publicacion",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4248aed2-c82d-500c-8e0e-812eacf15187",
+      "name": "¿Publicación de prueba?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        1240
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3910c7e6-a402-5328-9b8b-a0df27b7b4df",
+              "leftValue": "={{ $json.accion }}",
+              "rightValue": "leer_publicacion",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1fd002d5-84c0-50f3-b71c-44e62a0519e6",
+      "name": "¿Leer publicación?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        1400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Las publicaciones de prueba (/probar noticia) no existen en Instagram: se rellenan aquí\nreturn $input.all().map(item => item.json.id.startsWith('prueba')\n  ? { json: { ...item.json, prueba: true, caption: '¡Homenaje a nuestros veteranos este sábado!\\n\\nA las 12:00 en Otxartaga Berri, antes del partido del Senior A. Os esperamos a todos 💙🤍\\n\\n#aupaortuella',\n      media_type: 'IMAGE', media_url: 'https://lehendakari02.github.io/web-cd-ortuella/img/campo.jpg',\n      permalink: 'https://www.instagram.com/cdortuella/', timestamp: new Date().toISOString() } }\n  : item);"
+      },
+      "id": "162aa214-cfcf-579d-a03c-de8e43690b8c",
+      "name": "Prueba o Instagram",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        1400
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "prueba",
+              "leftValue": "={{ $json.prueba === true }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f62d71e3-3679-5e1c-a88b-af8c63c65f45",
+      "name": "¿Es de prueba?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1120,
+        1320
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "real",
+              "leftValue": "={{ $json.prueba !== true }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "8b96b544-596e-5f3c-b7bd-2f4b6c654daa",
+      "name": "¿Es real?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1120,
+        1480
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.instagram.com/{{ $json.id }}?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,children{media_type,media_url,thumbnail_url}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "options": {}
+      },
+      "id": "303ca533-fb09-53eb-99fc-4aa5bf93cad0",
+      "name": "Leer una publicación",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1360,
+        1480
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Con la publicación ya leída: o se propone el título (tras «Sí») o se manda a la web (tras «Poner en la web»)\nconst RAYA = '────────────';\nconst ctx = $('Interpretar').all().map(x => x.json).find(x => x.accion === 'leer_publicacion') || {};\nconst p = $input.first().json;\nconst pie = String(p.caption || '');\n// Título propuesto: la primera frase (o línea) del pie, sin emojis sueltos al final y como mucho 90 letras\nconst primera = (pie.split('\\n').find(l => l.trim() && !l.trim().startsWith('#')) || 'Noticia del club').trim();\nconst frase = (primera.match(/^.*?[.!?](?=\\s|$)/) || [primera])[0].replace(/[.]$/, '').trim();\nconst propuesto = frase.length > 90 ? frase.slice(0, 87).trimEnd() + '…' : frase;\nif (ctx.siguiente === 'titulo') {\n  return [{ json: { accion: 'mensaje_botones',\n    texto: `📰 Título para la web:\\n${RAYA}\\n${propuesto}\\n${RAYA}\\n🆔 ig:${p.id || ctx.id}\\nSi quieres otro título, responde a este mensaje con él.`,\n    boton1: '✅ Poner en la web', dato1: `web:${p.id || ctx.id}`, boton2: 'Cancelar', dato2: `nweb:${p.id || ctx.id}` } }];\n}\n// A la web: si el título es la primera línea del pie, no se repite en el texto\nconst titulo = ctx.titulo || propuesto;\nconst empieza = titulo.replace(/…$/, '');\nconst texto = pie.trim().startsWith(empieza) && !titulo.endsWith('…')\n  ? pie.trim().slice(empieza.length).replace(/^[.!?]?[ \\t]*\\n?/, '') : pie;\nconst foto = p.media_type === 'VIDEO' ? p.thumbnail_url\n  : p.media_type === 'CAROUSEL_ALBUM' ? (((p.children || {}).data || []).map(h => h.media_type === 'VIDEO' ? h.thumbnail_url : h.media_url).find(Boolean) || p.media_url)\n  : p.media_url;\nreturn [{ json: { accion: 'enviar_a_web', prueba: p.prueba === true, titulo,\n  inputs: { id: String(p.id || ctx.id), titulo, texto, fecha: String(p.timestamp).slice(0, 10),\n            foto_url: foto, enlace: p.permalink || '', prueba: p.prueba === true } } }];"
+      },
+      "id": "13b3ac41-6ab2-5e9c-a60b-77ed6e0f395b",
+      "name": "Título o noticia",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1600,
+        1400
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "844932b8-1af6-54e7-88ec-b0e3a28d07c5",
+              "leftValue": "={{ $json.accion }}",
+              "rightValue": "enviar_a_web",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "216779dd-1442-5f54-b3bf-737d6eeace57",
+      "name": "¿Enviar a la web?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1840,
+        1480
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.github.com/repos/Lehendakari02/web-cd-ortuella/actions/workflows/anadir-noticia.yml/dispatches",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ ref: 'main', inputs: $json.inputs }) }}",
+        "options": {}
+      },
+      "id": "2b43a814-ec65-54b1-bb5a-e821a392d8a7",
+      "name": "Enviar a la web (GitHub)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2080,
+        1480
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// GitHub contesta vacío si todo va bien; si hay error, se avisa en el grupo\nconst envio = $('Título o noticia').first().json;\nconst fallo = $input.first().json.error;\nif (fallo) return [{ json: { accion: 'mensaje', texto: `⚠️ No se ha podido mandar «${envio.titulo}» a la web (${fallo.message || 'error de GitHub'}). Revisa la credencial de GitHub en n8n.` } }];\nreturn [{ json: { accion: 'mensaje', texto: envio.prueba\n  ? `🧪 (prueba) «${envio.titulo}» ha llegado al robot de GitHub, que lo ha preparado sin cambiar la web. Puedes verlo en GitHub → Actions → Añadir noticia.`\n  : `✅ «${envio.titulo}» se está poniendo en la web: aparecerá en Noticias en 1-2 minutos.` } }];"
+      },
+      "id": "cfd542a6-30ef-5ee3-88b4-2b370dc2518f",
+      "name": "Resultado en la web",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2320,
+        1480
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e9882270-9c6f-564a-b508-b40bfdcb2c37",
+              "leftValue": "={{ $json.accion }}",
+              "rightValue": "proponer_titulo",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "8fe61ffb-83f4-58b6-99ef-65e32dc73c59",
+      "name": "¿Otro título?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        1560
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const RAYA = '────────────';\nreturn $input.all().map(({ json: t }) => ({ json: { accion: 'mensaje_botones',\n  texto: `📰 Título para la web:\\n${RAYA}\\n${t.titulo}\\n${RAYA}\\n🆔 ig:${t.id}\\nSi quieres otro título, responde a este mensaje con él.`,\n  boton1: '✅ Poner en la web', dato1: `web:${t.id}`, boton2: 'Cancelar', dato2: `nweb:${t.id}` } }));"
+      },
+      "id": "1f4d2d15-c96d-5a7a-9c9d-da37a0f83c7f",
+      "name": "Proponer otro título",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        1600
       ]
     }
   ],
@@ -577,6 +1040,11 @@
           },
           {
             "node": "Leer cambios.json",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "¿Instagram conectado?",
             "type": "main",
             "index": 0
           }
@@ -664,7 +1132,7 @@
       "main": [
         [
           {
-            "node": "Leer ultimo.json (bot)",
+            "node": "¿Es un mensaje?",
             "type": "main",
             "index": 0
           },
@@ -676,11 +1144,38 @@
         ]
       ]
     },
+    "¿Es un mensaje?": {
+      "main": [
+        [
+          {
+            "node": "Leer ultimo.json (bot)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "¿Es un botón?": {
       "main": [
         [
           {
             "node": "Quitar el «cargando» del botón",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Cada botón una sola vez",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cada botón una sola vez": {
+      "main": [
+        [
+          {
+            "node": "Leer ultimo.json (bot)",
             "type": "main",
             "index": 0
           }
@@ -702,12 +1197,12 @@
       "main": [
         [
           {
-            "node": "¿Mensaje?",
+            "node": "¿Quitar botones?",
             "type": "main",
             "index": 0
           },
           {
-            "node": "¿Mensaje con botones?",
+            "node": "¿Mensaje?",
             "type": "main",
             "index": 0
           },
@@ -717,12 +1212,38 @@
             "index": 0
           },
           {
-            "node": "¿Foto con botones?",
+            "node": "¿Mensaje con botones?",
             "type": "main",
             "index": 0
           },
           {
             "node": "¿Pedir texto?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "¿Publicación de prueba?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "¿Leer publicación?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "¿Otro título?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Quitar botones?": {
+      "main": [
+        [
+          {
+            "node": "Quitar botones",
             "type": "main",
             "index": 0
           }
@@ -740,17 +1261,6 @@
         ]
       ]
     },
-    "¿Mensaje con botones?": {
-      "main": [
-        [
-          {
-            "node": "Pedir confirmación",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "¿Foto?": {
       "main": [
         [
@@ -762,11 +1272,11 @@
         ]
       ]
     },
-    "¿Foto con botones?": {
+    "¿Mensaje con botones?": {
       "main": [
         [
           {
-            "node": "Preguntar historia",
+            "node": "Pedir confirmación",
             "type": "main",
             "index": 0
           }
@@ -778,6 +1288,214 @@
         [
           {
             "node": "Preparar pregunta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Instagram conectado?": {
+      "main": [
+        [
+          {
+            "node": "Leer publicaciones de Instagram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer publicaciones de Instagram": {
+      "main": [
+        [
+          {
+            "node": "Publicaciones recientes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publicaciones recientes": {
+      "main": [
+        [
+          {
+            "node": "No repetir publicaciones",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No repetir publicaciones": {
+      "main": [
+        [
+          {
+            "node": "Preguntar si es noticia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preguntar si es noticia": {
+      "main": [
+        [
+          {
+            "node": "Foto de la publicación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Foto de la publicación": {
+      "main": [
+        [
+          {
+            "node": "¿Es noticia?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Publicación de prueba?": {
+      "main": [
+        [
+          {
+            "node": "Preguntar si es noticia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Leer publicación?": {
+      "main": [
+        [
+          {
+            "node": "Prueba o Instagram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prueba o Instagram": {
+      "main": [
+        [
+          {
+            "node": "¿Es de prueba?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "¿Es real?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Es de prueba?": {
+      "main": [
+        [
+          {
+            "node": "Título o noticia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Es real?": {
+      "main": [
+        [
+          {
+            "node": "Leer una publicación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer una publicación": {
+      "main": [
+        [
+          {
+            "node": "Título o noticia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Título o noticia": {
+      "main": [
+        [
+          {
+            "node": "¿Mensaje con botones?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "¿Enviar a la web?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Enviar a la web?": {
+      "main": [
+        [
+          {
+            "node": "Enviar a la web (GitHub)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar a la web (GitHub)": {
+      "main": [
+        [
+          {
+            "node": "Resultado en la web",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resultado en la web": {
+      "main": [
+        [
+          {
+            "node": "¿Mensaje?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Otro título?": {
+      "main": [
+        [
+          {
+            "node": "Proponer otro título",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Proponer otro título": {
+      "main": [
+        [
+          {
+            "node": "¿Mensaje con botones?",
             "type": "main",
             "index": 0
           }

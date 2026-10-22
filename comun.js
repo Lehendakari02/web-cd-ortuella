@@ -5,6 +5,8 @@
    ========================================================================== */
 (function () {
   var C = window.CLUB || {}, F = window.FEDERACION || { equipos: [] };
+  // Noticias: las escritas a mano (datos.js) + las que llegan de Instagram (datos-noticias.js), las más nuevas primero
+  C.noticias = (window.NOTICIAS || []).concat(C.noticias || []).sort(function (a, b) { return a.fecha < b.fecha ? 1 : a.fecha > b.fecha ? -1 : 0; });
 
   // ---- utilidades -----------------------------------------------------------
   var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
@@ -216,7 +218,8 @@
   function newsCard(n) {
     return "<article>" + (n.foto ? '<img class="pic" src="' + esc(n.foto) + '" alt="" loading="lazy">' : "") + '<div class="body">' +
       '<div class="meta"><span class="cat">' + esc(n.etiqueta) + "</span><span>" + esc(n.fechaTexto || fdate(n.fecha, true)) + "</span></div>" +
-      "<h3>" + esc(n.titulo) + "</h3><p>" + esc(n.texto) + "</p></div></article>";
+      "<h3>" + esc(n.titulo) + "</h3><p>" + esc(n.texto) + "</p>" +
+      (n.enlace ? '<a class="more" href="' + esc(n.enlace) + '" target="_blank" rel="noopener">Ver en Instagram</a>' : "") + "</div></article>";
   }
 
   function copyButtons() {
