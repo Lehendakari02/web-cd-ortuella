@@ -7,7 +7,7 @@
    Se contesta **respondiendo a la foto** (mantener pulsado → Responder). El bot enseña la foto con el texto
    y los botones *Publicar* / *Cancelar*; después pregunta si se sube también la historia.
 2. **Avisos de cambios de partido**: manda al grupo los avisos nuevos de `cambios.json`.
-3. **Comandos** en el grupo: `/estado`, `/ordutegia`, `/emaitzak`, `/matchday`, `/publicar <pieza>`, `/ayuda`.
+3. **Comandos** en el grupo: `/estado`, `/horarios`, `/resultados`, `/matchday`, `/publicar horarios` · `resultados` · `match day A` · `match day B`, `/ayuda`.
    El resto de mensajes del grupo se ignora (el bot puede tener la privacidad de grupo activada).
 
 🧪 **Modo ensayo**: al pulsar *Publicar* no publica en Instagram, contesta «(ensayo) Se habría publicado…».
@@ -27,11 +27,11 @@ Cuando haya token de Instagram, se cambian esos dos puntos (marcados con `🧪 E
 ## Probarlo
 
 - En el grupo, escribe `/estado` o `/matchday`: el bot debe contestar.
-- Para probar el recorrido completo: `/publicar matchday` → responder citando la foto → *Publicar*.
+- Para probar el recorrido completo: `/publicar match day A` → responder citando la foto → *Publicar*.
 
 **No ejecutes a mano la parte programada** («Revisar 8:30 y 23:30»): los nodos *No repetir piezas* y
 *No repetir avisos* apuntan lo que se manda y luego ya no lo volverían a mandar. Para probar, usa los
-comandos en el grupo (`/publicar matchday`…).
+comandos en el grupo (`/publicar match day A`…).
 
 **Nada se publica dos veces.** Cada botón lleva la pieza y la semana (`pub:matchday:2026-10-19`) y el
 nodo *Cada botón una sola vez* lo apunta en la base de datos de n8n: un segundo clic, o «Publicar» en otra

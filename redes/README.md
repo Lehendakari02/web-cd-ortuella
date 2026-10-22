@@ -112,7 +112,7 @@ Cómo funciona el flujo (un solo flujo para todo):
   (en la historia, `image_url` = `historia` y `media_type` = `STORIES`) y publicarlo, en los dos puntos
   marcados con `🧪 ENSAYO` del nodo *Interpretar*.
 - También lee `cambios.json` y manda los **avisos de cambios de partido** nuevos, y contesta a los
-  **comandos** `/estado`, `/ordutegia`, `/emaitzak`, `/matchday`, `/publicar <pieza>` y `/ayuda`.
+  **comandos** `/estado`, `/horarios`, `/resultados`, `/matchday`, `/publicar horarios` · `resultados` · `match day A` · `match day B` y `/ayuda`.
 
 Coste: 0 €. El bot de Telegram se crea gratis con @BotFather y se conecta en n8n con su token; n8n está
 en el servidor propio; la API de Instagram es gratuita. Mientras espera la respuesta, n8n no gasta nada.
