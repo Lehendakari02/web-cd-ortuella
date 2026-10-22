@@ -167,8 +167,8 @@ def pagina(cuerpo, formato, clase):
 # Son las medidas de las plantillas de Canva; en la historia, desplazadas como el título.
 # Las filas se reparten por toda la zona entre el título y los patrocinadores (más separadas si hay pocas).
 ZONA_ORDUTEGIA = {"post": (300, 1045), "historia": (520, 1530)}
-ZONA_EMAITZAK = {"post": (290, 1150), "historia": (534, 1560)}
-ALTO_FILA = {"ordutegia": 66, "emaitzak": 80}
+ZONA_EMAITZAK = {"post": (308, 1000), "historia": (534, 1560)}
+ALTO_FILA = {"ordutegia": 66, "emaitzak": 86}
 PASO_MAXIMO = {"ordutegia": 125, "emaitzak": 200}
 
 

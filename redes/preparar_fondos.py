@@ -34,8 +34,9 @@ FUNDIDO = 40                 # px de transición suave al pegar unas franjas sob
 PIEZAS = {
     "ordutegia": {"origen": HORARIOS, "titulo": (120, 270), "banda": (1070, 1262),
                   "post": (120, 1070), "historia": (370, 1560)},
+    # En el post de resultados la banda va más arriba que en la plantilla de Canva, como en las publicaciones del club
     "emaitzak": {"origen": RESULTADOS, "titulo": (110, 262), "banda": (1165, 1350),
-                 "post": (110, 1165), "historia": (360, 1580)},
+                 "post": (110, 1004), "historia": (360, 1580)},
 }
 ALTO = {"post": 1350, "historia": 1920}
 
