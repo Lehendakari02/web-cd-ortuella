@@ -1,0 +1,80 @@
+# Pone en la web una noticia que viene de Instagram. Lo lanza n8n cuando en el grupo de Telegram se
+# pulsa «Sí, ponerla en la web» (también se puede lanzar a mano: Actions → Añadir noticia → Run workflow).
+# Con «prueba» marcado lo hace todo menos cambiar la web: sirve para comprobar la conexión.
+name: Añadir noticia
+
+on:
+  workflow_dispatch:
+    inputs:
+      id:
+        description: "Id de la publicación de Instagram"
+        required: true
+      titulo:
+        description: "Título de la noticia"
+        required: true
+      texto:
+        description: "Texto (el pie de la publicación)"
+        required: false
+      fecha:
+        description: "Fecha (AAAA-MM-DD)"
+        required: true
+      foto_url:
+        description: "Dirección de la foto (o de la portada, si es un vídeo)"
+        required: true
+      enlace:
+        description: "Enlace a la publicación en Instagram"
+        required: false
+      prueba:
+        description: "Solo probar (no cambia la web)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+# Misma cola que el robot de la Federación, para no guardar cambios a la vez
+concurrency:
+  group: actualizar-federacion
+  cancel-in-progress: false
+
+jobs:
+  anadir:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar Pillow (para reducir la foto)
+        run: python3 -m pip install --quiet pillow
+
+      - name: Añadir la noticia
+        env:
+          ID: ${{ inputs.id }}
+          TITULO: ${{ inputs.titulo }}
+          TEXTO: ${{ inputs.texto }}
+          FECHA: ${{ inputs.fecha }}
+          FOTO_URL: ${{ inputs.foto_url }}
+          ENLACE: ${{ inputs.enlace }}
+        run: >
+          python3 redes/anadir_noticia.py --id "$ID" --titulo "$TITULO" --texto "$TEXTO"
+          --fecha "$FECHA" --foto-url "$FOTO_URL" --enlace "$ENLACE"
+          ${{ inputs.prueba && '--prueba' || '' }}
+
+      - name: Guardar la noticia en la web
+        if: ${{ !inputs.prueba }}
+        env:
+          TITULO: ${{ inputs.titulo }}
+        run: |
+          git add datos-noticias.js img/noticias/
+          if git diff --cached --quiet; then
+            echo "Sin cambios (la noticia ya estaba)"
+            exit 0
+          fi
+          git -c user.name="Actualización automática" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -m "Noticia de Instagram: $TITULO"
+          git pull --rebase
+          git push

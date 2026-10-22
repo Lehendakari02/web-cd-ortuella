@@ -44,6 +44,7 @@ FOOT = """</main>
 <div id="pie"></div>
 <script src="datos.js?v={v[datos.js]}"></script>
 <script src="datos-federacion.js"></script>
+<script src="datos-noticias.js"></script>
 <script src="comun.js?v={v[comun.js]}"></script>
 <!-- Contador de visitas anónimo, sin cookies. Panel privado: https://cdortuella.goatcounter.com -->
 <script data-goatcounter="https://cdortuella.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
