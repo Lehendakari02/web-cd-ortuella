@@ -59,13 +59,21 @@ _opener.addheaders = [("User-Agent", "Mozilla/5.0 (compatible; CDOrtuellaWeb/1.0
                       ("Accept-Language", "es-ES,es;q=0.9")]
 
 
-ESPERAS = [5, 15, 30, 60, 90]   # segundos antes de cada reintento: la Federación a veces devuelve páginas vacías un rato
+# Algunas páginas de la Federación están siempre vacías (está mal hecha): esperar no sirve de nada.
+# Cada página se intenta 3 veces en poco tiempo y, si no hay manera, se salta y se sigue con lo demás.
+ESPERAS = [5, 15]               # segundos antes de cada reintento (antes eran ~4 minutos por página vacía)
+VACIAS = set()                  # páginas ya dadas por perdidas en esta pasada: no se vuelven a esperar
+LIMITE = 20 * 60                # pasados 20 minutos ya no se reintenta nada, para terminar y guardar a tiempo
+INICIO = time.monotonic()       # (GitHub corta el robot a los 30 minutos y entonces no se guarda nada)
 
 
 def descargar(ruta):
-    for intento in range(len(ESPERAS) + 1):
+    if ruta in VACIAS:
+        raise RuntimeError(f"No se pudo leer {ruta} (vacía antes en esta pasada)")
+    esperas = ESPERAS if time.monotonic() - INICIO < LIMITE else []
+    for intento in range(len(esperas) + 1):
         try:
-            with _opener.open(BASE + ruta, timeout=40) as r:
+            with _opener.open(BASE + ruta, timeout=30) as r:
                 datos = r.read().decode("iso-8859-15", errors="replace")
             time.sleep(PAUSA)
             if len(datos) > 5000 and "Sarbide datuak" not in datos and "Datos de acceso" not in datos:
@@ -74,8 +82,9 @@ def descargar(ruta):
             print(f"  aviso: respuesta vacía en {ruta}", file=sys.stderr)
         except Exception as e:  # red caída, servidor lento...
             print(f"  aviso: fallo al leer {ruta} ({e})", file=sys.stderr)
-        if intento < len(ESPERAS):
-            time.sleep(ESPERAS[intento])
+        if intento < len(esperas):
+            time.sleep(esperas[intento])
+    VACIAS.add(ruta)
     raise RuntimeError(f"No se pudo leer {ruta}")
 
 
@@ -412,8 +421,12 @@ def guardar_escudos(pares, comun):
 
 def actualizar_equipo(eq, anterior, comun):
     print(f"- {eq['nombre']}")
-    pagina = descargar(url_clasificacion(eq))
-    clasificacion = leer_clasificacion(pagina)
+    try:
+        clasificacion = leer_clasificacion(descargar(url_clasificacion(eq)))
+    except RuntimeError:
+        if not eq.get("base"):
+            raise
+        clasificacion = []   # fútbol base antes de empezar la liga: su clasificación llega siempre vacía
     if not clasificacion and not eq.get("base"):
         raise RuntimeError("clasificación vacía: puede que la Federación haya cambiado su web")
     nuestra = next((f for f in clasificacion if f["codequipo"] == eq["codequipo"]), None)
@@ -547,8 +560,11 @@ def main():
     # Si un equipo falla, se vuelve a intentar al final, tras una pausa larga
     for vuelta in range(2):
         if vuelta:
+            if time.monotonic() - INICIO > LIMITE:
+                break                   # no hay tiempo: se guarda lo leído y se reintenta en la próxima pasada
             print(f"  Reintentando {len(pendientes)} equipo(s) dentro de 2 minutos", file=sys.stderr)
             time.sleep(120)
+            VACIAS.clear()              # en la segunda vuelta, cada página tiene una oportunidad más
         fallidos = []
         for eq in pendientes:
             try:
