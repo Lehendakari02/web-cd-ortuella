@@ -7,9 +7,10 @@ html, body { width: var(--ancho); height: var(--alto); overflow: hidden; }
 body { position: relative; font-family: Montserrat, sans-serif; background: #101a33; color: #fff; }
 
 .fondo { position: absolute; inset: 0; background-size: cover; background-position: center; }
-.fondo.desenfocado { inset: -40px; filter: blur(7px) saturate(.4); }
-.fondo.desenfocado::after { content: ""; position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(14, 27, 56, .86), rgba(17, 31, 64, .80) 50%, rgba(12, 22, 46, .9)); }
+/* Foto de fondo de las tablas: ampliada, muy difuminada y con velo azul marino (la estética del club) */
+.fondo.difuminado { background-size: 140%; filter: blur(6px) saturate(.45); transform: scale(1.04); }
+.fondo.difuminado::after { content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(8, 24, 54, .84), rgba(12, 30, 64, .78) 50%, rgba(8, 22, 50, .86)); }
 
 main { position: relative; height: 100%; display: flex; flex-direction: column; align-items: center; }
 .historia main { padding-top: 120px; padding-bottom: 140px; }

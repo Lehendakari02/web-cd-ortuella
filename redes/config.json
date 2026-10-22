@@ -30,9 +30,17 @@
     "Otxartaga-Berri, Ortuella": "OTXARTAGA BERRI"
   },
 
-  "_fondos": "Fotos de MATCH DAY (rutas desde la raíz de la web). Van rotando cada semana. Las tablas usan los lienzos de Canva (preparar_fondos.py).",
+  "_fondos": "Fondos que van rotando cada semana (rutas desde la raíz de la web). Solo se usan los de estas listas. Tablas: \"canva\" es el fondo de la plantilla de Canva; una foto sale ampliada, muy difuminada y con velo azul marino. MATCH DAY: la foto tal cual con velo; \"velo\": false si ya lo trae; \"diseno\": 0 (MATCH DAY en vertical) o 1 (en horizontal) para fijar el diseño.",
   "fondos": {
-    "matchday": ["img/tribuna.jpg", "img/grada.jpg", "img/campo.jpg", "img/entrada.jpg"]
+    "tablas": ["canva", "img/marcador.jpg", "img/tribuna.jpg", "img/grada.jpg"],
+    "matchday": [
+      { "foto": "redes/fondos/tribuna-noche.jpg", "velo": false, "diseno": 0 },
+      "img/tribuna.jpg",
+      { "foto": "redes/fondos/aficion.jpg", "velo": false, "diseno": 1 },
+      "img/grada.jpg",
+      "img/campo.jpg",
+      "img/entrada.jpg"
+    ]
   },
 
   "_textos": "Textos para acompañar cada publicación. Van rotando cada semana. Huecos: {rival}, {dia}, {hora}, {campo}.",

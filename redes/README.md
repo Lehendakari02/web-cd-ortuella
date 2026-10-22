@@ -23,7 +23,11 @@ Si una pieza no tiene datos (no hay partidos o resultados esa semana), no aparec
   Alevín sale con "—" hasta que se añada a `EQUIPOS` en `actualizar_federacion.py` (cuando la Federación publique su liga).
 - **nombres_cortos**: cómo se escribe un rival ("Union Sport B" → "UNIÓN B"). Si no está, sale el nombre de la Federación.
 - **campos_cortos**: igual para los campos de MATCH DAY.
-- **fondos**: lista de fotos de MATCH DAY (van rotando cada semana; solo se usan las de esta lista).
+- **fondos**: los fondos que van rotando cada semana; solo se usan los de estas listas, nunca otras fotos.
+  - `tablas` (ORDUTEGIA y EMAITZAK): `"canva"` es el fondo de la plantilla de Canva; cualquier otra foto sale
+    siempre con la misma receta: ampliada, difuminada y con velo azul marino, con el título y los patrocinadores encima.
+  - `matchday`: la foto tal cual con un velo claro. `"velo": false` si la foto ya lo trae (las de Canva, en `redes/fondos/`)
+    y `"diseno": 0` (MATCH DAY en vertical) o `1` (en horizontal) para fijar el diseño que mejor le va.
 - **textos**: frases para acompañar cada publicación (van rotando cada semana).
 
 Otros archivos:
