@@ -273,7 +273,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Decide qué hacer con cada mensaje o botón del grupo. Sin IA y sin memoria: lo que hace falta\n// saber va escrito en los propios mensajes del bot («🆔 pieza» y el texto entre las rayas).\nconst upd = $('Telegram (grupo)').first().json;\nconst piezas = $input.first().json.piezas || {};\nconst salir = (...cosas) => cosas.map(json => ({ json }));\nconst mensaje = texto => ({ accion: 'mensaje', texto });\nconst RAYA = '────────────';\nconst pieza = tipo => piezas[tipo];\n\n// ---------- botones\n// ---------- noticias desde Instagram (botones «nsi/nno:id» y «web/nweb:id»)\nconst cbN = upd.callback_query;\nif (cbN && /^(nsi|nno|web|nweb):/.test(String(cbN.data))) {\n  const [accion, id] = String(cbN.data).split(':');\n  const original = String((cbN.message && cbN.message.text) || '');\n  const marcar = nota => ({ accion: 'quitar_botones', messageId: cbN.message && cbN.message.message_id,\n    texto: original.replace(/\\n?¿La ponemos como noticia en la web\\?$/, '').replace(/\\nSi quieres otro[^\\n]*$/, '') + `\\n${nota}` });\n  if (accion === 'nno') return salir(marcar('No es noticia'));\n  if (accion === 'nweb') return salir(marcar('❌ Cancelado'));\n  const titulo = accion === 'web' ? ((original.split(RAYA)[1] || '').trim()) : null;\n  // Para proponer el título (nsi) o ponerla en la web (web) hace falta leer la publicación de Instagram\n  return salir(marcar(accion === 'nsi' ? '✅ Sí, es noticia' : '⏳ Poniéndola en la web…'),\n               { accion: 'leer_publicacion', id, siguiente: accion === 'nsi' ? 'titulo' : 'web', titulo });\n}\n\n// Cada botón lleva «acción:pieza:semana». Antes de llegar aquí, el nodo «Cada botón una sola vez» ya ha\n// descartado los repetidos: un mismo «Publicar» (o «Subir historia») de una pieza solo pasa una vez por semana.\nconst cb = upd.callback_query;\nif (cb) {\n  const [accion, tipo, semana] = String(cb.data || '').split(':');\n  const p = pieza(tipo);\n  if (!p || p.semana !== semana) return salir(mensaje('Esa publicación ya no está disponible (es de otra semana).'));\n  const original = String((cb.message && cb.message.text) || '');\n  // Deja el mensaje sin botones y con una marca de lo que se ha hecho\n  const quitarBotones = nota => {\n    const resto = original.replace(/\\n?¿(Publico con este texto|Subo también la historia[^?]*)\\?$/, '');\n    return { accion: 'quitar_botones', messageId: cb.message && cb.message.message_id,\n             texto: resto ? `${resto}\\n${nota}` : `Historia de ${p.nombre}: ${nota}` };\n  };\n  if (accion === 'pub') {\n    const texto = (original.split(RAYA)[1] || '').trim();\n    // 🧪 ENSAYO: aquí irá la publicación real en Instagram (post p.post con este texto)\n    return salir(\n      quitarBotones('✅ Publicado (ensayo)'),\n      mensaje(`✅ (ensayo) Se habría publicado el post de ${p.nombre} con este texto:\\n\\n${texto}`),\n      { accion: 'foto', foto: p.historia, texto: `Historia de ${p.nombre}` },\n      { accion: 'mensaje_botones', texto: `¿Subo también la historia de ${p.nombre}?`,\n        boton1: '✅ Subir historia', dato1: `his:${tipo}:${semana}`, boton2: 'No', dato2: `nohis:${tipo}:${semana}` });\n  }\n  if (accion === 'can') return salir(quitarBotones('❌ Cancelado'),\n    mensaje(`❌ Cancelado. Para poner otro texto, responde otra vez a la foto de ${p.nombre}.`));\n  // 🧪 ENSAYO: aquí irá la historia real en Instagram (p.historia)\n  if (accion === 'his') return salir(quitarBotones('✅ subida (ensayo)'),\n    mensaje(`✅ (ensayo) Se habría subido la historia de ${p.nombre}.`));\n  if (accion === 'nohis') return salir(quitarBotones('no se sube'));\n  return [];\n}\n\n// ---------- mensajes\nconst msg = upd.message;\nif (!msg || !msg.text) return [];\nconst texto = msg.text.trim();\n\n// Respuesta a un mensaje del bot con «🆔 ig:» → es otro título para la noticia\nconst citada = msg.reply_to_message;\nconst ig = citada && citada.from && citada.from.is_bot && String(citada.text || '').match(/🆔 ig:(\\S+)/);\nif (ig) return salir({ accion: 'proponer_titulo', id: ig[1], titulo: texto });\n\n// Respuesta citando una foto del bot → es el texto de la publicación. La pieza va en la línea «🆔».\nif (citada && citada.from && citada.from.is_bot && citada.photo) {\n  const m = String(citada.caption || '').match(/🆔\\s*([a-z-]+)/);\n  const p = m && pieza(m[1]);\n  if (!p) return salir(mensaje('🤔 No sé de qué publicación es esa foto (puede ser de otra semana). Escribe /publicar y la publicación (por ejemplo /publicar match day A) y responde a la foto nueva.'));\n  if (texto.length > 2200) return salir(mensaje(`El texto tiene ${texto.length} caracteres y Instagram admite 2200. Acórtalo y vuelve a responder a la foto.`));\n  return salir({ accion: 'mensaje_botones',\n    texto: `📝 ${p.nombre}\\n${RAYA}\\n${texto}\\n${RAYA}\\n¿Publico con este texto?`,\n    boton1: '✅ Publicar', dato1: `pub:${p.tipo}:${p.semana}`, boton2: '❌ Cancelar', dato2: `can:${p.tipo}:${p.semana}` });\n}\n\n// Comandos (en castellano; también valen los nombres en euskera de las imágenes)\nif (!texto.startsWith('/')) return [];\nconst [orden, ...resto] = texto.split(/\\s+/);\nconst comando = orden.split('@')[0].toLowerCase();\n// «match day A», «matchday-b», «resultados»… → la pieza de ultimo.json\nconst QUE = { horarios: 'ordutegia', ordutegia: 'ordutegia', resultados: 'emaitzak', emaitzak: 'emaitzak',\n              matchdaya: 'matchday', matchday: 'matchday', a: 'matchday', matchdayb: 'matchday-b', b: 'matchday-b' };\nconst cual = QUE[resto.join('').toLowerCase().replace(/[^a-z]/g, '')];\nconst NOMBRE = { ordutegia: 'Horarios (ORDUTEGIA)', emaitzak: 'Resultados (EMAITZAK)',\n                 matchday: 'Match day A', 'matchday-b': 'Match day B' };\nconst nombre = p => NOMBRE[p.tipo] || p.nombre;\nconst estado = p => p.lista ? 'lista ✅' : `no lista ⏳ (falta: ${(p.faltan || []).join('; ')})`;\nconst verPieza = p => ({ accion: 'foto', foto: p.post, texto: `${nombre(p)}: ${estado(p)}` });\nconst lista = Object.values(piezas);\n\nif (comando === '/estado') {\n  if (!lista.length) return salir(mensaje('Esta semana no hay ninguna publicación con datos.'));\n  return salir(mensaje('📋 Publicaciones de esta semana:\\n' + lista.map(p => `• ${nombre(p)}: ${estado(p)}`).join('\\n')));\n}\nconst VER = { '/horarios': ['ordutegia'], '/ordutegia': ['ordutegia'], '/resultados': ['emaitzak'], '/emaitzak': ['emaitzak'],\n              '/matchday': ['matchday', 'matchday-b'] };\nif (VER[comando]) {\n  const elegidas = VER[comando].map(pieza).filter(Boolean);\n  return elegidas.length ? salir(...elegidas.map(verPieza)) : salir(mensaje('Esta semana no hay esa publicación.'));\n}\nif (comando === '/publicar') {\n  const p = cual && pieza(cual);\n  if (!p) return salir(mensaje('¿Cuál? Escribe una de estas:\\n/publicar horarios\\n/publicar resultados\\n/publicar match day A\\n/publicar match day B' +\n    (cual ? '\\n\\n(Esa publicación no tiene datos esta semana.)' : '')));\n  return salir({ accion: 'preguntar', pieza: p });\n}\nif (comando === '/probar' && cual === undefined && resto.join(' ').toLowerCase() === 'noticia') {\n  return salir({ accion: 'nueva_publicacion', publicacion: { id: 'prueba' + Date.now().toString(36), prueba: true,\n    caption: '¡Homenaje a nuestros veteranos este sábado!\\n\\nA las 12:00 en Otxartaga Berri, antes del partido del Senior A. Os esperamos a todos 💙🤍\\n\\n#aupaortuella',\n    media_type: 'IMAGE', media_url: 'https://lehendakari02.github.io/web-cd-ortuella/img/campo.jpg',\n    permalink: 'https://www.instagram.com/cdortuella/', timestamp: new Date().toISOString() } });\n}\nif (comando === '/ayuda' || comando === '/start') {\n  return salir(mensaje('🤖 Comandos:\\n/estado → qué publicaciones están listas y qué falta\\n/horarios, /resultados, /matchday → ver la imagen\\n/publicar horarios · /publicar resultados · /publicar match day A · /publicar match day B → publicar aunque no esté lista\\n/probar noticia → probar cómo llega una noticia de Instagram\\n\\nPara poner el texto de una publicación, responde citando la foto que manda el bot.'));\n}\nreturn [];"
+        "jsCode": "// Decide qué hacer con cada mensaje o botón del grupo. Sin IA y sin memoria: lo que hace falta\n// saber va escrito en los propios mensajes del bot («🆔 pieza» y el texto entre las rayas).\nconst upd = $('Telegram (grupo)').first().json;\nconst piezas = $input.first().json.piezas || {};\nconst salir = (...cosas) => cosas.map(json => ({ json }));\nconst mensaje = texto => ({ accion: 'mensaje', texto });\nconst RAYA = '────────────';\nconst pieza = tipo => piezas[tipo];\n\n// ---------- botones\n// ---------- noticias desde Instagram (botones «nsi/nno:id» y «web/nweb:id»)\nconst cbN = upd.callback_query;\nif (cbN && /^(nsi|nno|web|nweb):/.test(String(cbN.data))) {\n  const [accion, id] = String(cbN.data).split(':');\n  const original = String((cbN.message && cbN.message.text) || '');\n  const marcar = nota => ({ accion: 'quitar_botones', messageId: cbN.message && cbN.message.message_id,\n    texto: original.replace(/\\n?¿La ponemos como noticia en la web\\?$/, '').replace(/\\nSi quieres otro[^\\n]*$/, '') + `\\n${nota}` });\n  if (accion === 'nno') return salir(marcar('No es noticia'));\n  if (accion === 'nweb') return salir(marcar('❌ Cancelado'));\n  const titulo = accion === 'web' ? ((original.split(RAYA)[1] || '').trim()) : null;\n  // Para proponer el título (nsi) o ponerla en la web (web) hace falta leer la publicación de Instagram\n  return salir(marcar(accion === 'nsi' ? '✅ Sí, es noticia' : '⏳ Poniéndola en la web…'),\n               { accion: 'leer_publicacion', id, siguiente: accion === 'nsi' ? 'titulo' : 'web', titulo });\n}\n\n// Cada botón lleva «acción:pieza:semana». Antes de llegar aquí, el nodo «Cada botón una sola vez» ya ha\n// descartado los repetidos: un mismo «Publicar» (o «Subir historia») de una pieza solo pasa una vez por semana.\nconst cb = upd.callback_query;\nif (cb) {\n  const [accion, tipo, semana] = String(cb.data || '').split(':');\n  const p = pieza(tipo);\n  if (!p || p.semana !== semana) return salir(mensaje('Esa publicación ya no está disponible (es de otra semana).'));\n  const original = String((cb.message && cb.message.text) || '');\n  // Deja el mensaje sin botones y con una marca de lo que se ha hecho\n  const quitarBotones = nota => {\n    const resto = original.replace(/\\n?¿(Publico con este texto|Subo también la historia[^?]*)\\?$/, '');\n    return { accion: 'quitar_botones', messageId: cb.message && cb.message.message_id,\n             texto: resto ? `${resto}\\n${nota}` : `Historia de ${p.nombre}: ${nota}` };\n  };\n  if (accion === 'pub') {\n    const texto = (original.split(RAYA)[1] || '').trim();\n    // 🧪 ENSAYO: aquí irá la publicación real en Instagram (post p.post con este texto)\n    return salir(\n      quitarBotones('✅ Publicado (ensayo)'),\n      mensaje(`✅ (ensayo) Se habría publicado el post de ${p.nombre} con este texto:\\n\\n${texto}`),\n      { accion: 'foto', foto: p.historia, texto: `Historia de ${p.nombre}` },\n      { accion: 'mensaje_botones', texto: `¿Subo también la historia de ${p.nombre}?`,\n        boton1: '✅ Subir historia', dato1: `his:${tipo}:${semana}`, boton2: 'No', dato2: `nohis:${tipo}:${semana}` });\n  }\n  if (accion === 'can') return salir(quitarBotones('❌ Cancelado'),\n    mensaje(`❌ Cancelado. Para poner otro texto, responde otra vez a la foto de ${p.nombre}.`));\n  // 🧪 ENSAYO: aquí irá la historia real en Instagram (p.historia)\n  if (accion === 'his') return salir(quitarBotones('✅ subida (ensayo)'),\n    mensaje(`✅ (ensayo) Se habría subido la historia de ${p.nombre}.`));\n  if (accion === 'nohis') return salir(quitarBotones('no se sube'));\n  return [];\n}\n\n// ---------- mensajes\nconst msg = upd.message;\nif (!msg || !msg.text) return [];\nconst texto = msg.text.trim();\n\n// Respuesta a un mensaje del bot con «🆔 ig:» → es otro título para la noticia\nconst citada = msg.reply_to_message;\nconst ig = citada && citada.from && citada.from.is_bot && String(citada.text || '').match(/🆔 ig:(\\S+)/);\nif (ig) return salir({ accion: 'proponer_titulo', id: ig[1], titulo: texto });\n\n// Respuesta citando una foto del bot → es el texto de la publicación. La pieza va en la línea «🆔».\nif (citada && citada.from && citada.from.is_bot && citada.photo) {\n  const m = String(citada.caption || '').match(/🆔\\s*([a-z-]+)/);\n  const p = m && pieza(m[1]);\n  if (!p) return salir(mensaje('🤔 No sé de qué publicación es esa foto (puede ser de otra semana). Escribe /publicar y la publicación (por ejemplo /publicar match day A) y responde a la foto nueva.'));\n  if (texto.length > 2200) return salir(mensaje(`El texto tiene ${texto.length} caracteres y Instagram admite 2200. Acórtalo y vuelve a responder a la foto.`));\n  return salir({ accion: 'mensaje_botones',\n    texto: `📝 ${p.nombre}\\n${RAYA}\\n${texto}\\n${RAYA}\\n¿Publico con este texto?`,\n    boton1: '✅ Publicar', dato1: `pub:${p.tipo}:${p.semana}`, boton2: '❌ Cancelar', dato2: `can:${p.tipo}:${p.semana}` });\n}\n\n// Comandos (en castellano; también valen los nombres en euskera de las imágenes)\nif (!texto.startsWith('/')) return [];\nconst [orden, ...resto] = texto.split(/\\s+/);\nconst comando = orden.split('@')[0].toLowerCase();\n// «match day A», «matchday-b», «resultados»… → la pieza de ultimo.json\nconst QUE = { horarios: 'ordutegia', ordutegia: 'ordutegia', resultados: 'emaitzak', emaitzak: 'emaitzak',\n              matchdaya: 'matchday', matchday: 'matchday', a: 'matchday', matchdayb: 'matchday-b', b: 'matchday-b' };\nconst cual = QUE[resto.join('').toLowerCase().replace(/[^a-z]/g, '')];\nconst NOMBRE = { ordutegia: 'Horarios (ORDUTEGIA)', emaitzak: 'Resultados (EMAITZAK)',\n                 matchday: 'Match day A', 'matchday-b': 'Match day B' };\nconst nombre = p => NOMBRE[p.tipo] || p.nombre;\nconst estado = p => p.lista ? 'lista ✅' : `no lista ⏳ (falta: ${(p.faltan || []).join('; ')})`;\nconst verPieza = p => ({ accion: 'foto', foto: p.post, texto: `${nombre(p)}: ${estado(p)}` });\nconst lista = Object.values(piezas);\n\nif (comando === '/estado') {\n  if (!lista.length) return salir(mensaje('Esta semana no hay ninguna publicación con datos.'));\n  return salir(mensaje('📋 Publicaciones de esta semana:\\n' + lista.map(p => `• ${nombre(p)}: ${estado(p)}`).join('\\n')));\n}\nconst VER = { '/horarios': ['ordutegia'], '/ordutegia': ['ordutegia'], '/resultados': ['emaitzak'], '/emaitzak': ['emaitzak'],\n              '/matchday': ['matchday', 'matchday-b'] };\nif (VER[comando]) {\n  const elegidas = VER[comando].map(pieza).filter(Boolean);\n  return elegidas.length ? salir(...elegidas.map(verPieza)) : salir(mensaje('Esta semana no hay esa publicación.'));\n}\nif (comando === '/publicar') {\n  const p = cual && pieza(cual);\n  if (!p) return salir(mensaje('¿Cuál? Escribe una de estas:\\n/publicar horarios\\n/publicar resultados\\n/publicar match day A\\n/publicar match day B' +\n    (cual ? '\\n\\n(Esa publicación no tiene datos esta semana.)' : '')));\n  return salir({ accion: 'preguntar', pieza: p });\n}\nif (comando === '/revisar') return salir({ accion: 'revisar_instagram' });\nif (comando === '/probar' && cual === undefined && resto.join(' ').toLowerCase() === 'noticia') {\n  return salir({ accion: 'nueva_publicacion', publicacion: { id: 'prueba' + Date.now().toString(36), prueba: true,\n    caption: '¡Homenaje a nuestros veteranos este sábado!\\n\\nA las 12:00 en Otxartaga Berri, antes del partido del Senior A. Os esperamos a todos 💙🤍\\n\\n#aupaortuella',\n    media_type: 'IMAGE', media_url: 'https://lehendakari02.github.io/web-cd-ortuella/img/campo.jpg',\n    permalink: 'https://www.instagram.com/cdortuella/', timestamp: new Date().toISOString() } });\n}\nif (comando === '/ayuda' || comando === '/start') {\n  return salir(mensaje('🤖 Comandos:\\n/estado → qué publicaciones están listas y qué falta\\n/horarios, /resultados, /matchday → ver la imagen\\n/publicar horarios · /publicar resultados · /publicar match day A · /publicar match day B → publicar aunque no esté lista\\n/revisar instagram → buscar ya las publicaciones nuevas de Instagram (para ponerlas como noticia)\\n/probar noticia → probar cómo llega una noticia de Instagram\\n\\nPara poner el texto de una publicación, responde citando la foto que manda el bot.'));\n}\nreturn [];"
       },
       "id": "0f57af9e-5662-596d-8584-a5e15818ebb1",
       "name": "Interpretar",
@@ -594,7 +594,7 @@
     },
     {
       "parameters": {
-        "content": "## 3 · Noticias de la web desde Instagram\nDos veces al día lee las publicaciones nuevas de Instagram (últimos 3 días) que no haya publicado el bot y pregunta en el grupo si son noticia. Si es que sí, propone un título (se cambia respondiendo al mensaje) y, con «Poner en la web», el robot de GitHub guarda la foto y publica la noticia.\n\n🔌 Para activarlo: credencial de Instagram en «Leer publicaciones» y «Leer una publicación», y `INSTAGRAM_CONECTADO = true` en «¿Instagram conectado?».\n🧪 Mientras tanto: /probar noticia en el grupo.",
+        "content": "## 3 · Noticias de la web desde Instagram\nCada hora (y al momento con /revisar instagram) lee las publicaciones nuevas de Instagram (últimos 3 días) que no haya publicado el bot y pregunta en el grupo si son noticia. Si es que sí, propone un título (se cambia respondiendo al mensaje) y, con «Poner en la web», el robot de GitHub guarda la foto y publica la noticia.\n\n🔌 Para activarlo: credencial de Instagram en «Leer publicaciones» y «Leer una publicación», y `INSTAGRAM_CONECTADO = true` en «¿Instagram conectado?».\n🧪 Mientras tanto: /probar noticia en el grupo.",
         "width": 600,
         "height": 300
       },
@@ -609,7 +609,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// 🔌 Cambiar a true cuando la cuenta de Instagram esté conectada (credencial en los nodos de Instagram)\nconst INSTAGRAM_CONECTADO = false;\nreturn INSTAGRAM_CONECTADO ? $input.all() : [];"
+        "jsCode": "// 🔌 Cambiar a true cuando la cuenta de Instagram esté conectada (credencial en los nodos de Instagram)\nconst INSTAGRAM_CONECTADO = false;\n// Llega cada hora (programado) o con /revisar instagram (a mano): a mano, siempre se contesta algo\nconst manual = $input.all().some(i => i.json.accion === 'revisar_instagram');\nif (!INSTAGRAM_CONECTADO) {\n  return manual ? [{ json: { accion: 'mensaje', texto: '🔌 Instagram todavía no está conectado con el bot: en cuanto lo esté, /revisar instagram buscará las publicaciones nuevas.' } }] : [];\n}\nreturn [{ json: { manual } }];"
       },
       "id": "ebc483c5-a28b-53ee-8225-c7bcb7f61a10",
       "name": "¿Instagram conectado?",
@@ -647,13 +647,14 @@
       "position": [
         160,
         -700
-      ]
+      ],
+      "alwaysOutputData": true
     },
     {
       "parameters": {
         "operation": "removeItemsSeenInPreviousExecutions",
         "logic": "removeItemsWithAlreadySeenKeyValues",
-        "dedupeValue": "={{ $json.id }}",
+        "dedupeValue": "={{ $json.id || 'ninguna' }}",
         "options": {
           "scope": "workflow"
         }
@@ -665,11 +666,25 @@
       "position": [
         400,
         -700
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Las publicaciones nuevas siguen; si no hay ninguna y se ha pedido a mano, se dice en el grupo\nconst nuevas = $input.all().filter(i => i.json.publicacion);\nconst manual = $('¿Instagram conectado?').first().json.manual;\nif (nuevas.length) return nuevas;\nreturn manual ? [{ json: { accion: 'mensaje', texto: '🔎 No hay publicaciones nuevas en Instagram (de los últimos 3 días) que no se hayan ofrecido ya.' } }] : [];"
+      },
+      "id": "10c1b17c-c7af-5906-8c21-17b029152bb7",
+      "name": "¿Hay nuevas?",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        520,
+        -820
       ]
     },
     {
       "parameters": {
-        "jsCode": "// Foto + mensaje con «¿La ponemos como noticia en la web?». La línea «🆔 ig:» dice qué publicación es.\nconst foto = p => p.media_type === 'VIDEO' ? p.thumbnail_url\n  : p.media_type === 'CAROUSEL_ALBUM' ? (((p.children || {}).data || []).map(h => h.media_type === 'VIDEO' ? h.thumbnail_url : h.media_url).find(Boolean) || p.media_url)\n  : p.media_url;\n// (la pregunta sale como respuesta a su foto: si llegan varias a la vez, se sabe cuál va con cuál)\nreturn $input.all().map(item => {\n  const p = item.json.publicacion;\n  const dia = new Date(p.timestamp).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', timeZone: 'Europe/Madrid' });\n  const pie = String(p.caption || '(sin texto)');\n  const corto = pie.length > 700 ? pie.slice(0, 700) + '…' : pie;\n  return { json: { foto: foto(p), textoFoto: `📰 Nueva publicación en Instagram (${dia})`,\n    texto: `📰 ${corto}\\n\\n🆔 ig:${p.id}\\n¿La ponemos como noticia en la web?`,\n    boton1: '✅ Sí, es noticia', dato1: `nsi:${p.id}`, boton2: 'No', dato2: `nno:${p.id}` } };\n});"
+        "jsCode": "// Foto + mensaje con «¿La ponemos como noticia en la web?». La línea «🆔 ig:» dice qué publicación es.\nconst foto = p => p.media_type === 'VIDEO' ? p.thumbnail_url\n  : p.media_type === 'CAROUSEL_ALBUM' ? (((p.children || {}).data || []).map(h => h.media_type === 'VIDEO' ? h.thumbnail_url : h.media_url).find(Boolean) || p.media_url)\n  : p.media_url;\n// (la pregunta sale como respuesta a su foto: si llegan varias a la vez, se sabe cuál va con cuál)\nreturn $input.all().filter(item => item.json.publicacion).map(item => {\n  const p = item.json.publicacion;\n  const dia = new Date(p.timestamp).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', timeZone: 'Europe/Madrid' });\n  const pie = String(p.caption || '(sin texto)');\n  const corto = pie.length > 700 ? pie.slice(0, 700) + '…' : pie;\n  return { json: { foto: foto(p), textoFoto: `📰 Nueva publicación en Instagram (${dia})`,\n    texto: `📰 ${corto}\\n\\n🆔 ig:${p.id}\\n¿La ponemos como noticia en la web?`,\n    boton1: '✅ Sí, es noticia', dato1: `nsi:${p.id}`, boton2: 'No', dato2: `nno:${p.id}` } };\n});"
       },
       "id": "08b21c6b-ad9c-522c-9c65-9a6a404d01bd",
       "name": "Preguntar si es noticia",
@@ -678,6 +693,60 @@
       "position": [
         640,
         -700
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "7 * * * *"
+            }
+          ]
+        }
+      },
+      "id": "7a19b028-f594-58ce-bdca-ad4d405db344",
+      "name": "Revisar Instagram cada hora",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -560,
+        -700
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "leer",
+              "leftValue": "={{ $json.accion !== 'mensaje' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0adb9f07-5c63-5573-9f7d-c7d5a5929354",
+      "name": "¿Leer Instagram?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -200,
+        -820
       ]
     },
     {
@@ -770,6 +839,39 @@
       "position": [
         640,
         1240
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "810e8959-9cb0-5e46-90c5-998a7751a9b0",
+              "leftValue": "={{ $json.accion }}",
+              "rightValue": "revisar_instagram",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "3929cb00-a0b4-503e-a292-0570dcd0dea0",
+      "name": "¿Revisar Instagram?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        1720
       ]
     },
     {
@@ -1042,11 +1144,6 @@
             "node": "Leer cambios.json",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "¿Instagram conectado?",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -1222,6 +1319,11 @@
             "index": 0
           },
           {
+            "node": "¿Revisar Instagram?",
+            "type": "main",
+            "index": 0
+          },
+          {
             "node": "¿Publicación de prueba?",
             "type": "main",
             "index": 0
@@ -1294,7 +1396,34 @@
         ]
       ]
     },
+    "Revisar Instagram cada hora": {
+      "main": [
+        [
+          {
+            "node": "¿Instagram conectado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "¿Instagram conectado?": {
+      "main": [
+        [
+          {
+            "node": "¿Leer Instagram?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "¿Mensaje?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Leer Instagram?": {
       "main": [
         [
           {
@@ -1331,7 +1460,23 @@
       "main": [
         [
           {
+            "node": "¿Hay nuevas?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Hay nuevas?": {
+      "main": [
+        [
+          {
             "node": "Preguntar si es noticia",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "¿Mensaje?",
             "type": "main",
             "index": 0
           }
@@ -1354,6 +1499,17 @@
         [
           {
             "node": "¿Es noticia?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Revisar Instagram?": {
+      "main": [
+        [
+          {
+            "node": "¿Instagram conectado?",
             "type": "main",
             "index": 0
           }
