@@ -1,7 +1,7 @@
 /* Archivo generado automáticamente por actualizar_federacion.py. No editar a mano. */
 window.FEDERACION = {
  "temporada": "2026/27",
- "actualizado": "2026-10-21T14:23+00:00",
+ "actualizado": "2026-10-22T21:38+00:00",
  "equipos": [
   {
    "id": "primer",

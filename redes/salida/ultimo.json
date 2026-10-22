@@ -1,5 +1,5 @@
 {
- "datos_actualizados": "2026-10-21T14:23+00:00",
+ "datos_actualizados": "2026-10-22T21:38+00:00",
  "piezas": {
   "ordutegia": {
    "tipo": "ordutegia",
@@ -7,8 +7,8 @@
    "semana": "2026-10-19",
    "lista": true,
    "faltan": [],
-   "post": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/ordutegia-post.jpg?v=140c768e3b",
-   "historia": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/ordutegia-historia.jpg?v=cebde89b57"
+   "post": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/ordutegia-post.jpg?v=d2c0a7c8f5",
+   "historia": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/ordutegia-historia.jpg?v=577383e495"
   },
   "emaitzak": {
    "tipo": "emaitzak",
@@ -16,8 +16,8 @@
    "semana": "2026-10-12",
    "lista": true,
    "faltan": [],
-   "post": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/emaitzak-post.jpg?v=47e30fb703",
-   "historia": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/emaitzak-historia.jpg?v=ce7d5a4f34"
+   "post": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/emaitzak-post.jpg?v=57a201a57f",
+   "historia": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/emaitzak-historia.jpg?v=47af8632b9"
   },
   "matchday": {
    "tipo": "matchday",
@@ -25,8 +25,8 @@
    "semana": "2026-10-19",
    "lista": true,
    "faltan": [],
-   "post": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/matchday-post.jpg?v=c11e7dbc5a",
-   "historia": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/matchday-historia.jpg?v=f153af2752"
+   "post": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/matchday-post.jpg?v=0fdac81279",
+   "historia": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/matchday-historia.jpg?v=6f7d190de4"
   },
   "matchday-b": {
    "tipo": "matchday-b",
@@ -34,8 +34,8 @@
    "semana": "2026-10-19",
    "lista": true,
    "faltan": [],
-   "post": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/matchday-b-post.jpg?v=c24b5e8829",
-   "historia": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/matchday-b-historia.jpg?v=9c7841b961"
+   "post": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/matchday-b-post.jpg?v=d62e40b507",
+   "historia": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/matchday-b-historia.jpg?v=24db6f4a98"
   }
  }
 }
