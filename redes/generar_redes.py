@@ -357,6 +357,10 @@ def main():
             fondo_r = fondo_de_la_semana(config["fondos"]["tablas"], ult_lunes)
             guardar("emaitzak", "EMAITZAK", lambda f: html_emaitzak(resultados, config, f, fondo_r), ult_lunes,
                     faltan_resultados)
+            # Si un partido se aplaza, sus resultados no llegarían nunca: desde el martes se ofrece igualmente
+            # sin él, y "faltan" dice cuál falta para que quien publica decida (n8n lo avisa por Telegram)
+            if faltan_resultados and hoy >= ult_domingo + timedelta(days=2):
+                piezas["emaitzak"]["lista"] = True
 
         # Un MATCH DAY por cada equipo de config["matchday"] que juegue ese fin de semana
         n = prox_lunes.isocalendar()[1]

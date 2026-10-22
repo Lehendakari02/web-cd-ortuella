@@ -20,7 +20,8 @@ Generar no es publicar: las imágenes se rehacen cada vez que se actualiza la we
 
 - ORDUTEGIA: cuando todos los equipos que juegan tienen fecha y hora. Un equipo sin partido (p. ej. el alevín
   sin liga) sale con "—" y no bloquea; un partido sin hora todavía, sí.
-- EMAITZAK: cuando todos los partidos del fin de semana tienen resultado.
+- EMAITZAK: cuando todos los partidos del fin de semana tienen resultado. Si el martes sigue faltando alguno
+  (un partido aplazado), se ofrece igualmente sin él, con `"faltan"` diciendo cuál, para decidir si se publica.
 - MATCH DAY (cada equipo por separado): cuando se sabe el día, la hora y el campo.
 
 Si falta algo, `"faltan"` dice qué. Si una pieza no tiene ningún dato (no hay partidos esa semana), no aparece.
@@ -84,7 +85,8 @@ Un solo flujo para todas las piezas:
 
 **Post (lleva pie de foto):**
 
-5. **Telegram → Send Photo** con la imagen `post` y el mensaje "MATCH DAY listo. ¿Qué texto pongo en la publicación?".
+5. **Telegram → Send Photo** con la imagen `post` y el mensaje "{{nombre}} listo. ¿Qué texto pongo en la publicación?".
+   Si `faltan` no está vacío (p. ej. un partido aplazado), añadir al mensaje: "Ojo, falta: {{faltan}}".
 6. **Telegram → Send and Wait for Response**, respuesta de texto libre: n8n espera a que contestes con el texto.
 7. **Telegram → Send Photo** de nuevo con la imagen y, como pie, el texto recibido: "¿Publico esto?".
 8. **Telegram → Send and Wait for Response**, tipo aprobación (botones *Publicar* / *Cancelar*).
