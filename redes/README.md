@@ -26,6 +26,26 @@ Generar no es publicar: las imágenes se rehacen cada vez que se actualiza la we
 
 Si falta algo, `"faltan"` dice qué. Si una pieza no tiene ningún dato (no hay partidos esa semana), no aparece.
 
+## Avisos de cambios de partido
+
+`detectar_cambios.py` compara, en cada actualización, los datos de antes y de después y apunta en
+`redes/salida/cambios.json` los cambios en los **próximos partidos** de nuestros equipos, para que n8n
+los mande al grupo de Telegram de la directiva:
+
+- 📅 un partido recibe su hora (y su día real);
+- ⚠️ cambia el día, la hora o el campo de un partido (con el antes y el después);
+- 🆕 aparece un partido nuevo en el calendario.
+- ❌ un partido por jugar desaparece del calendario (anulado o retirado).
+
+Los partidos ya jugados no avisan, y cuando un equipo carga su calendario por primera vez (p. ej. el
+alevín al empezar su liga) tampoco: sería todo el calendario de golpe. Se guardan los 50 últimos
+avisos, cada uno con un `id` para que n8n no mande dos veces el mismo:
+
+```json
+{ "avisos": [ { "id": "1a2b3c4d5e6f", "detectado": "2026-10-23T08:04+02:00",
+                "texto": "📅 JUVENIL · J4: Ortuella – Zuazo B\nYa tiene hora: LARUNBATA 24/10 16:15 · OTXARTAGA BERRI" } ] }
+```
+
 ## Qué se puede cambiar a mano (`config.json`)
 
 - **categorias**: qué filas salen y cómo se llaman (p. ej. "SENIOR" en horarios y "SENIOR A" en resultados).
@@ -61,6 +81,9 @@ python3 redes/generar_redes.py --fecha 2026-10-22
 ```
 
 ## Publicar con n8n (con revisión por Telegram)
+
+**Flujo listo para importar:** [`n8n/flujo-ensayo.json`](n8n/flujo-ensayo.json), con instrucciones en
+[`n8n/README.md`](n8n/README.md). Lo de abajo explica cómo funciona por dentro.
 
 El pie de foto de cada publicación lo escribe una persona por Telegram, porque depende del momento
 (empieza la liga, partido difícil, jornada importante…). No hay IA ni textos automáticos: coste 0.
