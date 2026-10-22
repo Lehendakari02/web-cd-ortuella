@@ -1,0 +1,44 @@
+{
+  "_ayuda": "Configuración del generador de publicaciones (generar_redes.py). Se puede editar a mano.",
+
+  "categorias": [
+    { "id": "primer",   "ordutegia": "SENIOR",   "emaitzak": "SENIOR A" },
+    { "id": "b",        "ordutegia": "SENIOR B", "emaitzak": "SENIOR B" },
+    { "id": "juvenil",  "ordutegia": "JUVENIL",  "emaitzak": "JUVENIL" },
+    { "id": "cadete",   "ordutegia": "CADETE",   "emaitzak": "CADETE" },
+    { "id": "infantil", "ordutegia": "INFANTIL", "emaitzak": "INFANTIL" },
+    { "id": "alevin",   "ordutegia": "ALEVIN",   "emaitzak": "ALEVÍN" }
+  ],
+
+  "_nombres_cortos": "Cómo se escribe cada rival en las imágenes, solo cuando el club ya lo escribe así. Si un rival no está aquí, sale su nombre completo de la Federación en mayúsculas (más pequeño si es largo).",
+  "nombres_cortos": {
+    "Union Sport B": "UNIÓN B",
+    "Loyola Indauchu B": "LOIOLA B",
+    "Begoñako Arteagabe": "BEGOÑAKO",
+    "Sporting De Lutxana B": "SPORTING LUTXANA B"
+  },
+
+  "_campos_cortos": "Cómo se escribe cada campo en MATCH DAY. Si no está aquí, se usa lo que va antes de la coma, en mayúsculas.",
+  "campos_cortos": {
+    "Otxartaga-Berri, Ortuella": "OTXARTAGA BERRI"
+  },
+
+  "_fondos": "Fondos que van rotando cada semana (rutas desde la raíz de la web). Solo se usan los de estas listas. Tablas: \"canva\" es el fondo de la plantilla de Canva; una foto sale ampliada, muy difuminada y con velo azul marino. MATCH DAY: la foto tal cual con velo; \"velo\": false si ya lo trae; \"diseno\": 0 (MATCH DAY en vertical) o 1 (en horizontal) para fijar el diseño.",
+  "fondos": {
+    "tablas": ["canva", "img/marcador.jpg", "img/tribuna.jpg", "img/grada.jpg"],
+    "matchday": [
+      { "foto": "redes/fondos/tribuna-noche.jpg", "velo": false, "diseno": 0 },
+      "img/tribuna.jpg",
+      { "foto": "redes/fondos/aficion.jpg", "velo": false, "diseno": 1 },
+      "img/grada.jpg",
+      "img/campo.jpg",
+      "img/entrada.jpg"
+    ]
+  },
+
+  "_matchday": "Equipos que tienen MATCH DAY y cómo se escribe su nombre en la imagen.",
+  "matchday": [
+    { "id": "primer", "club": "C.D. ORTUELLA" },
+    { "id": "b", "club": "C.D. ORTUELLA B" }
+  ]
+}

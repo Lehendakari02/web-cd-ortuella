@@ -1,0 +1,76 @@
+/* Plantillas de las publicaciones de Instagram (las dibuja generar_redes.py).
+   Medidas pensadas para el post (1080×1350); la historia (1080×1920) usa lo mismo con más aire
+   arriba y abajo, donde Instagram pone su barra y la caja de respuesta. */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: var(--ancho); height: var(--alto); overflow: hidden; }
+body { position: relative; font-family: Montserrat, sans-serif; background: #101a33; color: #fff; }
+
+.fondo { position: absolute; inset: 0; background-size: cover; background-position: center; }
+/* Foto de fondo de las tablas: ampliada, muy difuminada y con velo azul marino (la estética del club) */
+.fondo.difuminado { background-size: 140%; filter: blur(6px) saturate(.45); transform: scale(1.04); }
+.fondo.difuminado::after { content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(8, 24, 54, .84), rgba(12, 30, 64, .78) 50%, rgba(8, 22, 50, .86)); }
+
+main { position: relative; height: 100%; display: flex; flex-direction: column; align-items: center; }
+.historia main { padding-top: 120px; padding-bottom: 140px; }
+
+/* ------------------------------------------------ tablas (fondo, título y patrocinadores: lienzo de Canva) */
+
+.lienzo { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* ------------------------------------------------ ORDUTEGIA (anchos de la plantilla de Canva) */
+
+.ordutegia .fila { position: absolute; left: 0; height: 66px; width: 100%; }
+.ordutegia .cat, .ordutegia .dato { position: absolute; top: 0; height: 66px; display: flex; align-items: center;
+  justify-content: center; background: #f0efee; color: #011a36; font-weight: 800; font-size: 35px; letter-spacing: 1.5px; }
+.ordutegia .cat { left: 108px; width: 257px; }
+.ordutegia .dato { left: 383px; width: 589px; padding: 0 84px 0 24px; }
+.ordutegia .dato .texto { display: block; width: 100%; height: 62px; line-height: 62px; overflow: hidden; white-space: nowrap; text-align: center; }
+.ordutegia .icono { position: absolute; right: 12px; width: 50px; height: 50px; }
+
+/* ------------------------------------------------ EMAITZAK (la cinta es la de la plantilla de Canva) */
+
+.partido { position: absolute; left: 0; width: 100%; height: 80px; }
+.partido { transform-origin: 540px 40px; }   /* el tamaño (scale) lo pone el generador según cuántos resultados haya */
+.partido img { position: absolute; left: 104px; top: -20px; }
+.equipo { position: absolute; top: 15px; height: 46px; line-height: 46px; width: 236px; overflow: hidden; white-space: nowrap; text-align: center;
+  font-size: 33px; font-weight: 800; letter-spacing: .5px; color: #fff; }
+.equipo.local { left: 152px; }
+.equipo.visitante { left: 694px; }
+.gol { position: absolute; top: 12px; width: 80px; text-align: center; font-size: 62px; font-weight: 800; line-height: 1; color: #1e1c3d; }
+.gol.dos { font-size: 46px; top: 20px; letter-spacing: -2px; }
+.gol.l { left: 430px; }
+.gol.v { left: 572px; }
+
+/* ------------------------------------------------ MATCH DAY */
+
+.matchday { color: #2b3a8f; }
+.matchday .velo { position: absolute; inset: 0; }
+.matchday.v0 .velo { background: linear-gradient(180deg, rgba(225, 230, 240, .55), rgba(225, 230, 240, .15) 45%, rgba(0, 0, 0, 0) 70%); }
+.matchday.v1 .velo { background: linear-gradient(180deg, rgba(185, 215, 240, .9), rgba(200, 222, 242, .7) 35%, rgba(200, 222, 242, .1) 60%); }
+.matchday .escudos { display: flex; gap: 60px; align-items: center; }
+.matchday .escudos img { height: 230px; width: 200px; object-fit: contain; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .3)); }
+
+/* variante 0: MATCH DAY en vertical a la izquierda */
+.v0 main { flex-direction: row; align-items: stretch; }
+.v0 .vertical { position: absolute; left: 110px; bottom: 80px; transform-origin: left bottom; transform: rotate(-90deg) translateY(100%);
+  display: flex; flex-direction: column; white-space: nowrap; }
+.v0 .vertical .grande { font-size: 172px; font-weight: 700; letter-spacing: 6px; line-height: .95; }
+.v0 .vertical .club { font-size: 72px; font-weight: 700; letter-spacing: 3px; padding-left: 4px; }
+.historia.v0 .vertical { bottom: 260px; }
+.v0 .lado { position: absolute; right: 70px; top: 140px; width: 560px; text-align: center; color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, .55), 0 0 22px rgba(0, 0, 0, .5); }   /* que se lea también sobre cielo claro */
+.historia.v0 .lado { top: 300px; }
+.v0 .lado .escudos { justify-content: center; margin-bottom: 60px; }
+.v0 .donde { overflow: hidden; white-space: nowrap; }
+.v0 .cuando, .v0 .donde { font-size: 54px; font-weight: 500; letter-spacing: 3px; line-height: 1.25; }
+
+/* variante 1: MATCH DAY en horizontal arriba */
+.v1 .cabecera { width: 100%; padding: 70px 80px 0; position: relative; }
+.historia.v1 .cabecera { padding-top: 250px; }
+.v1 .cuando { text-align: center; width: 340px; margin-left: auto; font-size: 50px; font-weight: 500; letter-spacing: 3px; line-height: 1.2; }
+.v1 .club { margin-top: 30px; font-size: 56px; font-weight: 800; }
+.v1 .grande { white-space: nowrap; font-size: 140px; font-weight: 800; line-height: 1; letter-spacing: 2px; margin-left: -6px; }
+.v1 .donde { overflow: hidden; white-space: nowrap; text-align: right; font-size: 50px; font-weight: 800; margin-top: 10px; }
+.v1 .escudos { margin-top: -10px; }

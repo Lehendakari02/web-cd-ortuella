@@ -11,6 +11,7 @@ Web estática (solo HTML, CSS y JavaScript), sin servidor ni base de datos.
 | `comun.js` | Menú, pie de página y piezas comunes | Rara vez |
 | `*.html` | Una página por sección | No: las genera `generar_paginas.py` |
 | `img/` | Fotos y logos | Al añadir fotos |
+| `redes/` | Publicaciones de Instagram (horarios, resultados, match day) que se generan solas; ver `redes/README.md` | Solo `redes/config.json` |
 | `manifest.webmanifest`, `img/icono-*.png` | Nombre e icono al guardar la web en la pantalla de inicio del móvil | No |
 
 `404.html` es la página que sale con un enlace roto. Usa la dirección `SITIO` de `generar_paginas.py`, así que al cambiar de dominio basta con cambiarla allí y regenerar.
