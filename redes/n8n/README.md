@@ -7,19 +7,22 @@
    Se contesta **respondiendo a la foto** (mantener pulsado → Responder). El bot enseña la foto con el texto
    y los botones *Publicar* / *Cancelar*; después pregunta si se sube también la historia.
 2. **Avisos de cambios de partido**: manda al grupo los avisos nuevos de `cambios.json`.
-3. **Comandos** en el grupo: `/estado`, `/ordutegia`, `/emaitzak`, `/matchday`, `/publicar <pieza>`, `/ayuda`.
+3. **Comandos** en el grupo: `/estado`, `/horarios`, `/resultados`, `/matchday`, `/publicar <pieza>`,
+   `/revisar instagram`, `/probar noticia`, `/ayuda`.
    El resto de mensajes del grupo se ignora (el bot puede tener la privacidad de grupo activada).
 
 🧪 **Modo ensayo**: al pulsar *Publicar* no publica en Instagram, contesta «(ensayo) Se habría publicado…».
 Cuando haya token de Instagram, se cambian esos dos puntos (marcados con `🧪 ENSAYO` en el nodo
 *Interpretar*) por la publicación real.
 
-4. **Noticias de la web desde Instagram**: dos veces al día lee las publicaciones nuevas de la cuenta
+4. **Noticias de la web desde Instagram**: **cada hora** (a y 7) lee las publicaciones nuevas de la cuenta
    (de los últimos 3 días) que no haya publicado el bot y las manda al grupo: la foto y, como respuesta a
    ella, «¿La ponemos como noticia en la web?» con *Sí* / *No*. Con *Sí* propone un título (la primera
    frase del pie; se cambia respondiendo a ese mensaje) y con *Poner en la web* lanza el robot de GitHub
    **Añadir noticia**, que guarda una copia de la foto y publica la noticia (`redes/anadir_noticia.py`).
-   Mientras Instagram no esté conectado, se prueba con `/probar noticia` (llega hasta GitHub en modo prueba,
+   Para no esperar a la siguiente hora, `/revisar instagram` lo hace en el momento (y, si no hay nada
+   nuevo, lo dice; la revisión programada no avisa cuando no hay nada).
+   Mientras Instagram no esté conectado, `/revisar instagram` contesta que falta conectarlo, y se prueba con `/probar noticia` (llega hasta GitHub en modo prueba,
    sin cambiar la web).
 
 ### Credenciales de la parte de noticias
@@ -49,7 +52,7 @@ Cuando haya token de Instagram, se cambian esos dos puntos (marcados con `🧪 E
 - En el grupo, escribe `/estado` o `/matchday`: el bot debe contestar.
 - Para probar el recorrido completo: `/publicar matchday` → responder citando la foto → *Publicar*.
 
-**No ejecutes a mano la parte programada** («Revisar 8:30 y 23:30»): los nodos *No repetir piezas* y
+**No ejecutes a mano la parte programada** («Revisar 8:30 y 23:30» y «Revisar Instagram cada hora»): los nodos *No repetir piezas* y
 *No repetir avisos* apuntan lo que se manda y luego ya no lo volverían a mandar. Para probar, usa los
 comandos en el grupo (`/publicar matchday`…).
 
