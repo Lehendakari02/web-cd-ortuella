@@ -26,7 +26,7 @@ main { position: relative; height: 100%; display: flex; flex-direction: column; 
   justify-content: center; background: #f0efee; color: #011a36; font-weight: 800; font-size: 35px; letter-spacing: 1.5px; }
 .ordutegia .cat { left: 108px; width: 257px; }
 .ordutegia .dato { left: 383px; width: 589px; padding: 0 84px 0 24px; }
-.ordutegia .dato .texto { display: block; max-width: 100%; overflow: hidden; white-space: nowrap; text-align: center; }
+.ordutegia .dato .texto { display: block; width: 100%; height: 62px; line-height: 62px; overflow: hidden; white-space: nowrap; text-align: center; }
 .ordutegia .icono { position: absolute; right: 12px; width: 50px; height: 50px; }
 
 /* ------------------------------------------------ EMAITZAK (la cinta es la de la plantilla de Canva) */
@@ -34,7 +34,7 @@ main { position: relative; height: 100%; display: flex; flex-direction: column; 
 .partido { position: absolute; left: 0; width: 100%; height: 80px; }
 .partido { transform-origin: 540px 40px; }   /* el tamaño (scale) lo pone el generador según cuántos resultados haya */
 .partido img { position: absolute; left: 104px; top: -20px; }
-.equipo { position: absolute; top: 18px; width: 236px; overflow: hidden; white-space: nowrap; text-align: center;
+.equipo { position: absolute; top: 15px; height: 46px; line-height: 46px; width: 236px; overflow: hidden; white-space: nowrap; text-align: center;
   font-size: 33px; font-weight: 800; letter-spacing: .5px; color: #fff; }
 .equipo.local { left: 152px; }
 .equipo.visitante { left: 694px; }
@@ -60,7 +60,7 @@ main { position: relative; height: 100%; display: flex; flex-direction: column; 
 .v0 .vertical .club { font-size: 72px; font-weight: 700; letter-spacing: 3px; padding-left: 4px; }
 .historia.v0 .vertical { bottom: 260px; }
 .v0 .lado { position: absolute; right: 70px; top: 140px; width: 560px; text-align: center; color: #fff;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, .45); }
+  text-shadow: 0 2px 4px rgba(0, 0, 0, .55), 0 0 22px rgba(0, 0, 0, .5); }   /* que se lea también sobre cielo claro */
 .historia.v0 .lado { top: 300px; }
 .v0 .lado .escudos { justify-content: center; margin-bottom: 60px; }
 .v0 .donde { overflow: hidden; white-space: nowrap; }

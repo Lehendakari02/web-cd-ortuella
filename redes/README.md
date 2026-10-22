@@ -21,7 +21,8 @@ Si una pieza no tiene datos (no hay partidos o resultados esa semana), no aparec
 
 - **categorias**: qué filas salen y cómo se llaman (p. ej. "SENIOR" en horarios y "SENIOR A" en resultados).
   Alevín sale con "—" hasta que se añada a `EQUIPOS` en `actualizar_federacion.py` (cuando la Federación publique su liga).
-- **nombres_cortos**: cómo se escribe un rival ("Union Sport B" → "UNIÓN B"). Si no está, sale el nombre de la Federación.
+- **nombres_cortos**: solo para rivales que el club ya escribe de otra forma ("Union Sport B" → "UNIÓN B"). Los nombres no se acortan:
+  si no está aquí, sale el nombre completo de la Federación, más pequeño si es largo.
 - **campos_cortos**: igual para los campos de MATCH DAY.
 - **fondos**: los fondos que van rotando cada semana; solo se usan los de estas listas, nunca otras fotos.
   - `tablas` (ORDUTEGIA y EMAITZAK): `"canva"` es el fondo de la plantilla de Canva; cualquier otra foto sale

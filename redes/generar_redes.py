@@ -124,6 +124,7 @@ def escudo_rival(nombre, datos):
         except Exception as e:
             print(f"  aviso: no se pudo bajar el escudo grande de {nombre} ({e})", file=sys.stderr)
     img = sin_fondo_blanco(img)
+    img = img.crop(img.getbbox() or (0, 0) + img.size)   # sin márgenes vacíos, para que todos los escudos se vean igual de grandes
     img.thumbnail((500, 500))
     os.makedirs(ESCUDOS_GRANDES, exist_ok=True)
     img.save(listo, optimize=True)
@@ -142,8 +143,17 @@ def escudo_ortuella():
 
 # Los textos que no caben (rivales con nombre largo) se hacen más pequeños hasta que caben
 AJUSTAR = """document.fonts.ready.then(() => document.querySelectorAll('.ajustar').forEach(el => {
-  let t = parseFloat(getComputedStyle(el).fontSize);
-  while (el.scrollWidth > el.clientWidth + 1 && t > 12) el.style.fontSize = (t -= 1) + 'px';
+  const pasa = () => el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1;
+  const inicial = parseFloat(getComputedStyle(el).fontSize);
+  let t = inicial;
+  while (pasa() && t > inicial * 0.7) el.style.fontSize = (t -= 1) + 'px';
+  if (!pasa()) return;
+  // Si ni así cabe, en dos líneas (mejor que letra diminuta)
+  Object.assign(el.style, {whiteSpace: 'normal', lineHeight: '1.05', display: 'flex', alignItems: 'center',
+                           justifyContent: 'center', textAlign: 'center'});
+  t = inicial * 0.8;
+  el.style.fontSize = t + 'px';
+  while (pasa() && t > 12) el.style.fontSize = (t -= 1) + 'px';
 }));"""
 
 

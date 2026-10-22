@@ -10,20 +10,12 @@
     { "id": "alevin",   "ordutegia": "ALEVIN",   "emaitzak": "ALEVÍN" }
   ],
 
-  "_nombres_cortos": "Cómo se escribe cada rival en las imágenes. Si un rival no está aquí, sale su nombre de la Federación en mayúsculas.",
+  "_nombres_cortos": "Cómo se escribe cada rival en las imágenes, solo cuando el club ya lo escribe así. Si un rival no está aquí, sale su nombre completo de la Federación en mayúsculas (más pequeño si es largo).",
   "nombres_cortos": {
     "Union Sport B": "UNIÓN B",
-    "Atletismo Ortuella": "ATLETISMO",
     "Loyola Indauchu B": "LOIOLA B",
     "Begoñako Arteagabe": "BEGOÑAKO",
-    "Sporting De Lutxana B": "SPORTING LUTXANA B",
-    "Sporting De Lutxana 13/14 Zuri": "SPORTING LUTXANA",
-    "Peña ATH. Santurtzi": "PEÑA ATH. SANTURTZI",
-    "Ortuellako Jendea 1999": "ORTUELLAKO JENDEA",
-    "Ibaiondo Ibaizabal 2013": "IBAIONDO IBAIZABAL",
-    "Atl Aranguren 13/14": "ARANGUREN",
-    "Peña Athletic 13 Gorria": "PEÑA ATHLETIC",
-    "Zazpi Landa 13/14": "ZAZPI LANDA"
+    "Sporting De Lutxana B": "SPORTING LUTXANA B"
   },
 
   "_campos_cortos": "Cómo se escribe cada campo en MATCH DAY. Si no está aquí, se usa lo que va antes de la coma, en mayúsculas.",
@@ -47,6 +39,6 @@
   "_matchday": "Equipos que tienen MATCH DAY y cómo se escribe su nombre en la imagen.",
   "matchday": [
     { "id": "primer", "club": "C.D. ORTUELLA" },
-    { "id": "b", "club": "CD ORTUELLA B" }
+    { "id": "b", "club": "C.D. ORTUELLA B" }
   ]
 }
