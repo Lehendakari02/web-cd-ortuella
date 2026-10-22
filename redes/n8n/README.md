@@ -32,12 +32,13 @@
 - **Instagram**: token de **usuario del sistema** del portfolio de empresa del club (Meta Business Suite →
   Usuarios del sistema → Generar token, caducidad **Nunca**, permisos `instagram_basic`,
   `instagram_content_publish`, `pages_show_list`, `pages_read_engagement`, `business_management`).
-  En n8n, una **Query Auth** con Name `access_token` y Value el token, elegida en los 9 nodos de Instagram:
+  En n8n, una **Query Auth** con Name `access_token` y Value el token, elegida en los 10 nodos de Instagram:
   *Cuenta de Instagram (noticias)*, *Leer publicaciones de Instagram*, *Leer una publicación*,
   *Cuenta de Instagram (publicar)*, *Últimas publicaciones*, *Crear en Instagram*, *Publicar en Instagram*,
-  *Enlace de la publicación* y *Cuenta de Instagram (comprobar)*. La cuenta de Instagram se busca sola a
+  *Enlace de la publicación*, *Cuenta de Instagram (comprobar)* y *Cuenta de Instagram (vigilancia)*. La cuenta de Instagram se busca sola a
   partir de la página de Facebook del club; la versión de la API está en `GRAPH`, al principio del constructor.
-  `/instagram` en el grupo dice si la conexión funciona.
+  `/instagram` en el grupo dice si la conexión funciona, y cada día a las 9:13 el flujo lo comprueba solo:
+  si el token deja de valer, avisa en el grupo (cada día, hasta que se arregle).
 
 ## Importarlo
 

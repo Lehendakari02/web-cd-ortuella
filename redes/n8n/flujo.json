@@ -1151,7 +1151,7 @@
     },
     {
       "parameters": {
-        "content": "## 4 · Publicar en Instagram\nAl pulsar **Publicar** (o **Subir historia**): busca la cuenta de Instagram del club, comprueba que ese post no esté ya publicado, crea la publicación, espera a que Instagram la prepare y la publica. Contesta con el enlace y, tras el post, pregunta por la historia.\n\nSi algo falla, lo dice en el grupo con un botón **Reintentar** (nunca publica dos veces el mismo texto).\nLo que publica el bot se apunta para no ofrecerlo después como noticia.\n\n/instagram comprueba la conexión.",
+        "content": "## 4 · Publicar en Instagram\nAl pulsar **Publicar** (o **Subir historia**): busca la cuenta de Instagram del club, comprueba que ese post no esté ya publicado, crea la publicación, espera a que Instagram la prepare y la publica. Contesta con el enlace y, tras el post, pregunta por la historia.\n\nSi algo falla, lo dice en el grupo con un botón **Reintentar** (nunca publica dos veces el mismo texto).\nLo que publica el bot se apunta para no ofrecerlo después como noticia.\n\n/instagram comprueba la conexión, y cada día a las 9:13 se vigila sola: si se pierde, avisa en el grupo.",
         "width": 600,
         "height": 320
       },
@@ -1476,6 +1476,56 @@
       "position": [
         1120,
         2280
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "13 9 * * *"
+            }
+          ]
+        }
+      },
+      "id": "77f715b9-bdbf-596f-8ae0-28f52b155257",
+      "name": "Vigilar Instagram cada día",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        640,
+        2440
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v24.0/me/accounts?fields=name,instagram_business_account{id,username}&limit=25",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "options": {}
+      },
+      "id": "33f2231d-95d1-56b6-954a-0b4fa537b66f",
+      "name": "Cuenta de Instagram (vigilancia)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        2440
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Conectado → silencio. Si no, aviso (se repite cada día mientras siga sin arreglar)\nconst r = $input.first().json;\nif ((r.data || []).some(p => p.instagram_business_account)) return [];\nconst motivo = r.error ? (r.error.message || 'error de Meta') : 'el token no tiene acceso a la cuenta de Instagram del club';\nreturn [{ json: { accion: 'mensaje', texto: `⚠️ El bot ha perdido la conexión con Instagram (${motivo}). Hasta arreglarlo no se puede publicar ni leer las publicaciones. Escribe /instagram para comprobarlo.` } }];"
+      },
+      "id": "c395b0a2-5325-5176-8823-f34ec28922b1",
+      "name": "¿Sigue conectado?",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        2440
       ]
     }
   ],
@@ -2196,6 +2246,39 @@
       ]
     },
     "Estado de Instagram": {
+      "main": [
+        [
+          {
+            "node": "¿Mensaje?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vigilar Instagram cada día": {
+      "main": [
+        [
+          {
+            "node": "Cuenta de Instagram (vigilancia)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cuenta de Instagram (vigilancia)": {
+      "main": [
+        [
+          {
+            "node": "¿Sigue conectado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Sigue conectado?": {
       "main": [
         [
           {
