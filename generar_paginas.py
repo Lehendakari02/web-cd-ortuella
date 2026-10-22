@@ -860,7 +860,7 @@ PAGES["404"] = dict(
 })();""")
 
 # Ficha del club en el formato que entienden Google y otros buscadores (schema.org).
-# Pendiente: CIF y razón social, y el escudo en alta calidad cuando lo tengamos.
+# Pendiente: CIF y razón social.
 FICHA_GOOGLE = """<script type="application/ld+json">
 {
  "@context": "https://schema.org",
