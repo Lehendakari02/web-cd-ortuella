@@ -13,6 +13,7 @@
   "_nombres_cortos": "Cómo se escribe cada rival en las imágenes. Si un rival no está aquí, sale su nombre de la Federación en mayúsculas.",
   "nombres_cortos": {
     "Union Sport B": "UNIÓN B",
+    "Atletismo Ortuella": "ATLETISMO",
     "Loyola Indauchu B": "LOIOLA B",
     "Begoñako Arteagabe": "BEGOÑAKO",
     "Sporting De Lutxana B": "SPORTING LUTXANA B",
@@ -43,25 +44,9 @@
     ]
   },
 
-  "_textos": "Textos para acompañar cada publicación. Van rotando cada semana. Huecos: {rival}, {dia}, {hora}, {campo}.",
-  "textos": {
-    "ordutegia": [
-      "Asteburuko ordutegia 💙🤍 #aupaortuella",
-      "Asteburuko ordutegia. #aupaortuella",
-      "Hau da asteburuko ordutegia! Animatu zaitezte 💙🤍 #aupaortuella",
-      "Asteburu honetako partiduak 📅⚽ #aupaortuella"
-    ],
-    "emaitzak": [
-      "⚽ Asteburuko emaitzak ⚽",
-      "Asteburuko emaitzak 💙🤍 #aupaortuella",
-      "Hauek dira asteburuko emaitzak ⚽ #aupaortuella",
-      "Asteburua amaituta! Emaitzak 💙🤍 #aupaortuella"
-    ],
-    "matchday": [
-      "Goazenn!! 💙🤍 #aupaortuella",
-      "Match day. Goazen Ortuella. 💙🤍",
-      "{dia} {hora} · {campo}. Goazen! 💙🤍 #aupaortuella",
-      "Partidu eguna! Ortuella - {rival} ⚽ #aupaortuella"
-    ]
-  }
+  "_matchday": "Equipos que tienen MATCH DAY y cómo se escribe su nombre en la imagen.",
+  "matchday": [
+    { "id": "primer", "club": "C.D. ORTUELLA" },
+    { "id": "b", "club": "CD ORTUELLA B" }
+  ]
 }

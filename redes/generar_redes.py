@@ -4,10 +4,10 @@ Genera las publicaciones de Instagram del club (post e historia) a partir de dat
 
   ORDUTEGIA  horarios del próximo fin de semana
   EMAITZAK   resultados del último fin de semana
-  MATCH DAY  partido del primer equipo del próximo fin de semana
+  MATCH DAY  partido del próximo fin de semana de cada equipo de config.json (Senior A y B)
 
 Deja en redes/salida/ las imágenes (JPG, que es lo que acepta Instagram) y ultimo.json con la
-dirección pública de cada imagen y su texto, para que n8n las publique.
+dirección pública de cada imagen, para que n8n las publique (el texto del pie lo escribe una persona por Telegram).
 Sin IA y sin coste: las imágenes se dibujan con plantillas HTML y un navegador sin ventana.
 
 Uso:  python3 redes/generar_redes.py [--fecha AAAA-MM-DD]
@@ -77,12 +77,6 @@ def campo_corto(campo, config):
     if campo in config["campos_cortos"]:
         return config["campos_cortos"][campo]
     return campo.split(",")[0].replace("-", " ").strip().upper()
-
-
-def texto_de_la_semana(tipo, config, lunes, huecos):
-    lista = config["textos"][tipo]
-    frase = lista[lunes.isocalendar()[1] % len(lista)]   # cambia cada semana, siempre igual para la misma semana
-    return re.sub(r" {2,}", " ", frase.format(**huecos)) if huecos else frase
 
 
 # ---------------------------------------------------------------- recursos
@@ -172,19 +166,25 @@ ALTO_FILA = {"ordutegia": 66, "emaitzak": 86}
 PASO_MAXIMO = {"ordutegia": 125, "emaitzak": 200}
 
 
+def escala_emaitzak(n):
+    """Con pocos resultados, las filas se hacen más grandes para que la imagen no quede vacía
+    (1,22 es lo máximo para que la cinta no se salga por los lados)."""
+    return {1: 1.22, 2: 1.2, 3: 1.14}.get(n, 1.08)
+
+
 def repartir(pieza, formato, n):
     """Posición (px desde arriba) de cada fila: repartidas por la zona y centradas."""
     desde, hasta = (ZONA_ORDUTEGIA if pieza == "ordutegia" else ZONA_EMAITZAK)[formato]
-    alto = ALTO_FILA[pieza]
+    alto = ALTO_FILA[pieza] * (escala_emaitzak(n) / 1.08 if pieza == "emaitzak" else 1)
     paso = min(PASO_MAXIMO[pieza], (hasta - desde - alto) / max(n - 1, 1))
     primera = desde + (hasta - desde - alto - paso * (n - 1)) / 2
     return [round(primera + paso * i) for i in range(n)]
 
 
-def fondo_de_la_semana(lista, lunes):
+def fondo_de_la_semana(lista, lunes, desfase=0):
     """Elige de la lista el fondo que toca esta semana (van rotando). Cada fondo puede ser solo la ruta
     de la foto o {"foto": ..., "velo": false, "diseno": 0}."""
-    elegido = lista[lunes.isocalendar()[1] % len(lista)]
+    elegido = lista[(lunes.isocalendar()[1] + desfase) % len(lista)]
     return elegido if isinstance(elegido, dict) else {"foto": elegido}
 
 
@@ -227,13 +227,13 @@ def html_emaitzak(filas, config, formato, fondo):
     for i, (cat, p, equipo) in enumerate(filas):
         nuestro, otro = html.escape(cat), html.escape(corto(rival(p, equipo), config))
         local, visitante = (nuestro, otro) if en_casa(p, equipo) else (otro, nuestro)
-        lineas += (f'<div class="partido" style="top:{posiciones[i]}px"><img src="{fila}">'
+        lineas += (f'<div class="partido" style="top:{posiciones[i]}px;transform:scale({escala_emaitzak(len(filas))})"><img src="{fila}">'
                    f'<span class="equipo local ajustar">{local}</span><span class="equipo visitante ajustar">{visitante}</span>'
                    f'{gol(p["gl"], "l")}{gol(p["gv"], "v")}</div>')
     return pagina(lienzo("emaitzak", formato, fondo) + lineas, formato, "emaitzak")
 
 
-def html_matchday(p, equipo, datos, config, formato, variante, fondo):
+def html_matchday(p, equipo, datos, config, formato, variante, fondo, club):
     variante = fondo.get("diseno", variante)   # algunas fotos van mejor con un diseño concreto
     casa = en_casa(p, equipo)
     otro = rival(p, equipo)
@@ -243,14 +243,16 @@ def html_matchday(p, equipo, datos, config, formato, variante, fondo):
     escudos_html = "".join(f'<img src="{uri(e)}">' for e in escudos if e)
     dia = DIAS[date.fromisoformat(p["fecha"]).weekday()]
     cuando = f"{dia} {p['hora']}" if p.get("hora") else dia
-    campo = campo_corto(datos["campos"].get(p["local"], "") or p.get("campo", ""), config)
+    # En casa, todos nuestros equipos juegan en Otxartaga, aunque la web solo lo apunte para "Ortuella"
+    campo = datos["campos"].get(p["local"]) or p.get("campo") or (datos["campos"].get("Ortuella", "") if casa else "")
+    campo = campo_corto(campo, config)
     if variante == 0:
-        textos = (f'<div class="vertical"><span class="grande">MATCH DAY</span><span class="club">C.D. ORTUELLA</span></div>'
+        textos = (f'<div class="vertical"><span class="grande">MATCH DAY</span><span class="club">{club}</span></div>'
                   f'<div class="lado"><div class="escudos">{escudos_html}</div>'
                   f'<p class="cuando">{cuando}</p><p class="donde ajustar">{html.escape(campo)}</p></div>')
     else:
         textos = (f'<div class="cabecera"><p class="cuando">{cuando.replace(" ", "<br>", 1)}</p>'
-                  f'<p class="club">C.D. ORTUELLA</p><p class="grande">MATCH DAY</p>'
+                  f'<p class="club">{club}</p><p class="grande">MATCH DAY</p>'
                   f'<p class="donde ajustar">{html.escape(campo)}</p><div class="escudos">{escudos_html}</div></div>')
     velo = '<div class="velo"></div>' if fondo.get("velo", True) else ""   # las fotos de Canva ya traen el suyo
     cuerpo = (f'<div class="fondo" style="background-image:url(\'{uri(os.path.join(RAIZ, fondo["foto"]))}\')"></div>'
@@ -322,8 +324,8 @@ def main():
     base = sitio() + "/redes/salida/"
     dib = Dibujante()
     try:
-        def guardar(tipo, hacer_html, lunes, texto):
-            piezas[tipo] = {"semana": f"{lunes:%Y-%m-%d}", "texto": texto}
+        def guardar(tipo, nombre, hacer_html, lunes):
+            piezas[tipo] = {"nombre": nombre, "semana": f"{lunes:%Y-%m-%d}"}
             for formato in TAMANOS:
                 archivo = f"{tipo}-{formato}.jpg"
                 huella = dib.jpg(hacer_html(formato), formato, os.path.join(SALIDA, archivo))
@@ -331,24 +333,24 @@ def main():
 
         if any(p for _, p, _ in horarios):
             fondo = fondo_de_la_semana(config["fondos"]["tablas"], prox_lunes)
-            guardar("ordutegia", lambda f: html_ordutegia(horarios, config, f, fondo), prox_lunes,
-                    texto_de_la_semana("ordutegia", config, prox_lunes, None))
+            guardar("ordutegia", "ORDUTEGIA", lambda f: html_ordutegia(horarios, config, f, fondo), prox_lunes)
         if resultados:
             fondo_r = fondo_de_la_semana(config["fondos"]["tablas"], ult_lunes)
-            guardar("emaitzak", lambda f: html_emaitzak(resultados, config, f, fondo_r), ult_lunes,
-                    texto_de_la_semana("emaitzak", config, ult_lunes, None))
+            guardar("emaitzak", "EMAITZAK", lambda f: html_emaitzak(resultados, config, f, fondo_r), ult_lunes)
 
-        primer = equipos.get("primer")
-        partido = (partidos_de_semana(primer, prox_lunes, prox_domingo) or [None])[0] if primer else None
-        if partido:
-            n = prox_lunes.isocalendar()[1]
-            fondo_m = fondo_de_la_semana(config["fondos"]["matchday"], prox_lunes)
-            dia = DIAS[date.fromisoformat(partido["fecha"]).weekday()]
-            huecos = {"rival": corto(rival(partido, primer), config).title(), "dia": dia.capitalize(),
-                      "hora": partido.get("hora", ""),
-                      "campo": campo_corto(datos["campos"].get(partido["local"], ""), config).title()}
-            guardar("matchday", lambda f: html_matchday(partido, primer, datos, config, f, n % 2, fondo_m),
-                    prox_lunes, texto_de_la_semana("matchday", config, prox_lunes, huecos))
+        # Un MATCH DAY por cada equipo de config["matchday"] que juegue ese fin de semana
+        n = prox_lunes.isocalendar()[1]
+        for orden, md in enumerate(config["matchday"]):
+            eq = equipos.get(md["id"])
+            partido = (partidos_de_semana(eq, prox_lunes, prox_domingo) or [None])[0] if eq else None
+            if not partido:
+                continue
+            fondo_m = fondo_de_la_semana(config["fondos"]["matchday"], prox_lunes, orden)   # cada equipo, una foto distinta
+            tipo = "matchday" if md["id"] == "primer" else f"matchday-{md['id']}"
+            guardar(tipo, f"MATCH DAY {md['club']}",
+                    lambda f, partido=partido, eq=eq, fondo_m=fondo_m, md=md, orden=orden:
+                        html_matchday(partido, eq, datos, config, f, (n + orden) % 2, fondo_m, md["club"]),
+                    prox_lunes)
     finally:
         dib.cerrar()
 

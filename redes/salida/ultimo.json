@@ -2,22 +2,28 @@
  "datos_actualizados": "2026-10-21T14:23+00:00",
  "piezas": {
   "ordutegia": {
+   "nombre": "ORDUTEGIA",
    "semana": "2026-10-19",
-   "texto": "Asteburu honetako partiduak 📅⚽ #aupaortuella",
    "post": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/ordutegia-post.jpg?v=7d53b1f1fd",
    "historia": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/ordutegia-historia.jpg?v=f7a4407b86"
   },
   "emaitzak": {
+   "nombre": "EMAITZAK",
    "semana": "2026-10-12",
-   "texto": "Hauek dira asteburuko emaitzak ⚽ #aupaortuella",
    "post": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/emaitzak-post.jpg?v=b89f1537ff",
-   "historia": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/emaitzak-historia.jpg?v=d4a4c6943c"
+   "historia": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/emaitzak-historia.jpg?v=4a90259677"
   },
   "matchday": {
+   "nombre": "MATCH DAY C.D. ORTUELLA",
    "semana": "2026-10-19",
-   "texto": "Partidu eguna! Ortuella - Gazteak ⚽ #aupaortuella",
    "post": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/matchday-post.jpg?v=14ee855be0",
    "historia": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/matchday-historia.jpg?v=35c47708e6"
+  },
+  "matchday-b": {
+   "nombre": "MATCH DAY CD ORTUELLA B",
+   "semana": "2026-10-19",
+   "post": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/matchday-b-post.jpg?v=502a5419e6",
+   "historia": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/matchday-b-historia.jpg?v=09195aec18"
   }
  }
 }
