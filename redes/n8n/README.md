@@ -33,5 +33,10 @@ Cuando haya token de Instagram, se cambian esos dos puntos (marcados con `🧪 E
 *No repetir avisos* apuntan lo que se manda y luego ya no lo volverían a mandar. Para probar, usa los
 comandos en el grupo (`/publicar matchday`…).
 
+**Nada se publica dos veces.** Cada botón lleva la pieza y la semana (`pub:matchday:2026-10-19`) y el
+nodo *Cada botón una sola vez* lo apunta en la base de datos de n8n: un segundo clic, o «Publicar» en otra
+confirmación de la misma pieza esa semana, se ignora. Además, al pulsar *Publicar* o *Cancelar* el mensaje
+pierde sus botones y queda marcado («✅ Publicado» / «❌ Cancelado»).
+
 El bot no necesita recordar nada: en el pie de cada foto escribe qué pieza es (`🆔 matchday`) y, en el
 mensaje de confirmación, el texto va entre dos rayas. Al responder o pulsar un botón, lo lee de ahí.

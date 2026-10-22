@@ -203,7 +203,7 @@
       "typeVersion": 1.5,
       "position": [
         -560,
-        680
+        760
       ],
       "webhookId": "65eabb7f-178b-5d9f-8790-5494ede1c3e4"
     },
@@ -266,22 +266,22 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -320,
-        680
+        160,
+        760
       ],
       "onError": "continueRegularOutput"
     },
     {
       "parameters": {
-        "jsCode": "// Decide qué hacer con cada mensaje o botón del grupo. Sin IA y sin memoria: lo que hace falta\n// saber va escrito en los propios mensajes del bot («🆔 pieza» y el texto entre las rayas).\nconst upd = $('Telegram (grupo)').first().json;\nconst piezas = $input.first().json.piezas || {};\nconst salir = (...cosas) => cosas.map(json => ({ json }));\nconst mensaje = texto => ({ accion: 'mensaje', texto });\nconst RAYA = '────────────';\nconst pieza = tipo => piezas[tipo];\n\n// ---------- botones\nconst cb = upd.callback_query;\nif (cb) {\n  const [accion, tipo] = String(cb.data || '').split(':');\n  const p = pieza(tipo);\n  if (!p) return salir(mensaje('Esa publicación ya no está disponible (es de otra semana).'));\n  if (accion === 'pub') {\n    const partes = String((cb.message && cb.message.text) || '').split(RAYA);\n    const texto = (partes[1] || '').trim();\n    // 🧪 ENSAYO: aquí irá la publicación real en Instagram (post p.post con este texto)\n    return salir(\n      mensaje(`✅ (ensayo) Se habría publicado el post de ${p.nombre} con este texto:\\n\\n${texto}`),\n      { accion: 'foto_botones', foto: p.historia, texto: `¿Subo también la historia de ${p.nombre}?`,\n        boton1: '✅ Subir historia', dato1: `his:${tipo}`, boton2: 'No', dato2: `nohis:${tipo}` });\n  }\n  if (accion === 'can') return salir(mensaje(`❌ Cancelado. Para poner otro texto, responde otra vez a la foto de ${p.nombre}.`));\n  // 🧪 ENSAYO: aquí irá la historia real en Instagram (p.historia)\n  if (accion === 'his') return salir(mensaje(`✅ (ensayo) Se habría subido la historia de ${p.nombre}.`));\n  if (accion === 'nohis') return salir(mensaje('Vale, sin historia.'));\n  return [];\n}\n\n// ---------- mensajes\nconst msg = upd.message;\nif (!msg || !msg.text) return [];\nconst texto = msg.text.trim();\n\n// Respuesta citando una foto del bot → es el texto de la publicación. La pieza va en la línea «🆔».\nconst citada = msg.reply_to_message;\nif (citada && citada.from && citada.from.is_bot && citada.photo) {\n  const m = String(citada.caption || '').match(/🆔\\s*([a-z-]+)/);\n  const p = m && pieza(m[1]);\n  if (!p) return salir(mensaje('🤔 No sé de qué publicación es esa foto (puede ser de otra semana). Escribe /publicar y la pieza (por ejemplo /publicar matchday) y responde a la foto nueva.'));\n  if (texto.length > 2200) return salir(mensaje(`El texto tiene ${texto.length} caracteres y Instagram admite 2200. Acórtalo y vuelve a responder a la foto.`));\n  return salir({ accion: 'mensaje_botones',\n    texto: `📝 ${p.nombre}\\n${RAYA}\\n${texto}\\n${RAYA}\\n¿Publico con este texto?`,\n    boton1: '✅ Publicar', dato1: `pub:${p.tipo}`, boton2: '❌ Cancelar', dato2: `can:${p.tipo}` });\n}\n\n// Comandos\nif (!texto.startsWith('/')) return [];\nconst [orden, arg] = texto.split(/\\s+/);\nconst comando = orden.split('@')[0].toLowerCase();\nconst estado = p => p.lista ? 'lista ✅' : `no lista ⏳ (falta: ${(p.faltan || []).join('; ')})`;\nconst verPieza = p => ({ accion: 'foto', foto: p.post, texto: `${p.nombre}: ${estado(p)}` });\nconst lista = Object.values(piezas);\n\nif (comando === '/estado') {\n  if (!lista.length) return salir(mensaje('Esta semana no hay ninguna publicación con datos.'));\n  return salir(mensaje('📋 Publicaciones de esta semana:\\n' + lista.map(p => `• ${p.nombre}: ${estado(p)}`).join('\\n')));\n}\nif (['/ordutegia', '/emaitzak', '/matchday'].includes(comando)) {\n  const tipo = comando.slice(1);\n  const elegidas = lista.filter(p => p.tipo === tipo || (tipo === 'matchday' && p.tipo.startsWith('matchday')));\n  return elegidas.length ? salir(...elegidas.map(verPieza)) : salir(mensaje(`Esta semana no hay ${tipo.toUpperCase()}.`));\n}\nif (comando === '/publicar') {\n  const p = pieza((arg || '').toLowerCase());\n  if (!p) return salir(mensaje(`¿Cuál? Escribe /publicar y una de estas: ${Object.keys(piezas).join(', ') || '(ninguna esta semana)'}`));\n  return salir({ accion: 'preguntar', pieza: p });\n}\nif (comando === '/ayuda' || comando === '/start') {\n  return salir(mensaje('🤖 Comandos:\\n/estado → qué publicaciones están listas y qué falta\\n/ordutegia, /emaitzak, /matchday → ver la imagen\\n/publicar <pieza> → publicar una pieza aunque no esté lista (p. ej. /publicar emaitzak)\\n\\nPara poner el texto de una publicación, responde citando la foto que manda el bot.'));\n}\nreturn [];"
+        "jsCode": "// Decide qué hacer con cada mensaje o botón del grupo. Sin IA y sin memoria: lo que hace falta\n// saber va escrito en los propios mensajes del bot («🆔 pieza» y el texto entre las rayas).\nconst upd = $('Telegram (grupo)').first().json;\nconst piezas = $input.first().json.piezas || {};\nconst salir = (...cosas) => cosas.map(json => ({ json }));\nconst mensaje = texto => ({ accion: 'mensaje', texto });\nconst RAYA = '────────────';\nconst pieza = tipo => piezas[tipo];\n\n// ---------- botones\n// Cada botón lleva «acción:pieza:semana». Antes de llegar aquí, el nodo «Cada botón una sola vez» ya ha\n// descartado los repetidos: un mismo «Publicar» (o «Subir historia») de una pieza solo pasa una vez por semana.\nconst cb = upd.callback_query;\nif (cb) {\n  const [accion, tipo, semana] = String(cb.data || '').split(':');\n  const p = pieza(tipo);\n  if (!p || p.semana !== semana) return salir(mensaje('Esa publicación ya no está disponible (es de otra semana).'));\n  const original = String((cb.message && cb.message.text) || '');\n  const quitarBotones = nota => ({ accion: 'quitar_botones', messageId: cb.message && cb.message.message_id,\n                                   texto: original.replace(/\\n¿Publico con este texto\\?$/, '') + `\\n${nota}` });\n  if (accion === 'pub') {\n    const texto = (original.split(RAYA)[1] || '').trim();\n    // 🧪 ENSAYO: aquí irá la publicación real en Instagram (post p.post con este texto)\n    return salir(\n      quitarBotones('✅ Publicado (ensayo)'),\n      mensaje(`✅ (ensayo) Se habría publicado el post de ${p.nombre} con este texto:\\n\\n${texto}`),\n      { accion: 'foto_botones', foto: p.historia, texto: `¿Subo también la historia de ${p.nombre}?`,\n        boton1: '✅ Subir historia', dato1: `his:${tipo}:${semana}`, boton2: 'No', dato2: `nohis:${tipo}:${semana}` });\n  }\n  if (accion === 'can') return salir(quitarBotones('❌ Cancelado'),\n    mensaje(`❌ Cancelado. Para poner otro texto, responde otra vez a la foto de ${p.nombre}.`));\n  // 🧪 ENSAYO: aquí irá la historia real en Instagram (p.historia)\n  if (accion === 'his') return salir(mensaje(`✅ (ensayo) Se habría subido la historia de ${p.nombre}.`));\n  if (accion === 'nohis') return salir(mensaje('Vale, sin historia.'));\n  return [];\n}\n\n// ---------- mensajes\nconst msg = upd.message;\nif (!msg || !msg.text) return [];\nconst texto = msg.text.trim();\n\n// Respuesta citando una foto del bot → es el texto de la publicación. La pieza va en la línea «🆔».\nconst citada = msg.reply_to_message;\nif (citada && citada.from && citada.from.is_bot && citada.photo) {\n  const m = String(citada.caption || '').match(/🆔\\s*([a-z-]+)/);\n  const p = m && pieza(m[1]);\n  if (!p) return salir(mensaje('🤔 No sé de qué publicación es esa foto (puede ser de otra semana). Escribe /publicar y la pieza (por ejemplo /publicar matchday) y responde a la foto nueva.'));\n  if (texto.length > 2200) return salir(mensaje(`El texto tiene ${texto.length} caracteres y Instagram admite 2200. Acórtalo y vuelve a responder a la foto.`));\n  return salir({ accion: 'mensaje_botones',\n    texto: `📝 ${p.nombre}\\n${RAYA}\\n${texto}\\n${RAYA}\\n¿Publico con este texto?`,\n    boton1: '✅ Publicar', dato1: `pub:${p.tipo}:${p.semana}`, boton2: '❌ Cancelar', dato2: `can:${p.tipo}:${p.semana}` });\n}\n\n// Comandos\nif (!texto.startsWith('/')) return [];\nconst [orden, arg] = texto.split(/\\s+/);\nconst comando = orden.split('@')[0].toLowerCase();\nconst estado = p => p.lista ? 'lista ✅' : `no lista ⏳ (falta: ${(p.faltan || []).join('; ')})`;\nconst verPieza = p => ({ accion: 'foto', foto: p.post, texto: `${p.nombre}: ${estado(p)}` });\nconst lista = Object.values(piezas);\n\nif (comando === '/estado') {\n  if (!lista.length) return salir(mensaje('Esta semana no hay ninguna publicación con datos.'));\n  return salir(mensaje('📋 Publicaciones de esta semana:\\n' + lista.map(p => `• ${p.nombre}: ${estado(p)}`).join('\\n')));\n}\nif (['/ordutegia', '/emaitzak', '/matchday'].includes(comando)) {\n  const tipo = comando.slice(1);\n  const elegidas = lista.filter(p => p.tipo === tipo || (tipo === 'matchday' && p.tipo.startsWith('matchday')));\n  return elegidas.length ? salir(...elegidas.map(verPieza)) : salir(mensaje(`Esta semana no hay ${tipo.toUpperCase()}.`));\n}\nif (comando === '/publicar') {\n  const p = pieza((arg || '').toLowerCase());\n  if (!p) return salir(mensaje(`¿Cuál? Escribe /publicar y una de estas: ${Object.keys(piezas).join(', ') || '(ninguna esta semana)'}`));\n  return salir({ accion: 'preguntar', pieza: p });\n}\nif (comando === '/ayuda' || comando === '/start') {\n  return salir(mensaje('🤖 Comandos:\\n/estado → qué publicaciones están listas y qué falta\\n/ordutegia, /emaitzak, /matchday → ver la imagen\\n/publicar <pieza> → publicar una pieza aunque no esté lista (p. ej. /publicar emaitzak)\\n\\nPara poner el texto de una publicación, responde citando la foto que manda el bot.'));\n}\nreturn [];"
       },
       "id": "0f57af9e-5662-596d-8584-a5e15818ebb1",
       "name": "Interpretar",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -80,
-        680
+        400,
+        760
       ]
     },
     {
@@ -313,7 +313,7 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        160,
+        640,
         520
       ]
     },
@@ -330,7 +330,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        400,
+        880,
         520
       ]
     },
@@ -363,7 +363,7 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        160,
+        640,
         680
       ]
     },
@@ -403,7 +403,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        400,
+        880,
         680
       ]
     },
@@ -436,7 +436,7 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        160,
+        640,
         840
       ]
     },
@@ -454,7 +454,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        400,
+        880,
         840
       ]
     },
@@ -487,7 +487,7 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        160,
+        640,
         1000
       ]
     },
@@ -528,7 +528,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        400,
+        880,
         1000
       ]
     },
@@ -561,8 +561,109 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        160,
+        640,
         1160
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "mensaje",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "9ae7d041-eee5-5758-ad0f-a24f423e68eb",
+      "name": "¿Es un mensaje?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -320,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "removeItemsSeenInPreviousExecutions",
+        "logic": "removeItemsWithAlreadySeenKeyValues",
+        "dedupeValue": "={{ $json.callback_query.data }}",
+        "options": {}
+      },
+      "id": "ee739cf5-ddb0-55df-a5aa-2972d2e6c992",
+      "name": "Cada botón una sola vez",
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        -80,
+        1060
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "editMessageText",
+        "messageType": "message",
+        "chatId": "CHAT_ID_DEL_GRUPO",
+        "messageId": "={{ $json.messageId }}",
+        "text": "={{ $json.texto }}",
+        "additionalFields": {}
+      },
+      "id": "c61eb58c-adbd-56d4-ab33-08e517b491f9",
+      "name": "Quitar botones",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        1320
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5244bad9-000b-5b45-871e-268c4d4a83b9",
+              "leftValue": "={{ $json.accion }}",
+              "rightValue": "quitar_botones",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1d84ccbe-48a5-52cf-bcb4-cd6125089be8",
+      "name": "¿Quitar botones?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        1320
       ]
     }
   ],
@@ -664,7 +765,7 @@
       "main": [
         [
           {
-            "node": "Leer ultimo.json (bot)",
+            "node": "¿Es un mensaje?",
             "type": "main",
             "index": 0
           },
@@ -676,11 +777,38 @@
         ]
       ]
     },
+    "¿Es un mensaje?": {
+      "main": [
+        [
+          {
+            "node": "Leer ultimo.json (bot)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "¿Es un botón?": {
       "main": [
         [
           {
             "node": "Quitar el «cargando» del botón",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Cada botón una sola vez",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cada botón una sola vez": {
+      "main": [
+        [
+          {
+            "node": "Leer ultimo.json (bot)",
             "type": "main",
             "index": 0
           }
@@ -701,6 +829,11 @@
     "Interpretar": {
       "main": [
         [
+          {
+            "node": "¿Quitar botones?",
+            "type": "main",
+            "index": 0
+          },
           {
             "node": "¿Mensaje?",
             "type": "main",
@@ -723,6 +856,17 @@
           },
           {
             "node": "¿Pedir texto?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Quitar botones?": {
+      "main": [
+        [
+          {
+            "node": "Quitar botones",
             "type": "main",
             "index": 0
           }
