@@ -3,9 +3,9 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## 1 · Revisar dos veces al día\nDespués de cada actualización de la web (8:30 y 23:30, hora de Madrid):\n- **Publicaciones**: manda al grupo cada pieza *lista* (una sola vez por semana) y pide el texto.\n- **Avisos**: manda los cambios de partido nuevos.\n\nPara probar sin esperar: pulsa **Test workflow** con este disparador.",
-        "width": 560,
-        "height": 260
+        "content": "## 1 · Revisar dos veces al día\nDespués de cada actualización de la web (8:30 y 23:30, hora de Madrid):\n- **Publicaciones**: manda al grupo cada pieza *lista*, una sola vez por semana, y pide el texto.\n- **Avisos**: manda los cambios de partido nuevos.\n\n⚠️ No lo ejecutes a mano: los nodos «No repetir…» apuntan lo enviado y luego ya no lo mandarían. Para probar, usa /publicar en el grupo.",
+        "width": 600,
+        "height": 280
       },
       "id": "841d5375-8b9a-5ca5-9470-96926b6d270a",
       "name": "Nota 1",
@@ -13,7 +13,7 @@
       "typeVersion": 1,
       "position": [
         -560,
-        -460
+        -480
       ]
     },
     {
@@ -53,14 +53,30 @@
     },
     {
       "parameters": {
-        "jsCode": "// Piezas con \"lista\": true que aún no se han ofrecido esta semana (se recuerdan entre ejecuciones)\nconst memoria = $getWorkflowStaticData('global');\nmemoria.ofrecidas = memoria.ofrecidas || {};\nconst salida = [];\nfor (const pieza of Object.values($input.first().json.piezas || {})) {\n  const clave = `${pieza.tipo}-${pieza.semana}`;\n  if (!pieza.lista || memoria.ofrecidas[clave]) continue;\n  memoria.ofrecidas[clave] = new Date().toISOString();\n  salida.push({ json: { pieza } });\n}\n// Olvidar lo de hace más de 2 meses\nfor (const [clave, cuando] of Object.entries(memoria.ofrecidas)) {\n  if (Date.now() - new Date(cuando) > 60 * 864e5) delete memoria.ofrecidas[clave];\n}\nreturn salida;"
+        "jsCode": "// Las piezas con \"lista\": true, con su clave de semana (p. ej. \"matchday-2026-10-19\")\nreturn Object.values($input.first().json.piezas || {})\n  .filter(p => p.lista)\n  .map(pieza => ({ json: { clave: `${pieza.tipo}-${pieza.semana}`, pieza } }));"
       },
-      "id": "39b84883-218c-52c4-9181-e1c1390d8442",
-      "name": "Piezas nuevas listas",
+      "id": "3f64c045-6904-5423-8e25-9473d9af389d",
+      "name": "Piezas listas",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         -80,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "removeItemsSeenInPreviousExecutions",
+        "logic": "removeItemsWithAlreadySeenKeyValues",
+        "dedupeValue": "={{ $json.clave }}",
+        "options": {}
+      },
+      "id": "da0df8fe-d9c9-5df8-9eed-a9825e522e6e",
+      "name": "No repetir piezas",
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        160,
         -200
       ]
     },
@@ -81,14 +97,30 @@
     },
     {
       "parameters": {
-        "jsCode": "// Avisos de cambios de partido que aún no se han mandado\nconst memoria = $getWorkflowStaticData('global');\nconst avisos = $input.first().json.avisos || [];\nif (!memoria.avisosVistos) {\n  // Primera vez: se dan por vistos los que ya había, para no mandar avisos viejos de golpe\n  memoria.avisosVistos = avisos.map(a => a.id);\n  return [];\n}\nconst nuevos = avisos.filter(a => !memoria.avisosVistos.includes(a.id));\nmemoria.avisosVistos = [...memoria.avisosVistos, ...nuevos.map(a => a.id)].slice(-300);\nreturn nuevos.map(a => ({ json: { texto: a.texto } }));"
+        "jsCode": "// Un elemento por aviso (cambios.json puede no existir aún: entonces no hay avisos)\nreturn ($input.first().json.avisos || []).map(a => ({ json: { id: a.id, texto: a.texto } }));"
       },
-      "id": "12f2bcd1-a351-517b-93fe-e1267fe6d7b0",
-      "name": "Avisos nuevos",
+      "id": "28ee39d3-0efe-55ae-9c23-dfd195679ab1",
+      "name": "Separar avisos",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         -80,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "removeItemsSeenInPreviousExecutions",
+        "logic": "removeItemsWithAlreadySeenKeyValues",
+        "dedupeValue": "={{ $json.id }}",
+        "options": {}
+      },
+      "id": "49460a19-1da1-5cb2-a6d3-66cf4e49a7ec",
+      "name": "No repetir avisos",
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        160,
         0
       ]
     },
@@ -105,20 +137,20 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        160,
+        400,
         0
       ]
     },
     {
       "parameters": {
-        "jsCode": "// Foto del post + petición del texto. Sirve para las piezas programadas y para /publicar\nreturn $input.all().map(item => {\n  const p = item.json.pieza;\n  const falta = (p.faltan || []).length ? `\\n⚠️ Ojo, falta: ${p.faltan.join('; ')}` : '';\n  return { json: { pieza: p, foto: p.post,\n    texto: `${p.nombre} lista para publicar ✅${falta}\\n\\n✍️ RESPONDE A ESTE MENSAJE (mantén pulsado → Responder) con el texto de la publicación.` } };\n});"
+        "jsCode": "// Foto del post + petición del texto. La línea «🆔» dice qué pieza es: al responder, el bot la lee\n// de ahí (así no tiene que recordar nada).\nreturn $input.all().map(item => {\n  const p = item.json.pieza;\n  const falta = (p.faltan || []).length ? `\\n⚠️ Ojo, falta: ${p.faltan.join('; ')}` : '';\n  return { json: { foto: p.post,\n    texto: `${p.nombre} lista para publicar ✅${falta}\\n\\n✍️ RESPONDE A ESTA FOTO (mantén pulsado → Responder) con el texto de la publicación.\\n🆔 ${p.tipo}` } };\n});"
       },
       "id": "e155bea2-6b3e-5494-8e98-db03a0b78969",
       "name": "Preparar pregunta",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        160,
+        400,
         -200
       ]
     },
@@ -136,27 +168,14 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        400,
-        -200
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "// Se apunta qué pieza corresponde a cada foto, para reconocer la respuesta\nconst memoria = $getWorkflowStaticData('global');\nmemoria.pendientes = memoria.pendientes || {};\nconst piezas = $('Preparar pregunta').all();\n$input.all().forEach((item, i) => { memoria.pendientes[item.json.message_id] = piezas[i].json.pieza; });\n// Solo se guardan las 30 últimas\nconst ids = Object.keys(memoria.pendientes);\nids.slice(0, Math.max(0, ids.length - 30)).forEach(id => delete memoria.pendientes[id]);\nreturn [];"
-      },
-      "id": "134f9e12-3cf3-5a74-ab4b-eed52e302350",
-      "name": "Recordar pregunta",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
         640,
         -200
       ]
     },
     {
       "parameters": {
-        "content": "## 2 · Lo que se escribe en el grupo\n- **Respuesta a una foto** → es el texto: pide confirmación con botones.\n- **Botones** Publicar / Cancelar / historia.\n- **Comandos**: /estado, /ordutegia, /emaitzak, /matchday, /publicar <pieza>, /ayuda.\n\nEl resto de mensajes del grupo se ignora.\n\n🧪 **MODO ENSAYO**: en vez de publicar en Instagram, contesta «(ensayo) Se habría publicado».",
-        "width": 560,
+        "content": "## 2 · Lo que se escribe en el grupo\n- **Respuesta citando una foto** del bot → es el texto: pide confirmación con botones.\n- **Botones** Publicar / Cancelar / historia.\n- **Comandos**: /estado, /ordutegia, /emaitzak, /matchday, /publicar <pieza>, /ayuda.\n\nEl resto de mensajes del grupo se ignora.\n\n🧪 **MODO ENSAYO**: en vez de publicar en Instagram, contesta «(ensayo) Se habría publicado».",
+        "width": 600,
         "height": 300
       },
       "id": "6c47b110-37aa-5eee-90fc-30a543cefe67",
@@ -219,7 +238,7 @@
       "typeVersion": 2.2,
       "position": [
         -320,
-        880
+        900
       ]
     },
     {
@@ -234,7 +253,7 @@
       "typeVersion": 1.2,
       "position": [
         -80,
-        880
+        900
       ]
     },
     {
@@ -254,7 +273,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Decide qué hacer con cada mensaje o botón del grupo. Sin IA: reglas fijas.\nconst upd = $('Telegram (grupo)').first().json;\nconst piezas = $input.first().json.piezas || {};\nconst memoria = $getWorkflowStaticData('global');\nmemoria.pendientes = memoria.pendientes || {};\nmemoria.borradores = memoria.borradores || {};\nconst salir = (...cosas) => cosas.map(json => ({ json }));\nconst mensaje = texto => ({ accion: 'mensaje', texto });\n\n// ---------- botones\nconst cb = upd.callback_query;\nif (cb) {\n  const [accion, clave] = String(cb.data || '').split(':');\n  const b = memoria.borradores[clave];\n  if (!b) return salir(mensaje('Ese botón ya no vale (es de una publicación anterior).'));\n  const p = b.pieza;\n  if (accion === 'pub') {\n    // 🧪 ENSAYO: aquí irá la publicación real en Instagram (post con este texto)\n    return salir(\n      mensaje(`✅ (ensayo) Se habría publicado el post de ${p.nombre} con este texto:\\n\\n${b.texto}`),\n      { accion: 'botones', foto: p.historia, texto: `¿Subo también la historia de ${p.nombre}?`,\n        boton1: '✅ Subir historia', dato1: `his:${clave}`, boton2: 'No', dato2: `nohis:${clave}` });\n  }\n  if (accion === 'can') return salir(mensaje(`❌ Cancelado. Para poner otro texto, responde otra vez a la foto de ${p.nombre}.`));\n  if (accion === 'his') {\n    delete memoria.borradores[clave];\n    // 🧪 ENSAYO: aquí irá la historia real en Instagram\n    return salir(mensaje(`✅ (ensayo) Se habría subido la historia de ${p.nombre}.`));\n  }\n  if (accion === 'nohis') { delete memoria.borradores[clave]; return salir(mensaje('Vale, sin historia.')); }\n  return [];\n}\n\n// ---------- mensajes\nconst msg = upd.message;\nif (!msg || !msg.text) return [];\nconst texto = msg.text.trim();\n\n// Respuesta a una foto que pedía texto → es el texto de la publicación\nconst respondida = msg.reply_to_message && memoria.pendientes[msg.reply_to_message.message_id];\nif (respondida) {\n  const p = respondida;\n  const clave = `${p.tipo}-${p.semana}-${Date.now().toString(36)}`;\n  memoria.borradores[clave] = { pieza: p, texto };\n  const ids = Object.keys(memoria.borradores);\n  ids.slice(0, Math.max(0, ids.length - 30)).forEach(id => delete memoria.borradores[id]);\n  // El pie de una foto en Telegram admite unos 1000 caracteres: si es más largo, se enseña aparte\n  const largo = texto.length > 850;\n  return salir(\n    ...(largo ? [mensaje(texto)] : []),\n    { accion: 'botones', foto: p.post,\n      texto: `${largo ? '(texto arriba)' : texto}\\n\\n— ¿Publico ${p.nombre} con este texto?`,\n      boton1: '✅ Publicar', dato1: `pub:${clave}`, boton2: '❌ Cancelar', dato2: `can:${clave}` });\n}\n\n// Comandos\nif (!texto.startsWith('/')) return [];\nconst [orden, arg] = texto.split(/\\s+/);\nconst comando = orden.split('@')[0].toLowerCase();\nconst estado = p => p.lista ? 'lista ✅' : `no lista ⏳ (falta: ${(p.faltan || []).join('; ')})`;\nconst verPieza = p => ({ accion: 'foto', foto: p.post, texto: `${p.nombre}: ${estado(p)}` });\nconst lista = Object.values(piezas);\n\nif (comando === '/estado') {\n  if (!lista.length) return salir(mensaje('Esta semana no hay ninguna publicación con datos.'));\n  return salir(mensaje('📋 Publicaciones de esta semana:\\n' + lista.map(p => `• ${p.nombre}: ${estado(p)}`).join('\\n')));\n}\nif (['/ordutegia', '/emaitzak', '/matchday'].includes(comando)) {\n  const tipo = comando.slice(1);\n  const elegidas = lista.filter(p => p.tipo === tipo || (tipo === 'matchday' && p.tipo.startsWith('matchday')));\n  return elegidas.length ? salir(...elegidas.map(verPieza)) : salir(mensaje(`Esta semana no hay ${tipo.toUpperCase()}.`));\n}\nif (comando === '/publicar') {\n  const p = piezas[(arg || '').toLowerCase()];\n  if (!p) return salir(mensaje(`¿Cuál? Escribe /publicar y una de estas: ${Object.keys(piezas).join(', ') || '(ninguna esta semana)'}`));\n  return salir({ accion: 'preguntar', pieza: p });\n}\nif (comando === '/ayuda' || comando === '/start') {\n  return salir(mensaje('🤖 Comandos:\\n/estado → qué publicaciones están listas y qué falta\\n/ordutegia, /emaitzak, /matchday → ver la imagen\\n/publicar <pieza> → publicar una pieza aunque no esté lista (p. ej. /publicar emaitzak)\\n\\nPara poner el texto de una publicación, responde a la foto que manda el bot.'));\n}\nreturn [];"
+        "jsCode": "// Decide qué hacer con cada mensaje o botón del grupo. Sin IA y sin memoria: lo que hace falta\n// saber va escrito en los propios mensajes del bot («🆔 pieza» y el texto entre las rayas).\nconst upd = $('Telegram (grupo)').first().json;\nconst piezas = $input.first().json.piezas || {};\nconst salir = (...cosas) => cosas.map(json => ({ json }));\nconst mensaje = texto => ({ accion: 'mensaje', texto });\nconst RAYA = '────────────';\nconst pieza = tipo => piezas[tipo];\n\n// ---------- botones\nconst cb = upd.callback_query;\nif (cb) {\n  const [accion, tipo] = String(cb.data || '').split(':');\n  const p = pieza(tipo);\n  if (!p) return salir(mensaje('Esa publicación ya no está disponible (es de otra semana).'));\n  if (accion === 'pub') {\n    const partes = String((cb.message && cb.message.text) || '').split(RAYA);\n    const texto = (partes[1] || '').trim();\n    // 🧪 ENSAYO: aquí irá la publicación real en Instagram (post p.post con este texto)\n    return salir(\n      mensaje(`✅ (ensayo) Se habría publicado el post de ${p.nombre} con este texto:\\n\\n${texto}`),\n      { accion: 'foto_botones', foto: p.historia, texto: `¿Subo también la historia de ${p.nombre}?`,\n        boton1: '✅ Subir historia', dato1: `his:${tipo}`, boton2: 'No', dato2: `nohis:${tipo}` });\n  }\n  if (accion === 'can') return salir(mensaje(`❌ Cancelado. Para poner otro texto, responde otra vez a la foto de ${p.nombre}.`));\n  // 🧪 ENSAYO: aquí irá la historia real en Instagram (p.historia)\n  if (accion === 'his') return salir(mensaje(`✅ (ensayo) Se habría subido la historia de ${p.nombre}.`));\n  if (accion === 'nohis') return salir(mensaje('Vale, sin historia.'));\n  return [];\n}\n\n// ---------- mensajes\nconst msg = upd.message;\nif (!msg || !msg.text) return [];\nconst texto = msg.text.trim();\n\n// Respuesta citando una foto del bot → es el texto de la publicación. La pieza va en la línea «🆔».\nconst citada = msg.reply_to_message;\nif (citada && citada.from && citada.from.is_bot && citada.photo) {\n  const m = String(citada.caption || '').match(/🆔\\s*([a-z-]+)/);\n  const p = m && pieza(m[1]);\n  if (!p) return salir(mensaje('🤔 No sé de qué publicación es esa foto (puede ser de otra semana). Escribe /publicar y la pieza (por ejemplo /publicar matchday) y responde a la foto nueva.'));\n  if (texto.length > 2200) return salir(mensaje(`El texto tiene ${texto.length} caracteres y Instagram admite 2200. Acórtalo y vuelve a responder a la foto.`));\n  return salir({ accion: 'mensaje_botones',\n    texto: `📝 ${p.nombre}\\n${RAYA}\\n${texto}\\n${RAYA}\\n¿Publico con este texto?`,\n    boton1: '✅ Publicar', dato1: `pub:${p.tipo}`, boton2: '❌ Cancelar', dato2: `can:${p.tipo}` });\n}\n\n// Comandos\nif (!texto.startsWith('/')) return [];\nconst [orden, arg] = texto.split(/\\s+/);\nconst comando = orden.split('@')[0].toLowerCase();\nconst estado = p => p.lista ? 'lista ✅' : `no lista ⏳ (falta: ${(p.faltan || []).join('; ')})`;\nconst verPieza = p => ({ accion: 'foto', foto: p.post, texto: `${p.nombre}: ${estado(p)}` });\nconst lista = Object.values(piezas);\n\nif (comando === '/estado') {\n  if (!lista.length) return salir(mensaje('Esta semana no hay ninguna publicación con datos.'));\n  return salir(mensaje('📋 Publicaciones de esta semana:\\n' + lista.map(p => `• ${p.nombre}: ${estado(p)}`).join('\\n')));\n}\nif (['/ordutegia', '/emaitzak', '/matchday'].includes(comando)) {\n  const tipo = comando.slice(1);\n  const elegidas = lista.filter(p => p.tipo === tipo || (tipo === 'matchday' && p.tipo.startsWith('matchday')));\n  return elegidas.length ? salir(...elegidas.map(verPieza)) : salir(mensaje(`Esta semana no hay ${tipo.toUpperCase()}.`));\n}\nif (comando === '/publicar') {\n  const p = pieza((arg || '').toLowerCase());\n  if (!p) return salir(mensaje(`¿Cuál? Escribe /publicar y una de estas: ${Object.keys(piezas).join(', ') || '(ninguna esta semana)'}`));\n  return salir({ accion: 'preguntar', pieza: p });\n}\nif (comando === '/ayuda' || comando === '/start') {\n  return salir(mensaje('🤖 Comandos:\\n/estado → qué publicaciones están listas y qué falta\\n/ordutegia, /emaitzak, /matchday → ver la imagen\\n/publicar <pieza> → publicar una pieza aunque no esté lista (p. ej. /publicar emaitzak)\\n\\nPara poner el texto de una publicación, responde citando la foto que manda el bot.'));\n}\nreturn [];"
       },
       "id": "0f57af9e-5662-596d-8584-a5e15818ebb1",
       "name": "Interpretar",
@@ -326,6 +345,79 @@
           },
           "conditions": [
             {
+              "id": "c5790a80-db42-5506-995e-1b8eb0c29c17",
+              "leftValue": "={{ $json.accion }}",
+              "rightValue": "mensaje_botones",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ad472755-8c44-59b5-ad91-243d7cff6a22",
+      "name": "¿Mensaje con botones?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        160,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_DEL_GRUPO",
+        "text": "={{ $json.texto }}",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "={{ $json.boton1 }}",
+                    "additionalFields": {
+                      "callback_data": "={{ $json.dato1 }}"
+                    }
+                  },
+                  {
+                    "text": "={{ $json.boton2 }}",
+                    "additionalFields": {
+                      "callback_data": "={{ $json.dato2 }}"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "87e47180-62bf-509a-81c2-6c723148f12b",
+      "name": "Pedir confirmación",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        400,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
               "id": "3451c72d-c40c-5da0-a48e-0f8cc73aa184",
               "leftValue": "={{ $json.accion }}",
               "rightValue": "foto",
@@ -345,7 +437,7 @@
       "typeVersion": 2.2,
       "position": [
         160,
-        680
+        840
       ]
     },
     {
@@ -363,7 +455,7 @@
       "typeVersion": 1.2,
       "position": [
         400,
-        680
+        840
       ]
     },
     {
@@ -379,7 +471,7 @@
             {
               "id": "e0fdbd53-1710-5f02-824d-7b247685dc83",
               "leftValue": "={{ $json.accion }}",
-              "rightValue": "botones",
+              "rightValue": "foto_botones",
               "operator": {
                 "type": "string",
                 "operation": "equals"
@@ -396,7 +488,7 @@
       "typeVersion": 2.2,
       "position": [
         160,
-        840
+        1000
       ]
     },
     {
@@ -431,13 +523,13 @@
           ]
         }
       },
-      "id": "ae37ba08-71d2-5642-b45a-d6c1f1fe4365",
-      "name": "Foto con botones",
+      "id": "4618b11d-beba-565b-83d8-0c92081c44c1",
+      "name": "Preguntar historia",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
         400,
-        840
+        1000
       ]
     },
     {
@@ -470,7 +562,7 @@
       "typeVersion": 2.2,
       "position": [
         160,
-        1000
+        1160
       ]
     }
   ],
@@ -495,7 +587,18 @@
       "main": [
         [
           {
-            "node": "Piezas nuevas listas",
+            "node": "Piezas listas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Piezas listas": {
+      "main": [
+        [
+          {
+            "node": "No repetir piezas",
             "type": "main",
             "index": 0
           }
@@ -506,14 +609,25 @@
       "main": [
         [
           {
-            "node": "Avisos nuevos",
+            "node": "Separar avisos",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Avisos nuevos": {
+    "Separar avisos": {
+      "main": [
+        [
+          {
+            "node": "No repetir avisos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No repetir avisos": {
       "main": [
         [
           {
@@ -524,7 +638,7 @@
         ]
       ]
     },
-    "Piezas nuevas listas": {
+    "No repetir piezas": {
       "main": [
         [
           {
@@ -540,17 +654,6 @@
         [
           {
             "node": "Pedir texto",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Pedir texto": {
-      "main": [
-        [
-          {
-            "node": "Recordar pregunta",
             "type": "main",
             "index": 0
           }
@@ -604,6 +707,11 @@
             "index": 0
           },
           {
+            "node": "¿Mensaje con botones?",
+            "type": "main",
+            "index": 0
+          },
+          {
             "node": "¿Foto?",
             "type": "main",
             "index": 0
@@ -632,6 +740,17 @@
         ]
       ]
     },
+    "¿Mensaje con botones?": {
+      "main": [
+        [
+          {
+            "node": "Pedir confirmación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "¿Foto?": {
       "main": [
         [
@@ -647,7 +766,7 @@
       "main": [
         [
           {
-            "node": "Foto con botones",
+            "node": "Preguntar historia",
             "type": "main",
             "index": 0
           }

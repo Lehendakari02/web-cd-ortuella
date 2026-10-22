@@ -27,9 +27,11 @@ Cuando haya token de Instagram, se cambian esos dos puntos (marcados con `🧪 E
 ## Probarlo
 
 - En el grupo, escribe `/estado` o `/matchday`: el bot debe contestar.
-- Para no esperar a las 8:30: abre el nodo **Revisar 8:30 y 23:30** y pulsa **Execute step** (o *Test
-  workflow*). Las piezas listas de esta semana llegarán al grupo.
-- Los avisos de cambios: la primera vez solo «aprende» los que ya había; a partir de ahí manda los nuevos.
+- Para probar el recorrido completo: `/publicar matchday` → responder citando la foto → *Publicar*.
 
-La memoria del flujo (qué ya se ha ofrecido, qué fotos esperan texto) solo se guarda cuando el flujo está
-**activo**; en las pruebas manuales («Test») puede volver a ofrecer lo mismo.
+**No ejecutes a mano la parte programada** («Revisar 8:30 y 23:30»): los nodos *No repetir piezas* y
+*No repetir avisos* apuntan lo que se manda y luego ya no lo volverían a mandar. Para probar, usa los
+comandos en el grupo (`/publicar matchday`…).
+
+El bot no necesita recordar nada: en el pie de cada foto escribe qué pieza es (`🆔 matchday`) y, en el
+mensaje de confirmación, el texto va entre dos rayas. Al responder o pulsar un botón, lo lee de ahí.
