@@ -4,24 +4,32 @@
   "ordutegia": {
    "nombre": "ORDUTEGIA",
    "semana": "2026-10-19",
+   "lista": true,
+   "faltan": [],
    "post": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/ordutegia-post.jpg?v=140c768e3b",
    "historia": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/ordutegia-historia.jpg?v=cebde89b57"
   },
   "emaitzak": {
    "nombre": "EMAITZAK",
    "semana": "2026-10-12",
+   "lista": true,
+   "faltan": [],
    "post": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/emaitzak-post.jpg?v=47e30fb703",
    "historia": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/emaitzak-historia.jpg?v=ce7d5a4f34"
   },
   "matchday": {
    "nombre": "MATCH DAY C.D. ORTUELLA",
    "semana": "2026-10-19",
+   "lista": true,
+   "faltan": [],
    "post": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/matchday-post.jpg?v=c11e7dbc5a",
    "historia": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/matchday-historia.jpg?v=f153af2752"
   },
   "matchday-b": {
    "nombre": "MATCH DAY C.D. ORTUELLA B",
    "semana": "2026-10-19",
+   "lista": true,
+   "faltan": [],
    "post": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/matchday-b-post.jpg?v=c24b5e8829",
    "historia": "https://lehendakari02.github.io/web-cd-ortuella/redes/salida/matchday-b-historia.jpg?v=9c7841b961"
   }

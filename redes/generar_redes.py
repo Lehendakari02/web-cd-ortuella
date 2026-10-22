@@ -320,22 +320,30 @@ def main():
     prox_lunes, prox_domingo = semana(hoy + timedelta(days=1))
     ult_lunes, ult_domingo = semana(hoy - timedelta(days=(hoy.weekday() + 1) % 7))
 
+    # Una pieza solo está "lista" para publicar cuando tiene todos sus datos. No es lo mismo que un equipo
+    # no juegue (no hay partido: sale "—" y no bloquea) que jugar sin hora o sin resultado todavía (bloquea).
     horarios, resultados = [], []
+    faltan_horarios, faltan_resultados = [], []
     for c in config["categorias"]:
         eq = equipos.get(c["id"])
         prox = partidos_de_semana(eq, prox_lunes, prox_domingo) if eq else []
         horarios.append((c["ordutegia"], prox[0] if prox else None, eq))
+        if prox and not prox[0].get("hora"):
+            faltan_horarios.append(f"{c['ordutegia']}: falta la hora")
         if eq:
             for p in partidos_de_semana(eq, ult_lunes, ult_domingo):
                 if p.get("gl") is not None:
                     resultados.append((c["emaitzak"], p, eq))
+                else:
+                    faltan_resultados.append(f"{c['emaitzak']}: falta el resultado de {p['local']} - {p['visitante']}")
 
     piezas = {}
     base = sitio() + "/redes/salida/"
     dib = Dibujante()
     try:
-        def guardar(tipo, nombre, hacer_html, lunes):
-            piezas[tipo] = {"nombre": nombre, "semana": f"{lunes:%Y-%m-%d}"}
+        def guardar(tipo, nombre, hacer_html, lunes, faltan):
+            # "lista": n8n solo la publica cuando es true, y una sola vez por semana (ver README)
+            piezas[tipo] = {"nombre": nombre, "semana": f"{lunes:%Y-%m-%d}", "lista": not faltan, "faltan": faltan}
             for formato in TAMANOS:
                 archivo = f"{tipo}-{formato}.jpg"
                 huella = dib.jpg(hacer_html(formato), formato, os.path.join(SALIDA, archivo))
@@ -343,10 +351,12 @@ def main():
 
         if any(p for _, p, _ in horarios):
             fondo = fondo_de_la_semana(config["fondos"]["tablas"], prox_lunes)
-            guardar("ordutegia", "ORDUTEGIA", lambda f: html_ordutegia(horarios, config, f, fondo), prox_lunes)
+            guardar("ordutegia", "ORDUTEGIA", lambda f: html_ordutegia(horarios, config, f, fondo), prox_lunes,
+                    faltan_horarios)
         if resultados:
             fondo_r = fondo_de_la_semana(config["fondos"]["tablas"], ult_lunes)
-            guardar("emaitzak", "EMAITZAK", lambda f: html_emaitzak(resultados, config, f, fondo_r), ult_lunes)
+            guardar("emaitzak", "EMAITZAK", lambda f: html_emaitzak(resultados, config, f, fondo_r), ult_lunes,
+                    faltan_resultados)
 
         # Un MATCH DAY por cada equipo de config["matchday"] que juegue ese fin de semana
         n = prox_lunes.isocalendar()[1]
@@ -357,10 +367,13 @@ def main():
                 continue
             fondo_m = fondo_de_la_semana(config["fondos"]["matchday"], prox_lunes, orden)   # cada equipo, una foto distinta
             tipo = "matchday" if md["id"] == "primer" else f"matchday-{md['id']}"
+            faltan = [] if partido.get("hora") else ["falta la hora"]
+            if not (datos["campos"].get(partido["local"]) or partido.get("campo") or en_casa(partido, eq)):
+                faltan.append("falta el campo")
             guardar(tipo, f"MATCH DAY {md['club']}",
                     lambda f, partido=partido, eq=eq, fondo_m=fondo_m, md=md, orden=orden:
                         html_matchday(partido, eq, datos, config, f, (n + orden) % 2, fondo_m, md["club"]),
-                    prox_lunes)
+                    prox_lunes, faltan)
     finally:
         dib.cerrar()
 
@@ -368,7 +381,8 @@ def main():
     with open(os.path.join(SALIDA, "ultimo.json"), "w", encoding="utf-8") as f:
         json.dump(resumen, f, ensure_ascii=False, indent=1)
     for tipo, pieza in piezas.items():
-        print(f"{tipo}: {pieza['post']}")
+        estado = "lista" if pieza["lista"] else "NO lista (" + "; ".join(pieza["faltan"]) + ")"
+        print(f"{tipo}: {estado}  {pieza['post']}")
     if not piezas:
         print("Nada que publicar esta semana")
 

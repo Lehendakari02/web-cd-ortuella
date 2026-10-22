@@ -15,7 +15,15 @@ Deja el resultado en `redes/salida/`:
 - `ordutegia-post.jpg`, `ordutegia-historia.jpg`, `emaitzak-…`, `matchday-…` (Senior A), `matchday-b-…` (Senior B)
 - `ultimo.json`: la dirección pública de cada imagen. Es lo que lee n8n.
 
-Si una pieza no tiene datos (no hay partidos o resultados esa semana), no aparece en `ultimo.json`.
+Generar no es publicar: las imágenes se rehacen cada vez que se actualiza la web, pero cada pieza lleva
+`"lista": true` solo cuando tiene todos sus datos, y n8n publica cada una **una sola vez por fin de semana**:
+
+- ORDUTEGIA: cuando todos los equipos que juegan tienen fecha y hora. Un equipo sin partido (p. ej. el alevín
+  sin liga) sale con "—" y no bloquea; un partido sin hora todavía, sí.
+- EMAITZAK: cuando todos los partidos del fin de semana tienen resultado.
+- MATCH DAY (cada equipo por separado): cuando se sabe el día, la hora y el campo.
+
+Si falta algo, `"faltan"` dice qué. Si una pieza no tiene ningún dato (no hay partidos esa semana), no aparece.
 
 ## Qué se puede cambiar a mano (`config.json`)
 
@@ -61,33 +69,34 @@ El pie de foto de cada publicación lo escribe una persona por Telegram, porque 
 ```json
 { "datos_actualizados": "2026-10-21T14:23+00:00",
   "piezas": {
-    "ordutegia":  { "nombre": "ORDUTEGIA", "semana": "2026-10-19",
+    "ordutegia":  { "nombre": "ORDUTEGIA", "semana": "2026-10-19", "lista": true, "faltan": [],
                     "post": "https://…/ordutegia-post.jpg?v=…", "historia": "https://…/ordutegia-historia.jpg?v=…" },
     "emaitzak":   { … }, "matchday": { … }, "matchday-b": { … } } }
 ```
 
-Un flujo por pieza (por ejemplo ORDUTEGIA el jueves por la tarde, MATCH DAY el sábado por la mañana y
-EMAITZAK el domingo por la noche):
+Un solo flujo para todas las piezas:
 
-1. **Schedule Trigger**: el día y la hora.
-2. **HTTP Request** (GET) a `ultimo.json`.
-3. **IF**: que exista la pieza (p. ej. `piezas.matchday`) y que su `semana` sea la actual, para no repetir una vieja.
+1. **Schedule Trigger**: poco después de cada actualización de la web (p. ej. 8:30 y 23:30), o cada pocas horas.
+2. **HTTP Request** (GET) a `ultimo.json` y separar las piezas (una por elemento).
+3. **Filter**: solo las que tienen `lista` = true.
+4. **Remove Duplicates**, modo "eliminar los ya procesados en ejecuciones anteriores", con la clave
+   `{{tipo}}-{{semana}}`: así cada pieza se ofrece **una sola vez por semana**, aunque el flujo se ejecute muchas veces.
 
 **Post (lleva pie de foto):**
 
-4. **Telegram → Send Photo** con la imagen `post` y el mensaje "MATCH DAY listo. ¿Qué texto pongo en la publicación?".
-5. **Telegram → Send and Wait for Response**, respuesta de texto libre: n8n espera a que contestes con el texto.
-6. **Telegram → Send Photo** de nuevo con la imagen y, como pie, el texto recibido: "¿Publico esto?".
-7. **Telegram → Send and Wait for Response**, tipo aprobación (botones *Publicar* / *Cancelar*).
-8. Si *Publicar*: **Instagram** (o HTTP Request a la API de Instagram Graph): crear el contenedor con
+5. **Telegram → Send Photo** con la imagen `post` y el mensaje "MATCH DAY listo. ¿Qué texto pongo en la publicación?".
+6. **Telegram → Send and Wait for Response**, respuesta de texto libre: n8n espera a que contestes con el texto.
+7. **Telegram → Send Photo** de nuevo con la imagen y, como pie, el texto recibido: "¿Publico esto?".
+8. **Telegram → Send and Wait for Response**, tipo aprobación (botones *Publicar* / *Cancelar*).
+9. Si *Publicar*: **Instagram** (o HTTP Request a la API de Instagram Graph): crear el contenedor con
    `image_url` = `post` y `caption` = el texto recibido, publicarlo y avisar por Telegram: "Publicado ✅".
-   Si *Cancelar*: avisar y terminar (o volver al paso 4 para escribir otro texto).
+   Si *Cancelar*: avisar y terminar (o volver al paso 5 para escribir otro texto).
 
 **Historia (sin pie de foto):**
 
-9. **Telegram → Send Photo** con la imagen `historia`: "¿Subo esta historia?".
-10. **Telegram → Send and Wait for Response**, aprobación.
-11. Si *Publicar*: crear el contenedor con `image_url` = `historia` y `media_type` = `STORIES`, y publicarlo.
+10. **Telegram → Send Photo** con la imagen `historia`: "¿Subo esta historia?".
+11. **Telegram → Send and Wait for Response**, aprobación.
+12. Si *Publicar*: crear el contenedor con `image_url` = `historia` y `media_type` = `STORIES`, y publicarlo.
 
 Coste: 0 €. El bot de Telegram se crea gratis con @BotFather y se conecta en n8n con su token; n8n está
 en el servidor propio; la API de Instagram es gratuita. Mientras espera la respuesta, n8n no gasta nada.
