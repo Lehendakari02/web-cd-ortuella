@@ -200,7 +200,7 @@
       "id": "e512a4f1-6583-5411-80ee-a63988481972",
       "name": "Telegram (grupo)",
       "type": "n8n-nodes-base.telegramTrigger",
-      "typeVersion": 1.2,
+      "typeVersion": 1.5,
       "position": [
         -560,
         680
