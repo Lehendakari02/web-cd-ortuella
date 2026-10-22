@@ -27,3 +27,7 @@ Mientras la web está en pruebas no aparece en buscadores: con `PUBLICADA = Fals
 5. Dar de alta la web en Google Search Console y enviar `https://cdortuella.net/sitemap.xml`.
 
 Después de cambiar `estilos.css`, `comun.js` o `datos.js`, ejecuta `python3 generar_paginas.py`: actualiza la marca `?v=` de las páginas para que los navegadores no sigan mostrando la versión antigua guardada.
+
+## Derechos
+
+Todos los derechos reservados: el repositorio es público solo para poder publicar la web gratis, no para reutilizarlo. Ver `LICENSE`.
