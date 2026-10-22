@@ -273,7 +273,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Decide qué hacer con cada mensaje o botón del grupo. Sin IA y sin memoria: lo que hace falta\n// saber va escrito en los propios mensajes del bot («🆔 pieza» y el texto entre las rayas).\nconst upd = $('Telegram (grupo)').first().json;\nconst piezas = $input.first().json.piezas || {};\nconst salir = (...cosas) => cosas.map(json => ({ json }));\nconst mensaje = texto => ({ accion: 'mensaje', texto });\nconst RAYA = '────────────';\nconst pieza = tipo => piezas[tipo];\n\n// ---------- botones\n// Cada botón lleva «acción:pieza:semana». Antes de llegar aquí, el nodo «Cada botón una sola vez» ya ha\n// descartado los repetidos: un mismo «Publicar» (o «Subir historia») de una pieza solo pasa una vez por semana.\nconst cb = upd.callback_query;\nif (cb) {\n  const [accion, tipo, semana] = String(cb.data || '').split(':');\n  const p = pieza(tipo);\n  if (!p || p.semana !== semana) return salir(mensaje('Esa publicación ya no está disponible (es de otra semana).'));\n  const original = String((cb.message && cb.message.text) || '');\n  const quitarBotones = nota => ({ accion: 'quitar_botones', messageId: cb.message && cb.message.message_id,\n                                   texto: original.replace(/\\n¿Publico con este texto\\?$/, '') + `\\n${nota}` });\n  if (accion === 'pub') {\n    const texto = (original.split(RAYA)[1] || '').trim();\n    // 🧪 ENSAYO: aquí irá la publicación real en Instagram (post p.post con este texto)\n    return salir(\n      quitarBotones('✅ Publicado (ensayo)'),\n      mensaje(`✅ (ensayo) Se habría publicado el post de ${p.nombre} con este texto:\\n\\n${texto}`),\n      { accion: 'foto_botones', foto: p.historia, texto: `¿Subo también la historia de ${p.nombre}?`,\n        boton1: '✅ Subir historia', dato1: `his:${tipo}:${semana}`, boton2: 'No', dato2: `nohis:${tipo}:${semana}` });\n  }\n  if (accion === 'can') return salir(quitarBotones('❌ Cancelado'),\n    mensaje(`❌ Cancelado. Para poner otro texto, responde otra vez a la foto de ${p.nombre}.`));\n  // 🧪 ENSAYO: aquí irá la historia real en Instagram (p.historia)\n  if (accion === 'his') return salir(mensaje(`✅ (ensayo) Se habría subido la historia de ${p.nombre}.`));\n  if (accion === 'nohis') return salir(mensaje('Vale, sin historia.'));\n  return [];\n}\n\n// ---------- mensajes\nconst msg = upd.message;\nif (!msg || !msg.text) return [];\nconst texto = msg.text.trim();\n\n// Respuesta citando una foto del bot → es el texto de la publicación. La pieza va en la línea «🆔».\nconst citada = msg.reply_to_message;\nif (citada && citada.from && citada.from.is_bot && citada.photo) {\n  const m = String(citada.caption || '').match(/🆔\\s*([a-z-]+)/);\n  const p = m && pieza(m[1]);\n  if (!p) return salir(mensaje('🤔 No sé de qué publicación es esa foto (puede ser de otra semana). Escribe /publicar y la publicación (por ejemplo /publicar match day A) y responde a la foto nueva.'));\n  if (texto.length > 2200) return salir(mensaje(`El texto tiene ${texto.length} caracteres y Instagram admite 2200. Acórtalo y vuelve a responder a la foto.`));\n  return salir({ accion: 'mensaje_botones',\n    texto: `📝 ${p.nombre}\\n${RAYA}\\n${texto}\\n${RAYA}\\n¿Publico con este texto?`,\n    boton1: '✅ Publicar', dato1: `pub:${p.tipo}:${p.semana}`, boton2: '❌ Cancelar', dato2: `can:${p.tipo}:${p.semana}` });\n}\n\n// Comandos (en castellano; también valen los nombres en euskera de las imágenes)\nif (!texto.startsWith('/')) return [];\nconst [orden, ...resto] = texto.split(/\\s+/);\nconst comando = orden.split('@')[0].toLowerCase();\n// «match day A», «matchday-b», «resultados»… → la pieza de ultimo.json\nconst QUE = { horarios: 'ordutegia', ordutegia: 'ordutegia', resultados: 'emaitzak', emaitzak: 'emaitzak',\n              matchdaya: 'matchday', matchday: 'matchday', a: 'matchday', matchdayb: 'matchday-b', b: 'matchday-b' };\nconst cual = QUE[resto.join('').toLowerCase().replace(/[^a-z]/g, '')];\nconst NOMBRE = { ordutegia: 'Horarios (ORDUTEGIA)', emaitzak: 'Resultados (EMAITZAK)',\n                 matchday: 'Match day A', 'matchday-b': 'Match day B' };\nconst nombre = p => NOMBRE[p.tipo] || p.nombre;\nconst estado = p => p.lista ? 'lista ✅' : `no lista ⏳ (falta: ${(p.faltan || []).join('; ')})`;\nconst verPieza = p => ({ accion: 'foto', foto: p.post, texto: `${nombre(p)}: ${estado(p)}` });\nconst lista = Object.values(piezas);\n\nif (comando === '/estado') {\n  if (!lista.length) return salir(mensaje('Esta semana no hay ninguna publicación con datos.'));\n  return salir(mensaje('📋 Publicaciones de esta semana:\\n' + lista.map(p => `• ${nombre(p)}: ${estado(p)}`).join('\\n')));\n}\nconst VER = { '/horarios': ['ordutegia'], '/ordutegia': ['ordutegia'], '/resultados': ['emaitzak'], '/emaitzak': ['emaitzak'],\n              '/matchday': ['matchday', 'matchday-b'] };\nif (VER[comando]) {\n  const elegidas = VER[comando].map(pieza).filter(Boolean);\n  return elegidas.length ? salir(...elegidas.map(verPieza)) : salir(mensaje('Esta semana no hay esa publicación.'));\n}\nif (comando === '/publicar') {\n  const p = cual && pieza(cual);\n  if (!p) return salir(mensaje('¿Cuál? Escribe una de estas:\\n/publicar horarios\\n/publicar resultados\\n/publicar match day A\\n/publicar match day B' +\n    (cual ? '\\n\\n(Esa publicación no tiene datos esta semana.)' : '')));\n  return salir({ accion: 'preguntar', pieza: p });\n}\nif (comando === '/ayuda' || comando === '/start') {\n  return salir(mensaje('🤖 Comandos:\\n/estado → qué publicaciones están listas y qué falta\\n/horarios, /resultados, /matchday → ver la imagen\\n/publicar horarios · /publicar resultados · /publicar match day A · /publicar match day B → publicar aunque no esté lista\\n\\nPara poner el texto de una publicación, responde citando la foto que manda el bot.'));\n}\nreturn [];"
+        "jsCode": "// Decide qué hacer con cada mensaje o botón del grupo. Sin IA y sin memoria: lo que hace falta\n// saber va escrito en los propios mensajes del bot («🆔 pieza» y el texto entre las rayas).\nconst upd = $('Telegram (grupo)').first().json;\nconst piezas = $input.first().json.piezas || {};\nconst salir = (...cosas) => cosas.map(json => ({ json }));\nconst mensaje = texto => ({ accion: 'mensaje', texto });\nconst RAYA = '────────────';\nconst pieza = tipo => piezas[tipo];\n\n// ---------- botones\n// Cada botón lleva «acción:pieza:semana». Antes de llegar aquí, el nodo «Cada botón una sola vez» ya ha\n// descartado los repetidos: un mismo «Publicar» (o «Subir historia») de una pieza solo pasa una vez por semana.\nconst cb = upd.callback_query;\nif (cb) {\n  const [accion, tipo, semana] = String(cb.data || '').split(':');\n  const p = pieza(tipo);\n  if (!p || p.semana !== semana) return salir(mensaje('Esa publicación ya no está disponible (es de otra semana).'));\n  const original = String((cb.message && cb.message.text) || '');\n  // Deja el mensaje sin botones y con una marca de lo que se ha hecho\n  const quitarBotones = nota => {\n    const resto = original.replace(/\\n?¿(Publico con este texto|Subo también la historia[^?]*)\\?$/, '');\n    return { accion: 'quitar_botones', messageId: cb.message && cb.message.message_id,\n             texto: resto ? `${resto}\\n${nota}` : `Historia de ${p.nombre}: ${nota}` };\n  };\n  if (accion === 'pub') {\n    const texto = (original.split(RAYA)[1] || '').trim();\n    // 🧪 ENSAYO: aquí irá la publicación real en Instagram (post p.post con este texto)\n    return salir(\n      quitarBotones('✅ Publicado (ensayo)'),\n      mensaje(`✅ (ensayo) Se habría publicado el post de ${p.nombre} con este texto:\\n\\n${texto}`),\n      { accion: 'foto', foto: p.historia, texto: `Historia de ${p.nombre}` },\n      { accion: 'mensaje_botones', texto: `¿Subo también la historia de ${p.nombre}?`,\n        boton1: '✅ Subir historia', dato1: `his:${tipo}:${semana}`, boton2: 'No', dato2: `nohis:${tipo}:${semana}` });\n  }\n  if (accion === 'can') return salir(quitarBotones('❌ Cancelado'),\n    mensaje(`❌ Cancelado. Para poner otro texto, responde otra vez a la foto de ${p.nombre}.`));\n  // 🧪 ENSAYO: aquí irá la historia real en Instagram (p.historia)\n  if (accion === 'his') return salir(quitarBotones('✅ subida (ensayo)'),\n    mensaje(`✅ (ensayo) Se habría subido la historia de ${p.nombre}.`));\n  if (accion === 'nohis') return salir(quitarBotones('no se sube'));\n  return [];\n}\n\n// ---------- mensajes\nconst msg = upd.message;\nif (!msg || !msg.text) return [];\nconst texto = msg.text.trim();\n\n// Respuesta citando una foto del bot → es el texto de la publicación. La pieza va en la línea «🆔».\nconst citada = msg.reply_to_message;\nif (citada && citada.from && citada.from.is_bot && citada.photo) {\n  const m = String(citada.caption || '').match(/🆔\\s*([a-z-]+)/);\n  const p = m && pieza(m[1]);\n  if (!p) return salir(mensaje('🤔 No sé de qué publicación es esa foto (puede ser de otra semana). Escribe /publicar y la publicación (por ejemplo /publicar match day A) y responde a la foto nueva.'));\n  if (texto.length > 2200) return salir(mensaje(`El texto tiene ${texto.length} caracteres y Instagram admite 2200. Acórtalo y vuelve a responder a la foto.`));\n  return salir({ accion: 'mensaje_botones',\n    texto: `📝 ${p.nombre}\\n${RAYA}\\n${texto}\\n${RAYA}\\n¿Publico con este texto?`,\n    boton1: '✅ Publicar', dato1: `pub:${p.tipo}:${p.semana}`, boton2: '❌ Cancelar', dato2: `can:${p.tipo}:${p.semana}` });\n}\n\n// Comandos (en castellano; también valen los nombres en euskera de las imágenes)\nif (!texto.startsWith('/')) return [];\nconst [orden, ...resto] = texto.split(/\\s+/);\nconst comando = orden.split('@')[0].toLowerCase();\n// «match day A», «matchday-b», «resultados»… → la pieza de ultimo.json\nconst QUE = { horarios: 'ordutegia', ordutegia: 'ordutegia', resultados: 'emaitzak', emaitzak: 'emaitzak',\n              matchdaya: 'matchday', matchday: 'matchday', a: 'matchday', matchdayb: 'matchday-b', b: 'matchday-b' };\nconst cual = QUE[resto.join('').toLowerCase().replace(/[^a-z]/g, '')];\nconst NOMBRE = { ordutegia: 'Horarios (ORDUTEGIA)', emaitzak: 'Resultados (EMAITZAK)',\n                 matchday: 'Match day A', 'matchday-b': 'Match day B' };\nconst nombre = p => NOMBRE[p.tipo] || p.nombre;\nconst estado = p => p.lista ? 'lista ✅' : `no lista ⏳ (falta: ${(p.faltan || []).join('; ')})`;\nconst verPieza = p => ({ accion: 'foto', foto: p.post, texto: `${nombre(p)}: ${estado(p)}` });\nconst lista = Object.values(piezas);\n\nif (comando === '/estado') {\n  if (!lista.length) return salir(mensaje('Esta semana no hay ninguna publicación con datos.'));\n  return salir(mensaje('📋 Publicaciones de esta semana:\\n' + lista.map(p => `• ${nombre(p)}: ${estado(p)}`).join('\\n')));\n}\nconst VER = { '/horarios': ['ordutegia'], '/ordutegia': ['ordutegia'], '/resultados': ['emaitzak'], '/emaitzak': ['emaitzak'],\n              '/matchday': ['matchday', 'matchday-b'] };\nif (VER[comando]) {\n  const elegidas = VER[comando].map(pieza).filter(Boolean);\n  return elegidas.length ? salir(...elegidas.map(verPieza)) : salir(mensaje('Esta semana no hay esa publicación.'));\n}\nif (comando === '/publicar') {\n  const p = cual && pieza(cual);\n  if (!p) return salir(mensaje('¿Cuál? Escribe una de estas:\\n/publicar horarios\\n/publicar resultados\\n/publicar match day A\\n/publicar match day B' +\n    (cual ? '\\n\\n(Esa publicación no tiene datos esta semana.)' : '')));\n  return salir({ accion: 'preguntar', pieza: p });\n}\nif (comando === '/ayuda' || comando === '/start') {\n  return salir(mensaje('🤖 Comandos:\\n/estado → qué publicaciones están listas y qué falta\\n/horarios, /resultados, /matchday → ver la imagen\\n/publicar horarios · /publicar resultados · /publicar match day A · /publicar match day B → publicar aunque no esté lista\\n\\nPara poner el texto de una publicación, responde citando la foto que manda el bot.'));\n}\nreturn [];"
       },
       "id": "0f57af9e-5662-596d-8584-a5e15818ebb1",
       "name": "Interpretar",
@@ -282,6 +282,57 @@
       "position": [
         400,
         760
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5244bad9-000b-5b45-871e-268c4d4a83b9",
+              "leftValue": "={{ $json.accion }}",
+              "rightValue": "quitar_botones",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1d84ccbe-48a5-52cf-bcb4-cd6125089be8",
+      "name": "¿Quitar botones?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "editMessageText",
+        "messageType": "message",
+        "chatId": "CHAT_ID_DEL_GRUPO",
+        "messageId": "={{ $json.messageId }}",
+        "text": "={{ $json.texto }}",
+        "additionalFields": {}
+      },
+      "id": "c61eb58c-adbd-56d4-ab33-08e517b491f9",
+      "name": "Quitar botones",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        440
       ]
     },
     {
@@ -314,7 +365,7 @@
       "typeVersion": 2.2,
       "position": [
         640,
-        520
+        600
       ]
     },
     {
@@ -331,7 +382,58 @@
       "typeVersion": 1.2,
       "position": [
         880,
-        520
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3451c72d-c40c-5da0-a48e-0f8cc73aa184",
+              "leftValue": "={{ $json.accion }}",
+              "rightValue": "foto",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "6df47893-0abf-515d-a696-775c4533a6d2",
+      "name": "¿Foto?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "CHAT_ID_DEL_GRUPO",
+        "file": "={{ $json.foto }}",
+        "additionalFields": {
+          "caption": "={{ $json.texto }}"
+        }
+      },
+      "id": "22b5fa0a-08af-5d75-b7a3-90711bdb07ab",
+      "name": "Enseñar foto",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        760
       ]
     },
     {
@@ -364,7 +466,7 @@
       "typeVersion": 2.2,
       "position": [
         640,
-        680
+        920
       ]
     },
     {
@@ -404,132 +506,7 @@
       "typeVersion": 1.2,
       "position": [
         880,
-        680
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "3451c72d-c40c-5da0-a48e-0f8cc73aa184",
-              "leftValue": "={{ $json.accion }}",
-              "rightValue": "foto",
-              "operator": {
-                "type": "string",
-                "operation": "equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "id": "6df47893-0abf-515d-a696-775c4533a6d2",
-      "name": "¿Foto?",
-      "type": "n8n-nodes-base.filter",
-      "typeVersion": 2.2,
-      "position": [
-        640,
-        840
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "sendPhoto",
-        "chatId": "CHAT_ID_DEL_GRUPO",
-        "file": "={{ $json.foto }}",
-        "additionalFields": {
-          "caption": "={{ $json.texto }}"
-        }
-      },
-      "id": "22b5fa0a-08af-5d75-b7a3-90711bdb07ab",
-      "name": "Enseñar foto",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        880,
-        840
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "e0fdbd53-1710-5f02-824d-7b247685dc83",
-              "leftValue": "={{ $json.accion }}",
-              "rightValue": "foto_botones",
-              "operator": {
-                "type": "string",
-                "operation": "equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "id": "7acdca59-10cd-51ef-84de-d7c8549dc0e6",
-      "name": "¿Foto con botones?",
-      "type": "n8n-nodes-base.filter",
-      "typeVersion": 2.2,
-      "position": [
-        640,
-        1000
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "sendPhoto",
-        "chatId": "CHAT_ID_DEL_GRUPO",
-        "file": "={{ $json.foto }}",
-        "additionalFields": {
-          "caption": "={{ $json.texto }}"
-        },
-        "replyMarkup": "inlineKeyboard",
-        "inlineKeyboard": {
-          "rows": [
-            {
-              "row": {
-                "buttons": [
-                  {
-                    "text": "={{ $json.boton1 }}",
-                    "additionalFields": {
-                      "callback_data": "={{ $json.dato1 }}"
-                    }
-                  },
-                  {
-                    "text": "={{ $json.boton2 }}",
-                    "additionalFields": {
-                      "callback_data": "={{ $json.dato2 }}"
-                    }
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      },
-      "id": "4618b11d-beba-565b-83d8-0c92081c44c1",
-      "name": "Preguntar historia",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        880,
-        1000
+        920
       ]
     },
     {
@@ -562,7 +539,7 @@
       "typeVersion": 2.2,
       "position": [
         640,
-        1160
+        1080
       ]
     },
     {
@@ -603,7 +580,7 @@
       "parameters": {
         "operation": "removeItemsSeenInPreviousExecutions",
         "logic": "removeItemsWithAlreadySeenKeyValues",
-        "dedupeValue": "={{ $json.callback_query.data }}",
+        "dedupeValue": "={{ $json.callback_query.data.startsWith('can:') ? $json.callback_query.data + ':' + $json.callback_query.message.message_id : $json.callback_query.data.replace(/^nohis:/, 'his:') }}",
         "options": {}
       },
       "id": "ee739cf5-ddb0-55df-a5aa-2972d2e6c992",
@@ -613,57 +590,6 @@
       "position": [
         -80,
         1060
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "editMessageText",
-        "messageType": "message",
-        "chatId": "CHAT_ID_DEL_GRUPO",
-        "messageId": "={{ $json.messageId }}",
-        "text": "={{ $json.texto }}",
-        "additionalFields": {}
-      },
-      "id": "c61eb58c-adbd-56d4-ab33-08e517b491f9",
-      "name": "Quitar botones",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        880,
-        1320
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "5244bad9-000b-5b45-871e-268c4d4a83b9",
-              "leftValue": "={{ $json.accion }}",
-              "rightValue": "quitar_botones",
-              "operator": {
-                "type": "string",
-                "operation": "equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "id": "1d84ccbe-48a5-52cf-bcb4-cd6125089be8",
-      "name": "¿Quitar botones?",
-      "type": "n8n-nodes-base.filter",
-      "typeVersion": 2.2,
-      "position": [
-        640,
-        1320
       ]
     }
   ],
@@ -840,17 +766,12 @@
             "index": 0
           },
           {
-            "node": "¿Mensaje con botones?",
-            "type": "main",
-            "index": 0
-          },
-          {
             "node": "¿Foto?",
             "type": "main",
             "index": 0
           },
           {
-            "node": "¿Foto con botones?",
+            "node": "¿Mensaje con botones?",
             "type": "main",
             "index": 0
           },
@@ -884,17 +805,6 @@
         ]
       ]
     },
-    "¿Mensaje con botones?": {
-      "main": [
-        [
-          {
-            "node": "Pedir confirmación",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "¿Foto?": {
       "main": [
         [
@@ -906,11 +816,11 @@
         ]
       ]
     },
-    "¿Foto con botones?": {
+    "¿Mensaje con botones?": {
       "main": [
         [
           {
-            "node": "Preguntar historia",
+            "node": "Pedir confirmación",
             "type": "main",
             "index": 0
           }
