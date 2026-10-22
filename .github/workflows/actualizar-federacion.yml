@@ -30,6 +30,9 @@ jobs:
       - name: Instalar Pillow (para dejar ligeros los escudos de los rivales)
         run: python3 -m pip install --quiet pillow
 
+      - name: Guardar una copia de los datos de antes (para avisar de los cambios)
+        run: cp datos-federacion.js "$RUNNER_TEMP/datos-antes.js"
+
       - name: Leer la Federación
         # Si falla un equipo, el script guarda los demás y avisa; la web sigue con los últimos datos buenos
         run: python3 actualizar_federacion.py || echo "::warning::No se pudieron actualizar todos los equipos"
@@ -42,6 +45,9 @@ jobs:
       - name: Generar las publicaciones de Instagram (redes/salida)
         # Si falla, la web se guarda igual; n8n seguirá viendo las imágenes anteriores
         run: python3 redes/generar_redes.py || echo "::warning::No se pudieron generar las publicaciones"
+
+      - name: Detectar cambios de partido (avisos a la directiva por Telegram, los manda n8n)
+        run: python3 redes/detectar_cambios.py "$RUNNER_TEMP/datos-antes.js" datos-federacion.js || echo "::warning::No se pudieron detectar los cambios"
 
       - name: Guardar los cambios en la web
         run: |
