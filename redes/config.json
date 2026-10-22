@@ -30,14 +30,8 @@
     "Otxartaga-Berri, Ortuella": "OTXARTAGA BERRI"
   },
 
-  "patrocinadores": {
-    "ordutegia": ["tesoralia.png", "markofer.webp", "euskadi-lowcost.png", "sukalde.png"],
-    "emaitzak":  ["tesoralia.png", "markofer.webp", "irish-pub.png", "sukalde.png"]
-  },
-
-  "_fondos": "Rutas desde la raíz de la web. MATCH DAY va rotando entre sus fondos cada semana.",
+  "_fondos": "Fotos de MATCH DAY (rutas desde la raíz de la web). Van rotando cada semana. Las tablas usan los lienzos de Canva (preparar_fondos.py).",
   "fondos": {
-    "tablas": "img/marcador.jpg",
     "matchday": ["img/tribuna.jpg", "img/grada.jpg", "img/campo.jpg", "img/entrada.jpg"]
   },
 

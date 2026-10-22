@@ -23,15 +23,19 @@ Si una pieza no tiene datos (no hay partidos o resultados esa semana), no aparec
   Alevín sale con "—" hasta que se añada a `EQUIPOS` en `actualizar_federacion.py` (cuando la Federación publique su liga).
 - **nombres_cortos**: cómo se escribe un rival ("Union Sport B" → "UNIÓN B"). Si no está, sale el nombre de la Federación.
 - **campos_cortos**: igual para los campos de MATCH DAY.
-- **patrocinadores**: los 4 logos de cada pieza (archivos de `redes/patrocinadores/`).
-- **fondos**: foto de fondo de las tablas y lista de fotos de MATCH DAY (van rotando cada semana).
+- **fondos**: lista de fotos de MATCH DAY (van rotando cada semana; solo se usan las de esta lista).
 - **textos**: frases para acompañar cada publicación (van rotando cada semana).
 
 Otros archivos:
 
+- `canva/`: las plantillas exportadas de Canva. ORDUTEGIA y EMAITZAK usan su fondo, título y banda de
+  patrocinadores tal cual. Si cambia algo en Canva (p. ej. un patrocinador), exportar en PNG 1080×1350,
+  sustituir el archivo con el mismo nombre y ejecutar `python3 redes/preparar_fondos.py`: rehace los
+  lienzos limpios de `plantillas/` (sin las filas de equipos, que las dibuja el generador).
 - `plantillas/estilos.css`: el diseño (tamaños, colores, posiciones).
 - `escudos/`: escudos de los rivales en buena calidad (se bajan solos de la Federación y se les quita el fondo blanco).
-  Si uno sale mal, se puede poner a mano como `escudos/<Nombre exacto de la Federación>.png`. El nuestro: `escudos/Ortuella.png`.
+  Si uno sale mal, se puede poner a mano como `escudos/<Nombre exacto de la Federación>.png`. El nuestro,
+  `escudos/Ortuella.png`, sale del escudo de `canva/`.
 - `recursos/`: tipografía Montserrat e iconos (casa, avión, balón).
 
 Probar en local (hacer como si hoy fuera otro día):

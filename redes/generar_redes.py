@@ -163,13 +163,14 @@ def pagina(cuerpo, formato, clase):
             f'</head><body class="{clase} {formato}">{cuerpo}<script>{AJUSTAR}</script></body></html>')
 
 
-def banda_patrocinadores(lista):
-    logos = "".join(f'<img src="{uri(os.path.join(REDES, "patrocinadores", l))}">' for l in lista)
-    return f'<div class="patrocinadores"><div class="logos">{logos}</div></div>'
+# Dónde van las filas sobre los lienzos de Canva (preparar_fondos.py), en px desde arriba.
+# Son las medidas de las plantillas de Canva; en la historia, desplazadas como el título.
+FILAS_ORDUTEGIA = {"post": (324, None), "historia": (520, 1530)}   # primera fila (post) o zona donde centrarlas (historia); una cada 81 px
+ZONA_EMAITZAK = {"post": (284, 1152), "historia": (534, 1560)}   # de dónde a dónde pueden ir los resultados
 
 
-def fondo_tablas(config):
-    return f'<div class="fondo desenfocado" style="background-image:url(\'{uri(os.path.join(RAIZ, config["fondos"]["tablas"]))}\')"></div>'
+def lienzo(pieza, formato):
+    return f'<img class="lienzo" src="{uri(os.path.join(REDES, "plantillas", f"fondo-{pieza}-{formato}.png"))}">'
 
 
 def icono(nombre):
@@ -178,18 +179,19 @@ def icono(nombre):
 
 def html_ordutegia(filas, config, formato):
     lineas = ""
-    for cat, p, equipo in filas:
+    for i, (cat, p, equipo) in enumerate(filas):
         if p:
             hora = f" {p['hora']}" if p.get("hora") else ""
             dato = f'<span class="texto ajustar">{html.escape(corto(rival(p, equipo), config))} {date.fromisoformat(p["fecha"]):%d/%m}{hora}</span>'
             dato += icono("casa" if en_casa(p, equipo) else "avion")
         else:
             dato = '<span class="texto">—</span>'
-        lineas += f'<div class="fila"><div class="cat">{html.escape(cat)}</div><div class="dato">{dato}</div></div>'
-    cuerpo = (fondo_tablas(config) +
-              f'<main><h1 class="titulo">ORDUTEGIA</h1><div class="tabla">{lineas}</div>'
-              f'{banda_patrocinadores(config["patrocinadores"]["ordutegia"])}</main>')
-    return pagina(cuerpo, formato, "ordutegia")
+        desde, hasta = FILAS_ORDUTEGIA[formato]
+        if hasta:
+            desde += (hasta - desde - (81 * (len(filas) - 1) + 56)) // 2
+        arriba = desde + 81 * i
+        lineas += f'<div class="fila" style="top:{arriba}px"><div class="cat">{html.escape(cat)}</div><div class="dato">{dato}</div></div>'
+    return pagina(lienzo("ordutegia", formato) + lineas, formato, "ordutegia")
 
 
 def gol(n, lado):
@@ -197,19 +199,19 @@ def gol(n, lado):
 
 
 def html_emaitzak(filas, config, formato):
+    # Los resultados se reparten por la zona: juntos si son muchos, con más aire si son pocos
+    desde, hasta = ZONA_EMAITZAK[formato]
+    paso = min(150, (hasta - desde - 80) / max(len(filas) - 1, 1))
+    primera = desde + (hasta - desde - 80 - paso * (len(filas) - 1)) / 2
+    fila = uri(os.path.join(REDES, "plantillas", "fila-emaitzak.png"))
     lineas = ""
-    for cat, p, equipo in filas:
+    for i, (cat, p, equipo) in enumerate(filas):
         nuestro, otro = html.escape(cat), html.escape(corto(rival(p, equipo), config))
         local, visitante = (nuestro, otro) if en_casa(p, equipo) else (otro, nuestro)
-        lineas += (f'<div class="partido"><div class="cinta"><span class="local ajustar">{local}</span>'
-                   f'<span class="visitante ajustar">{visitante}</span></div>'
-                   f'<div class="marcador"><span class="etq l">LOCAL</span><span class="etq v">VISITANTE</span>'
-                   f'{icono("balon")}{gol(p["gl"], "l")}{gol(p["gv"], "v")}</div></div>')
-    n = len(filas)
-    cuerpo = (fondo_tablas(config) +
-              f'<main><h1 class="titulo">EMAITZAK</h1><div class="tabla n{n}">{lineas}</div>'
-              f'{banda_patrocinadores(config["patrocinadores"]["emaitzak"])}</main>')
-    return pagina(cuerpo, formato, "emaitzak")
+        lineas += (f'<div class="partido" style="top:{primera + paso * i:.0f}px"><img src="{fila}">'
+                   f'<span class="equipo local ajustar">{local}</span><span class="equipo visitante ajustar">{visitante}</span>'
+                   f'{gol(p["gl"], "l")}{gol(p["gv"], "v")}</div>')
+    return pagina(lienzo("emaitzak", formato) + lineas, formato, "emaitzak")
 
 
 def html_matchday(p, equipo, datos, config, formato, variante, fondo):
