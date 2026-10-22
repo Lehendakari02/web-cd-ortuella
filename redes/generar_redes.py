@@ -343,7 +343,7 @@ def main():
     try:
         def guardar(tipo, nombre, hacer_html, lunes, faltan):
             # "lista": n8n solo la publica cuando es true, y una sola vez por semana (ver README)
-            piezas[tipo] = {"nombre": nombre, "semana": f"{lunes:%Y-%m-%d}", "lista": not faltan, "faltan": faltan}
+            piezas[tipo] = {"tipo": tipo, "nombre": nombre, "semana": f"{lunes:%Y-%m-%d}", "lista": not faltan, "faltan": faltan}
             for formato in TAMANOS:
                 archivo = f"{tipo}-{formato}.jpg"
                 huella = dib.jpg(hacer_html(formato), formato, os.path.join(SALIDA, archivo))

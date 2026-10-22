@@ -69,7 +69,7 @@ El pie de foto de cada publicación lo escribe una persona por Telegram, porque 
 ```json
 { "datos_actualizados": "2026-10-21T14:23+00:00",
   "piezas": {
-    "ordutegia":  { "nombre": "ORDUTEGIA", "semana": "2026-10-19", "lista": true, "faltan": [],
+    "ordutegia":  { "tipo": "ordutegia", "nombre": "ORDUTEGIA", "semana": "2026-10-19", "lista": true, "faltan": [],
                     "post": "https://…/ordutegia-post.jpg?v=…", "historia": "https://…/ordutegia-historia.jpg?v=…" },
     "emaitzak":   { … }, "matchday": { … }, "matchday-b": { … } } }
 ```
