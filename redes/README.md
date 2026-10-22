@@ -82,6 +82,9 @@ python3 redes/generar_redes.py --fecha 2026-10-22
 
 ## Publicar con n8n (con revisión por Telegram)
 
+**Flujo listo para importar:** [`n8n/flujo-ensayo.json`](n8n/flujo-ensayo.json), con instrucciones en
+[`n8n/README.md`](n8n/README.md). Lo de abajo explica cómo funciona por dentro.
+
 El pie de foto de cada publicación lo escribe una persona por Telegram, porque depende del momento
 (empieza la liga, partido difícil, jornada importante…). No hay IA ni textos automáticos: coste 0.
 

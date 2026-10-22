@@ -1,0 +1,675 @@
+{
+  "name": "CD Ortuella · Publicaciones y avisos (ENSAYO)",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 1 · Revisar dos veces al día\nDespués de cada actualización de la web (8:30 y 23:30, hora de Madrid):\n- **Publicaciones**: manda al grupo cada pieza *lista* (una sola vez por semana) y pide el texto.\n- **Avisos**: manda los cambios de partido nuevos.\n\nPara probar sin esperar: pulsa **Test workflow** con este disparador.",
+        "width": 560,
+        "height": 260
+      },
+      "id": "841d5375-8b9a-5ca5-9470-96926b6d270a",
+      "name": "Nota 1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        -460
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "30 8,23 * * *"
+            }
+          ]
+        }
+      },
+      "id": "0c7e6a77-4832-5619-a072-55a97e95285f",
+      "name": "Revisar 8:30 y 23:30",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -560,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://lehendakari02.github.io/web-cd-ortuella/redes/salida/ultimo.json?t={{ $now.toMillis() }}",
+        "options": {}
+      },
+      "id": "b4c668d3-5161-5a19-9e4c-49ad850f4483",
+      "name": "Leer ultimo.json",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -320,
+        -200
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Piezas con \"lista\": true que aún no se han ofrecido esta semana (se recuerdan entre ejecuciones)\nconst memoria = $getWorkflowStaticData('global');\nmemoria.ofrecidas = memoria.ofrecidas || {};\nconst salida = [];\nfor (const pieza of Object.values($input.first().json.piezas || {})) {\n  const clave = `${pieza.tipo}-${pieza.semana}`;\n  if (!pieza.lista || memoria.ofrecidas[clave]) continue;\n  memoria.ofrecidas[clave] = new Date().toISOString();\n  salida.push({ json: { pieza } });\n}\n// Olvidar lo de hace más de 2 meses\nfor (const [clave, cuando] of Object.entries(memoria.ofrecidas)) {\n  if (Date.now() - new Date(cuando) > 60 * 864e5) delete memoria.ofrecidas[clave];\n}\nreturn salida;"
+      },
+      "id": "39b84883-218c-52c4-9181-e1c1390d8442",
+      "name": "Piezas nuevas listas",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -80,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://lehendakari02.github.io/web-cd-ortuella/redes/salida/cambios.json?t={{ $now.toMillis() }}",
+        "options": {}
+      },
+      "id": "fe351761-f21d-5e0f-8b54-4d95e5b92a58",
+      "name": "Leer cambios.json",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -320,
+        0
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Avisos de cambios de partido que aún no se han mandado\nconst memoria = $getWorkflowStaticData('global');\nconst avisos = $input.first().json.avisos || [];\nif (!memoria.avisosVistos) {\n  // Primera vez: se dan por vistos los que ya había, para no mandar avisos viejos de golpe\n  memoria.avisosVistos = avisos.map(a => a.id);\n  return [];\n}\nconst nuevos = avisos.filter(a => !memoria.avisosVistos.includes(a.id));\nmemoria.avisosVistos = [...memoria.avisosVistos, ...nuevos.map(a => a.id)].slice(-300);\nreturn nuevos.map(a => ({ json: { texto: a.texto } }));"
+      },
+      "id": "12f2bcd1-a351-517b-93fe-e1267fe6d7b0",
+      "name": "Avisos nuevos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -80,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_DEL_GRUPO",
+        "text": "={{ $json.texto }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "a28d2add-9d36-5309-b99f-b2a3dd36b95b",
+      "name": "Mandar aviso",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        160,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Foto del post + petición del texto. Sirve para las piezas programadas y para /publicar\nreturn $input.all().map(item => {\n  const p = item.json.pieza;\n  const falta = (p.faltan || []).length ? `\\n⚠️ Ojo, falta: ${p.faltan.join('; ')}` : '';\n  return { json: { pieza: p, foto: p.post,\n    texto: `${p.nombre} lista para publicar ✅${falta}\\n\\n✍️ RESPONDE A ESTE MENSAJE (mantén pulsado → Responder) con el texto de la publicación.` } };\n});"
+      },
+      "id": "e155bea2-6b3e-5494-8e98-db03a0b78969",
+      "name": "Preparar pregunta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "CHAT_ID_DEL_GRUPO",
+        "file": "={{ $json.foto }}",
+        "additionalFields": {
+          "caption": "={{ $json.texto }}"
+        }
+      },
+      "id": "aec741c6-7fe5-5bcb-8ddc-21ab32129212",
+      "name": "Pedir texto",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        400,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Se apunta qué pieza corresponde a cada foto, para reconocer la respuesta\nconst memoria = $getWorkflowStaticData('global');\nmemoria.pendientes = memoria.pendientes || {};\nconst piezas = $('Preparar pregunta').all();\n$input.all().forEach((item, i) => { memoria.pendientes[item.json.message_id] = piezas[i].json.pieza; });\n// Solo se guardan las 30 últimas\nconst ids = Object.keys(memoria.pendientes);\nids.slice(0, Math.max(0, ids.length - 30)).forEach(id => delete memoria.pendientes[id]);\nreturn [];"
+      },
+      "id": "134f9e12-3cf3-5a74-ab4b-eed52e302350",
+      "name": "Recordar pregunta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 2 · Lo que se escribe en el grupo\n- **Respuesta a una foto** → es el texto: pide confirmación con botones.\n- **Botones** Publicar / Cancelar / historia.\n- **Comandos**: /estado, /ordutegia, /emaitzak, /matchday, /publicar <pieza>, /ayuda.\n\nEl resto de mensajes del grupo se ignora.\n\n🧪 **MODO ENSAYO**: en vez de publicar en Instagram, contesta «(ensayo) Se habría publicado».",
+        "width": 560,
+        "height": 300
+      },
+      "id": "6c47b110-37aa-5eee-90fc-30a543cefe67",
+      "name": "Nota 2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message",
+          "callback_query"
+        ],
+        "additionalFields": {
+          "chatIds": "CHAT_ID_DEL_GRUPO"
+        }
+      },
+      "id": "e512a4f1-6583-5411-80ee-a63988481972",
+      "name": "Telegram (grupo)",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -560,
+        680
+      ],
+      "webhookId": "65eabb7f-178b-5d9f-8790-5494ede1c3e4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "boton",
+              "leftValue": "={{ $json.callback_query }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "32c5f835-ae6b-5212-9a6c-e6ac5d0e35f0",
+      "name": "¿Es un botón?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -320,
+        880
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "callback",
+        "queryId": "={{ $json.callback_query.id }}",
+        "additionalFields": {}
+      },
+      "id": "f9e3b174-efe4-5d69-99b9-9eccf279c1e5",
+      "name": "Quitar el «cargando» del botón",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -80,
+        880
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://lehendakari02.github.io/web-cd-ortuella/redes/salida/ultimo.json?t={{ $now.toMillis() }}",
+        "options": {}
+      },
+      "id": "9cf13bc9-18d2-5a41-aecf-a4ea5ab285aa",
+      "name": "Leer ultimo.json (bot)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -320,
+        680
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Decide qué hacer con cada mensaje o botón del grupo. Sin IA: reglas fijas.\nconst upd = $('Telegram (grupo)').first().json;\nconst piezas = $input.first().json.piezas || {};\nconst memoria = $getWorkflowStaticData('global');\nmemoria.pendientes = memoria.pendientes || {};\nmemoria.borradores = memoria.borradores || {};\nconst salir = (...cosas) => cosas.map(json => ({ json }));\nconst mensaje = texto => ({ accion: 'mensaje', texto });\n\n// ---------- botones\nconst cb = upd.callback_query;\nif (cb) {\n  const [accion, clave] = String(cb.data || '').split(':');\n  const b = memoria.borradores[clave];\n  if (!b) return salir(mensaje('Ese botón ya no vale (es de una publicación anterior).'));\n  const p = b.pieza;\n  if (accion === 'pub') {\n    // 🧪 ENSAYO: aquí irá la publicación real en Instagram (post con este texto)\n    return salir(\n      mensaje(`✅ (ensayo) Se habría publicado el post de ${p.nombre} con este texto:\\n\\n${b.texto}`),\n      { accion: 'botones', foto: p.historia, texto: `¿Subo también la historia de ${p.nombre}?`,\n        boton1: '✅ Subir historia', dato1: `his:${clave}`, boton2: 'No', dato2: `nohis:${clave}` });\n  }\n  if (accion === 'can') return salir(mensaje(`❌ Cancelado. Para poner otro texto, responde otra vez a la foto de ${p.nombre}.`));\n  if (accion === 'his') {\n    delete memoria.borradores[clave];\n    // 🧪 ENSAYO: aquí irá la historia real en Instagram\n    return salir(mensaje(`✅ (ensayo) Se habría subido la historia de ${p.nombre}.`));\n  }\n  if (accion === 'nohis') { delete memoria.borradores[clave]; return salir(mensaje('Vale, sin historia.')); }\n  return [];\n}\n\n// ---------- mensajes\nconst msg = upd.message;\nif (!msg || !msg.text) return [];\nconst texto = msg.text.trim();\n\n// Respuesta a una foto que pedía texto → es el texto de la publicación\nconst respondida = msg.reply_to_message && memoria.pendientes[msg.reply_to_message.message_id];\nif (respondida) {\n  const p = respondida;\n  const clave = `${p.tipo}-${p.semana}-${Date.now().toString(36)}`;\n  memoria.borradores[clave] = { pieza: p, texto };\n  const ids = Object.keys(memoria.borradores);\n  ids.slice(0, Math.max(0, ids.length - 30)).forEach(id => delete memoria.borradores[id]);\n  // El pie de una foto en Telegram admite unos 1000 caracteres: si es más largo, se enseña aparte\n  const largo = texto.length > 850;\n  return salir(\n    ...(largo ? [mensaje(texto)] : []),\n    { accion: 'botones', foto: p.post,\n      texto: `${largo ? '(texto arriba)' : texto}\\n\\n— ¿Publico ${p.nombre} con este texto?`,\n      boton1: '✅ Publicar', dato1: `pub:${clave}`, boton2: '❌ Cancelar', dato2: `can:${clave}` });\n}\n\n// Comandos\nif (!texto.startsWith('/')) return [];\nconst [orden, arg] = texto.split(/\\s+/);\nconst comando = orden.split('@')[0].toLowerCase();\nconst estado = p => p.lista ? 'lista ✅' : `no lista ⏳ (falta: ${(p.faltan || []).join('; ')})`;\nconst verPieza = p => ({ accion: 'foto', foto: p.post, texto: `${p.nombre}: ${estado(p)}` });\nconst lista = Object.values(piezas);\n\nif (comando === '/estado') {\n  if (!lista.length) return salir(mensaje('Esta semana no hay ninguna publicación con datos.'));\n  return salir(mensaje('📋 Publicaciones de esta semana:\\n' + lista.map(p => `• ${p.nombre}: ${estado(p)}`).join('\\n')));\n}\nif (['/ordutegia', '/emaitzak', '/matchday'].includes(comando)) {\n  const tipo = comando.slice(1);\n  const elegidas = lista.filter(p => p.tipo === tipo || (tipo === 'matchday' && p.tipo.startsWith('matchday')));\n  return elegidas.length ? salir(...elegidas.map(verPieza)) : salir(mensaje(`Esta semana no hay ${tipo.toUpperCase()}.`));\n}\nif (comando === '/publicar') {\n  const p = piezas[(arg || '').toLowerCase()];\n  if (!p) return salir(mensaje(`¿Cuál? Escribe /publicar y una de estas: ${Object.keys(piezas).join(', ') || '(ninguna esta semana)'}`));\n  return salir({ accion: 'preguntar', pieza: p });\n}\nif (comando === '/ayuda' || comando === '/start') {\n  return salir(mensaje('🤖 Comandos:\\n/estado → qué publicaciones están listas y qué falta\\n/ordutegia, /emaitzak, /matchday → ver la imagen\\n/publicar <pieza> → publicar una pieza aunque no esté lista (p. ej. /publicar emaitzak)\\n\\nPara poner el texto de una publicación, responde a la foto que manda el bot.'));\n}\nreturn [];"
+      },
+      "id": "0f57af9e-5662-596d-8584-a5e15818ebb1",
+      "name": "Interpretar",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -80,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1c3e4c12-dd29-5c8b-aa65-f647a6c9edf9",
+              "leftValue": "={{ $json.accion }}",
+              "rightValue": "mensaje",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "5992bd0d-240e-5511-a8c3-0f9bc088bc27",
+      "name": "¿Mensaje?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        160,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_DEL_GRUPO",
+        "text": "={{ $json.texto }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "ff9e8a04-249b-5382-8227-8321c7f83440",
+      "name": "Responder",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        400,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3451c72d-c40c-5da0-a48e-0f8cc73aa184",
+              "leftValue": "={{ $json.accion }}",
+              "rightValue": "foto",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "6df47893-0abf-515d-a696-775c4533a6d2",
+      "name": "¿Foto?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        160,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "CHAT_ID_DEL_GRUPO",
+        "file": "={{ $json.foto }}",
+        "additionalFields": {
+          "caption": "={{ $json.texto }}"
+        }
+      },
+      "id": "22b5fa0a-08af-5d75-b7a3-90711bdb07ab",
+      "name": "Enseñar foto",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        400,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e0fdbd53-1710-5f02-824d-7b247685dc83",
+              "leftValue": "={{ $json.accion }}",
+              "rightValue": "botones",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "7acdca59-10cd-51ef-84de-d7c8549dc0e6",
+      "name": "¿Foto con botones?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        160,
+        840
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "CHAT_ID_DEL_GRUPO",
+        "file": "={{ $json.foto }}",
+        "additionalFields": {
+          "caption": "={{ $json.texto }}"
+        },
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "={{ $json.boton1 }}",
+                    "additionalFields": {
+                      "callback_data": "={{ $json.dato1 }}"
+                    }
+                  },
+                  {
+                    "text": "={{ $json.boton2 }}",
+                    "additionalFields": {
+                      "callback_data": "={{ $json.dato2 }}"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "id": "ae37ba08-71d2-5642-b45a-d6c1f1fe4365",
+      "name": "Foto con botones",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        400,
+        840
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3e73310a-d10e-5644-b9c9-3021689e3e59",
+              "leftValue": "={{ $json.accion }}",
+              "rightValue": "preguntar",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b91f45f2-aae7-588a-a474-2773d84fc3a0",
+      "name": "¿Pedir texto?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        160,
+        1000
+      ]
+    }
+  ],
+  "connections": {
+    "Revisar 8:30 y 23:30": {
+      "main": [
+        [
+          {
+            "node": "Leer ultimo.json",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Leer cambios.json",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer ultimo.json": {
+      "main": [
+        [
+          {
+            "node": "Piezas nuevas listas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer cambios.json": {
+      "main": [
+        [
+          {
+            "node": "Avisos nuevos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Avisos nuevos": {
+      "main": [
+        [
+          {
+            "node": "Mandar aviso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Piezas nuevas listas": {
+      "main": [
+        [
+          {
+            "node": "Preparar pregunta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar pregunta": {
+      "main": [
+        [
+          {
+            "node": "Pedir texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pedir texto": {
+      "main": [
+        [
+          {
+            "node": "Recordar pregunta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram (grupo)": {
+      "main": [
+        [
+          {
+            "node": "Leer ultimo.json (bot)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "¿Es un botón?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Es un botón?": {
+      "main": [
+        [
+          {
+            "node": "Quitar el «cargando» del botón",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer ultimo.json (bot)": {
+      "main": [
+        [
+          {
+            "node": "Interpretar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Interpretar": {
+      "main": [
+        [
+          {
+            "node": "¿Mensaje?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "¿Foto?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "¿Foto con botones?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "¿Pedir texto?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Mensaje?": {
+      "main": [
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Foto?": {
+      "main": [
+        [
+          {
+            "node": "Enseñar foto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Foto con botones?": {
+      "main": [
+        [
+          {
+            "node": "Foto con botones",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Pedir texto?": {
+      "main": [
+        [
+          {
+            "node": "Preparar pregunta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Madrid"
+  },
+  "pinData": {},
+  "active": false
+}
