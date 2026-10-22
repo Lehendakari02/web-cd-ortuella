@@ -98,30 +98,21 @@ El pie de foto de cada publicación lo escribe una persona por Telegram, porque 
     "emaitzak":   { … }, "matchday": { … }, "matchday-b": { … } } }
 ```
 
-Un solo flujo para todas las piezas:
+Cómo funciona el flujo (un solo flujo para todo):
 
-1. **Schedule Trigger**: poco después de cada actualización de la web (p. ej. 8:30 y 23:30), o cada pocas horas.
-2. **HTTP Request** (GET) a `ultimo.json` y separar las piezas (una por elemento).
-3. **Filter**: solo las que tienen `lista` = true.
-4. **Remove Duplicates**, modo "eliminar los ya procesados en ejecuciones anteriores", con la clave
-   `{{tipo}}-{{semana}}`: así cada pieza se ofrece **una sola vez por semana**, aunque el flujo se ejecute muchas veces.
-
-**Post (lleva pie de foto):**
-
-5. **Telegram → Send Photo** con la imagen `post` y el mensaje "{{nombre}} listo. ¿Qué texto pongo en la publicación?".
-   Si `faltan` no está vacío (p. ej. un partido aplazado), añadir al mensaje: "Ojo, falta: {{faltan}}".
-6. **Telegram → Send and Wait for Response**, respuesta de texto libre: n8n espera a que contestes con el texto.
-7. **Telegram → Send Photo** de nuevo con la imagen y, como pie, el texto recibido: "¿Publico esto?".
-8. **Telegram → Send and Wait for Response**, tipo aprobación (botones *Publicar* / *Cancelar*).
-9. Si *Publicar*: **Instagram** (o HTTP Request a la API de Instagram Graph): crear el contenedor con
-   `image_url` = `post` y `caption` = el texto recibido, publicarlo y avisar por Telegram: "Publicado ✅".
-   Si *Cancelar*: avisar y terminar (o volver al paso 5 para escribir otro texto).
-
-**Historia (sin pie de foto):**
-
-10. **Telegram → Send Photo** con la imagen `historia`: "¿Subo esta historia?".
-11. **Telegram → Send and Wait for Response**, aprobación.
-12. Si *Publicar*: crear el contenedor con `image_url` = `historia` y `media_type` = `STORIES`, y publicarlo.
+- **Dos veces al día** (8:30 y 23:30) lee `ultimo.json` y manda al grupo de Telegram cada pieza con
+  `"lista": true` que aún no haya ofrecido esa semana (clave `tipo-semana`, guardada en la memoria del flujo).
+  Si `faltan` no está vacío (p. ej. un partido aplazado), lo dice en el mensaje.
+- **El texto del pie** se escribe **citando la foto** del bot (mantener pulsado → Responder). Lo que se
+  escribe en el grupo sin citar una foto se ignora.
+- El bot enseña la foto con ese texto y los botones **Publicar / Cancelar**; al publicar, pregunta aparte
+  si se sube también la **historia** (sin texto).
+- 🧪 **Modo ensayo**: mientras no haya token de Instagram, en vez de publicar contesta «(ensayo) Se habría
+  publicado…». Para publicar de verdad: crear el contenedor con `image_url` = `post` y `caption` = el texto
+  (en la historia, `image_url` = `historia` y `media_type` = `STORIES`) y publicarlo, en los dos puntos
+  marcados con `🧪 ENSAYO` del nodo *Interpretar*.
+- También lee `cambios.json` y manda los **avisos de cambios de partido** nuevos, y contesta a los
+  **comandos** `/estado`, `/ordutegia`, `/emaitzak`, `/matchday`, `/publicar <pieza>` y `/ayuda`.
 
 Coste: 0 €. El bot de Telegram se crea gratis con @BotFather y se conecta en n8n con su token; n8n está
 en el servidor propio; la API de Instagram es gratuita. Mientras espera la respuesta, n8n no gasta nada.
