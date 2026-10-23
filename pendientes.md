@@ -4,10 +4,13 @@ Lo que queda por hacer en este proyecto. Lo común a todos los proyectos (servid
 la bitácora (`Lehendakari02/bitacora`). Cuando algo se hace, pasa a «Hecho».
 
 ## Próximos pasos
-1. **Leer la Federación desde el servidor de Hetzner.** La Federación corta a GitHub en casi cada pasada (desde fuera
-   lee los 5 equipos sin fallos). Primero, una prueba desde el servidor; si va bien, el montaje fijo: usuario propio
-   sin sudo ni Docker, tarea programada, sube solo los datos con una llave limitada a este repositorio, y GitHub sigue
-   haciendo imágenes y web. (No un robot propio de GitHub mientras el repositorio sea público.)
+1. **Leer la Federación sin que nos bloquee.** Comprobado el 23/10: la Federación bloquea a los centros de datos
+   (desde Hetzner llega la página vacía; desde GitHub, casi siempre). Pedirle acceso no es posible.
+   - Hecho: el robot de GitHub pasa 7 veces al día; cada pasada guarda lo que lee. Ver en las comprobaciones del 26 y
+     29/10 si con eso basta.
+   - Alternativas a probar: **Google Apps Script** (gratis, servidores de Google, sin aparatos: primero una prueba de
+     10 minutos) o un **aparato en casa** (móvil Android viejo con Termux, o Raspberry Pi ~60-80 €).
+   - Descartado: el servidor de Hetzner (bloqueado) y los *proxies* residenciales (sería saltarse el bloqueo).
 2. **Publicación automática con veto.** El bot manda la pieza con un texto predeterminado (frases que rotan, con datos)
    y avisa: «se publicará sola a las 10:00; responde a la foto para cambiar el texto o pulsa Cancelar». Se puede
    decidir por pieza (p. ej. MATCH DAY con texto vuestro). Cambia la regla de la bitácora «nada se publica sin

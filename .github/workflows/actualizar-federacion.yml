@@ -1,13 +1,23 @@
 # Lee los datos de la Federación Vizcaína y actualiza la web sola.
-# Se ejecuta sola 2 veces al día (y también se puede lanzar a mano: Actions → Actualizar datos de la Federación → Run workflow).
+# Se ejecuta sola 7 veces al día (y también se puede lanzar a mano: Actions → Actualizar datos de la Federación → Run workflow).
+# Son tantas porque la Federación bloquea a menudo a las máquinas de GitHub (y siempre a los centros de datos como Hetzner):
+# cada pasada guarda lo que consigue leer sin estropear lo demás, y las máquinas de GitHub cambian de dirección,
+# así que entre todas las pasadas del día los datos van llegando.
 # Si la Federación no responde para algún equipo, ese equipo conserva sus últimos datos buenos hasta la siguiente pasada.
 name: Actualizar datos de la Federación
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 6 * * *"    # 8:00 en Madrid en horario de verano (7:00 en invierno)
-    - cron: "0 21 * * *"   # 23:00 en Madrid en horario de verano (22:00 en invierno)
+    # Horas en UTC (en Madrid, +2 en verano y +1 en invierno). Las de las 6 y las 21 van justo antes de que n8n
+    # ofrezca las publicaciones (8:30 y 23:30 en Madrid); la de la 1, para los resultados que la Federación sube tarde.
+    - cron: "0 1 * * *"
+    - cron: "0 6 * * *"
+    - cron: "0 9 * * *"
+    - cron: "0 12 * * *"
+    - cron: "0 15 * * *"
+    - cron: "0 18 * * *"
+    - cron: "0 21 * * *"
 
 permissions:
   contents: write
