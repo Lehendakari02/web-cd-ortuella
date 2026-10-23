@@ -1,7 +1,7 @@
 /* Archivo generado automáticamente por actualizar_federacion.py. No editar a mano. */
 window.FEDERACION = {
  "temporada": "2026/27",
- "actualizado": "2026-10-23T06:39+00:00",
+ "actualizado": "2026-10-23T17:47+00:00",
  "equipos": [
   {
    "id": "primer",
@@ -1231,10 +1231,10 @@ window.FEDERACION = {
      "fecha": "2026-10-18",
      "local": "San Pedro B",
      "visitante": "Ortuella B",
+     "campo": "Galindo 1, Sestao",
      "gl": 2,
      "gv": 1,
-     "acta": 10056943,
-     "campo": "Galindo 1, Sestao"
+     "acta": 10056943
     },
     {
      "jornada": 2,
@@ -1243,8 +1243,7 @@ window.FEDERACION = {
      "visitante": "La Arboleda",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "hora": "12:00"
+     "acta": null
     },
     {
      "jornada": 3,
@@ -1253,8 +1252,7 @@ window.FEDERACION = {
      "visitante": "Ortuella B",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "P. Municipal - Villasana, Valle de Mena"
+     "acta": null
     },
     {
      "jornada": 4,
@@ -1737,10 +1735,10 @@ window.FEDERACION = {
      "fecha": "2026-10-04",
      "local": "Abanto",
      "visitante": "Ortuella",
+     "campo": "El Mortuero, Las Carreras",
      "gl": 2,
      "gv": 1,
-     "acta": 10059311,
-     "campo": "El Mortuero, Las Carreras"
+     "acta": 10059311
     },
     {
      "jornada": 2,
@@ -1756,30 +1754,30 @@ window.FEDERACION = {
      "fecha": "2026-10-18",
      "local": "Begoñako Arteagabe",
      "visitante": "Ortuella",
+     "campo": "Galindo 1, Sestao",
      "gl": 1,
      "gv": 3,
-     "acta": 10059326,
-     "campo": "Galindo 1, Sestao"
+     "acta": 10059326
     },
     {
      "jornada": 4,
      "fecha": "2026-10-24",
      "local": "Ortuella",
      "visitante": "Zuazo B",
+     "hora": "16:15",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "hora": "16:15"
+     "acta": null
     },
     {
      "jornada": 5,
      "fecha": "2026-11-01",
      "local": "Zazpi Landa A",
      "visitante": "Ortuella",
+     "campo": "P.M. Zorroza, Bilbao",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "P.M. Zorroza, Bilbao"
+     "acta": null
     },
     {
      "jornada": 6,
@@ -2889,10 +2887,10 @@ window.FEDERACION = {
      "fecha": "2026-10-31",
      "local": "Peña Athletic 13 Gorria",
      "visitante": "Ortuella",
+     "campo": "PAB. Jose Mª Ruiz Mateos",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "PAB. Jose Mª Ruiz Mateos"
+     "acta": null
     },
     {
      "jornada": 2,
