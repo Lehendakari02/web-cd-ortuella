@@ -25,7 +25,7 @@
 <meta name="theme-color" content="#0b2a5b">
 <meta name="apple-mobile-web-app-title" content="CD Ortuella">
 <link rel="preload" href="fuentes/big-shoulders-display.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="estilos.css?v=fd143712">
+<link rel="stylesheet" href="estilos.css?v=7c527de6">
 </head>
 <body data-page="equipos">
 <a class="skip" href="#contenido">Saltar al contenido</a>
@@ -45,7 +45,7 @@
 <script src="datos.js?v=5ac0fd3a"></script>
 <script src="datos-federacion.js"></script>
 <script src="datos-noticias.js"></script>
-<script src="comun.js?v=ae74399f"></script>
+<script src="comun.js?v=194afc1b"></script>
 <!-- Contador de visitas anónimo, sin cookies. Panel privado: https://cdortuella.goatcounter.com -->
 <script data-goatcounter="https://cdortuella.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 <script>
@@ -67,9 +67,9 @@
     heading("Nuestros equipos", "Del fútbol base al primer equipo. Elige uno para ver su clasificación, partidos y goleadores.", "");
     $("teamView").innerHTML = '<section class="block"><div class="wrap"><div class="teams-grid">' + F.equipos.map(function (t) {
       var r = X.ourRow(t);
-      return '<a class="team-card" href="#' + X.SLUG[t.id] + '"><svg width="40" height="40" aria-hidden="true"><use href="#shirt"/></svg><h3>' + X.APODO[t.id] + "</h3><p>" + esc(t.categoria) + "</p>" +
+      return '<a class="team-card" href="#' + X.SLUG[t.id] + '"><svg width="40" height="40" aria-hidden="true"><use href="#shirt"/></svg><h2>' + X.APODO[t.id] + "</h2><p>" + esc(t.categoria) + "</p>" +
         (r ? '<div class="pos-line">' + r.pos + "º · " + r.pts + " puntos</div>" : "") + '<span class="go">Ver equipo</span></a>';
-    }).join("") + '<a class="team-card" href="#base"><svg width="40" height="40" aria-hidden="true"><use href="#shirt"/></svg><h3>Fútbol base</h3><p>Infantil y alevín</p><span class="go">Ver equipos</span></a></div></div></section>';
+    }).join("") + '<a class="team-card" href="#base"><svg width="40" height="40" aria-hidden="true"><use href="#shirt"/></svg><h2>Fútbol base</h2><p>Infantil y alevín</p><span class="go">Ver equipos</span></a></div></div></section>';
   }
 
   function base() {
@@ -78,8 +78,8 @@
     var fed = {}; BASE.forEach(function (t) { fed[X.APODO[t.id]] = t; });
     $("teamView").innerHTML = '<section class="block"><div class="wrap"><div class="teams-grid">' + C.equiposBase.map(function (t) {
       var f = fed[t.nombre];
-      if (f) return '<a class="team-card" href="#' + X.SLUG[f.id] + '"><svg width="40" height="40" aria-hidden="true"><use href="#shirt"/></svg><h3>' + esc(t.nombre) + "</h3><p>" + esc(f.categoria) + '</p><span class="go">Ver equipo</span></a>';
-      return '<div class="team-card"><svg width="40" height="40" aria-hidden="true"><use href="#shirt"/></svg><h3>' + esc(t.nombre) + "</h3><p>" + esc(t.categoria) + "</p>" + (t.pendiente ? '<div class="pos-line"><span class="pending">Pendiente de confirmar</span></div>' : "") + "</div>";
+      if (f) return '<a class="team-card" href="#' + X.SLUG[f.id] + '"><svg width="40" height="40" aria-hidden="true"><use href="#shirt"/></svg><h2>' + esc(t.nombre) + "</h2><p>" + esc(f.categoria) + '</p><span class="go">Ver equipo</span></a>';
+      return '<div class="team-card"><svg width="40" height="40" aria-hidden="true"><use href="#shirt"/></svg><h2>' + esc(t.nombre) + "</h2><p>" + esc(t.categoria) + "</p>" + (t.pendiente ? '<div class="pos-line"><span class="pending">Pendiente de confirmar</span></div>' : "") + "</div>";
     }).join("") + '</div><p class="source">Juvenil y cadete compiten en la Federación: los tienes arriba con su clasificación.</p></div></section>';
   }
 
@@ -133,7 +133,7 @@
         '<div class="stat"><b>' + pl.reduce(function (n, p) { return n + (X.isUs(p.local, t) ? p.gl : p.gv); }, 0) + "-" + pl.reduce(function (n, p) { return n + (X.isUs(p.local, t) ? p.gv : p.gl); }, 0) + "</b><small>Goles a favor y en contra</small></div>") +
         '<div class="stat"><small>Últimos partidos</small>' + X.formDots(t) + "</div>" +
       "</div>" +
-      '<div class="comp' + (t.clasificacion.length ? "" : " solo") + '">' + (t.clasificacion.length ? '<div><div class="panel"><h3>Clasificación</h3><div class="sub">' + esc(t.categoria) + '</div><div class="table-scroll"><table>' + X.TABLE_HEAD + "<tbody>" + X.tableRows(t) + "</tbody></table></div></div></div>" : "") +
+      '<h2 class="sr-only">Temporada ' + esc(F.temporada) + "</h2>" + '<div class="comp' + (t.clasificacion.length ? "" : " solo") + '">' + (t.clasificacion.length ? '<div><div class="panel"><h3>Clasificación</h3><div class="sub">' + esc(t.categoria) + '</div><div class="table-scroll"><table>' + X.TABLE_HEAD + "<tbody>" + X.tableRows(t) + "</tbody></table></div></div></div>" : "") +
       '<div><div class="panel"><div class="panel-head"><h3>Partidos</h3>' + calPop(t) + '</div><div class="tabs" role="tablist"><button role="tab" id="tabNext" aria-selected="true">Próximos</button><button role="tab" id="tabRes" aria-selected="false">Resultados</button></div><ul class="games" id="games"></ul></div>' +
       ((t.porteros || []).length ?
         '<div class="panel"><h3>Goleadores y porteros</h3><div class="tabs" role="tablist"><button role="tab" id="tabGol" aria-selected="true">Goleadores</button><button role="tab" id="tabPor" aria-selected="false">Porteros</button></div><ul class="scorers" id="scorers">' + X.scorersList(t) + "</ul></div>" :

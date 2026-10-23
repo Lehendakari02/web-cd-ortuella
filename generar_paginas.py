@@ -74,10 +74,11 @@ PAGES["index"] = dict(
  body="""<section class="hero">
   <div class="wrap">
     <div class="flip" id="flip">
+      <h1 class="sr-only">Club Deportivo Ortuella</h1>
       <div class="flip-in">
         <div class="face club">
           <span class="eyebrow"><span>Otxartaga Berri · Ortuella</span><i class="sep"> · </i><span>Desde 1949</span></span>
-          <h1>Club Deportivo <span>Ortuella</span></h1>
+          <p class="hero-title" aria-hidden="true">Club Deportivo <span>Ortuella</span></p>
           <p class="lead">Más de 75 años de fútbol en Ortuella. Primer equipo, filial y cantera, todos de azul y blanco.</p>
           <div class="btns">
             <a class="btn" href="partidos.html">Partidos y resultados</a>
@@ -138,21 +139,22 @@ PAGES["index"] = dict(
     var d = C.destacado, flip = document.getElementById("flip");
     if (!d || (d.hasta && d.hasta < new Date().toISOString().slice(0, 10))) return;
     var face = document.getElementById("destacado"), dots = document.getElementById("flipDots");
-    face.innerHTML = (d.foto ? '<a class="dest-pic" href="' + esc(d.enlace) + '" tabindex="-1"><img src="' + esc(d.foto) + '" alt="" decoding="async"></a>' : "") +
+    face.innerHTML = (d.foto ? '<a class="dest-pic" href="' + esc(d.enlace) + '" tabindex="-1" aria-hidden="true"><img src="' + esc(d.foto) + '" alt="" decoding="async"></a>' : "") +
       '<div class="dest-txt"><span class="eyebrow">' + esc(d.etiqueta || "Novedad") + '</span><h2>' + esc(d.titulo) + "</h2>" +
       (d.texto ? '<p class="lead">' + esc(d.texto) + "</p>" : "") +
       (d.enlace ? '<div class="btns"><a class="btn" href="' + esc(d.enlace) + '">' + esc(d.boton || "Ver más") + "</a></div>" : "") + "</div>";
     face.hidden = false; dots.hidden = false;
     dots.innerHTML = '<button type="button" aria-label="Ver la novedad"></button><button type="button" aria-label="Ver el club"></button>';
-    var showClub = false, paused = false, timer;
+    // Si se toca un punto, se queda en esa cara y deja de girar (WCAG 2.2.2). Con «reducir movimiento» no gira solo.
+    var showClub = false, paused = false, stopped = window.matchMedia("(prefers-reduced-motion: reduce)").matches, timer;
     function render() {
       flip.classList.toggle("on-club", showClub);
       face.setAttribute("aria-hidden", showClub); flip.querySelector(".club").setAttribute("aria-hidden", !showClub);
-      [].forEach.call(flip.querySelectorAll(".face"), function (f) { [].forEach.call(f.querySelectorAll("a"), function (a) { a.tabIndex = (f.getAttribute("aria-hidden") === "true" || a.parentNode.className === "dest-pic") ? -1 : 0; }); });
+      [].forEach.call(flip.querySelectorAll(".face"), function (f) { [].forEach.call(f.querySelectorAll("a"), function (a) { a.tabIndex = (f.getAttribute("aria-hidden") === "true" || a.className === "dest-pic") ? -1 : 0; }); });
       [].forEach.call(dots.children, function (b, i) { b.setAttribute("aria-pressed", (i === 1) === showClub); });
     }
-    function loop() { clearTimeout(timer); timer = setTimeout(function () { if (!paused) { showClub = !showClub; render(); } loop(); }, 5000); }
-    [].forEach.call(dots.children, function (b, i) { b.addEventListener("click", function () { showClub = i === 1; render(); loop(); }); });
+    function loop() { clearTimeout(timer); if (stopped) return; timer = setTimeout(function () { if (!paused) { showClub = !showClub; render(); } loop(); }, 5000); }
+    [].forEach.call(dots.children, function (b, i) { b.addEventListener("click", function () { showClub = i === 1; stopped = true; render(); loop(); }); });
     // Pausa mientras el ratón o el foco están encima, para poder leer y pulsar
     flip.addEventListener("mouseenter", function () { paused = true; });
     flip.addEventListener("mouseleave", function () { paused = false; });
@@ -177,7 +179,7 @@ PAGES["index"] = dict(
   }).join("");
   document.getElementById("source").innerHTML = X.sourceNote();
 
-  document.getElementById("newsList").innerHTML = C.noticias.slice(0, 4).map(X.newsCard).join("");
+  document.getElementById("newsList").innerHTML = C.noticias.slice(0, 4).map(function (n) { return X.newsCard(n, 3); }).join("");
 
   // Avisos: socio, tienda e inscripciones
   var price = function (name) { var it = (C.tienda || []).filter(function (x) { return x.nombre.indexOf(name) === 0; })[0]; return it && it.precio ? it.precio : ""; };
@@ -311,9 +313,9 @@ PAGES["equipos"] = dict(
     heading("Nuestros equipos", "Del fútbol base al primer equipo. Elige uno para ver su clasificación, partidos y goleadores.", "");
     $("teamView").innerHTML = '<section class="block"><div class="wrap"><div class="teams-grid">' + F.equipos.map(function (t) {
       var r = X.ourRow(t);
-      return '<a class="team-card" href="#' + X.SLUG[t.id] + '"><svg width="40" height="40" aria-hidden="true"><use href="#shirt"/></svg><h3>' + X.APODO[t.id] + "</h3><p>" + esc(t.categoria) + "</p>" +
+      return '<a class="team-card" href="#' + X.SLUG[t.id] + '"><svg width="40" height="40" aria-hidden="true"><use href="#shirt"/></svg><h2>' + X.APODO[t.id] + "</h2><p>" + esc(t.categoria) + "</p>" +
         (r ? '<div class="pos-line">' + r.pos + "º · " + r.pts + " puntos</div>" : "") + '<span class="go">Ver equipo</span></a>';
-    }).join("") + '<a class="team-card" href="#base"><svg width="40" height="40" aria-hidden="true"><use href="#shirt"/></svg><h3>Fútbol base</h3><p>Infantil y alevín</p><span class="go">Ver equipos</span></a></div></div></section>';
+    }).join("") + '<a class="team-card" href="#base"><svg width="40" height="40" aria-hidden="true"><use href="#shirt"/></svg><h2>Fútbol base</h2><p>Infantil y alevín</p><span class="go">Ver equipos</span></a></div></div></section>';
   }
 
   function base() {
@@ -322,8 +324,8 @@ PAGES["equipos"] = dict(
     var fed = {}; BASE.forEach(function (t) { fed[X.APODO[t.id]] = t; });
     $("teamView").innerHTML = '<section class="block"><div class="wrap"><div class="teams-grid">' + C.equiposBase.map(function (t) {
       var f = fed[t.nombre];
-      if (f) return '<a class="team-card" href="#' + X.SLUG[f.id] + '"><svg width="40" height="40" aria-hidden="true"><use href="#shirt"/></svg><h3>' + esc(t.nombre) + "</h3><p>" + esc(f.categoria) + '</p><span class="go">Ver equipo</span></a>';
-      return '<div class="team-card"><svg width="40" height="40" aria-hidden="true"><use href="#shirt"/></svg><h3>' + esc(t.nombre) + "</h3><p>" + esc(t.categoria) + "</p>" + (t.pendiente ? '<div class="pos-line"><span class="pending">Pendiente de confirmar</span></div>' : "") + "</div>";
+      if (f) return '<a class="team-card" href="#' + X.SLUG[f.id] + '"><svg width="40" height="40" aria-hidden="true"><use href="#shirt"/></svg><h2>' + esc(t.nombre) + "</h2><p>" + esc(f.categoria) + '</p><span class="go">Ver equipo</span></a>';
+      return '<div class="team-card"><svg width="40" height="40" aria-hidden="true"><use href="#shirt"/></svg><h2>' + esc(t.nombre) + "</h2><p>" + esc(t.categoria) + "</p>" + (t.pendiente ? '<div class="pos-line"><span class="pending">Pendiente de confirmar</span></div>' : "") + "</div>";
     }).join("") + '</div><p class="source">Juvenil y cadete compiten en la Federación: los tienes arriba con su clasificación.</p></div></section>';
   }
 
@@ -377,7 +379,7 @@ PAGES["equipos"] = dict(
         '<div class="stat"><b>' + pl.reduce(function (n, p) { return n + (X.isUs(p.local, t) ? p.gl : p.gv); }, 0) + "-" + pl.reduce(function (n, p) { return n + (X.isUs(p.local, t) ? p.gv : p.gl); }, 0) + "</b><small>Goles a favor y en contra</small></div>") +
         '<div class="stat"><small>Últimos partidos</small>' + X.formDots(t) + "</div>" +
       "</div>" +
-      '<div class="comp' + (t.clasificacion.length ? "" : " solo") + '">' + (t.clasificacion.length ? '<div><div class="panel"><h3>Clasificación</h3><div class="sub">' + esc(t.categoria) + '</div><div class="table-scroll"><table>' + X.TABLE_HEAD + "<tbody>" + X.tableRows(t) + "</tbody></table></div></div></div>" : "") +
+      '<h2 class="sr-only">Temporada ' + esc(F.temporada) + "</h2>" + '<div class="comp' + (t.clasificacion.length ? "" : " solo") + '">' + (t.clasificacion.length ? '<div><div class="panel"><h3>Clasificación</h3><div class="sub">' + esc(t.categoria) + '</div><div class="table-scroll"><table>' + X.TABLE_HEAD + "<tbody>" + X.tableRows(t) + "</tbody></table></div></div></div>" : "") +
       '<div><div class="panel"><div class="panel-head"><h3>Partidos</h3>' + calPop(t) + '</div><div class="tabs" role="tablist"><button role="tab" id="tabNext" aria-selected="true">Próximos</button><button role="tab" id="tabRes" aria-selected="false">Resultados</button></div><ul class="games" id="games"></ul></div>' +
       ((t.porteros || []).length ?
         '<div class="panel"><h3>Goleadores y porteros</h3><div class="tabs" role="tablist"><button role="tab" id="tabGol" aria-selected="true">Goleadores</button><button role="tab" id="tabPor" aria-selected="false">Porteros</button></div><ul class="scorers" id="scorers">' + X.scorersList(t) + "</ul></div>" :
@@ -421,7 +423,7 @@ PAGES["noticias"] = dict(
   <div class="wrap"><div class="news" id="newsList"></div></div>
 </section>
 """,
- script="""document.getElementById("newsList").innerHTML = window.CDO.C.noticias.map(window.CDO.newsCard).join("");""")
+ script="""document.getElementById("newsList").innerHTML = window.CDO.C.noticias.map(function (n) { return window.CDO.newsCard(n, 2); }).join("");""")
 
 # ---------------------------------------------------------------- HISTORIA
 PAGES["historia"] = dict(
@@ -430,11 +432,11 @@ PAGES["historia"] = dict(
 <section class="block">
   <div class="wrap">
     <ol class="timeline">
-      <li><div class="y num">1949</div><h3>Nace el club</h3><p>En agosto se funda el Club Deportivo Ortuella. Juan Antonio Ipiña, jugador del Real Madrid, forma el primer equipo.</p></li>
-      <li><div class="y num">1951</div><h3>Campo de Otxartaga</h3><p>Tras jugar en el Malecón de Muskiz y en la balsa de Bañales, el club estrena campo propio en la campa de Otxartaga.</p></li>
-      <li><div class="y num">1984</div><h3>Otxartaga Berri</h3><p>El 29 de agosto se inaugura el nuevo campo con un partido ante el Bilbao Athletic (0-3).</p></li>
-      <li><div class="y num">1985</div><h3>Tercera División</h3><p>Tras ascender en la promoción, el Ortuella juega la temporada 1985/86 en Tercera División.</p></li>
-      <li><div class="y num">2024</div><h3>75 aniversario</h3><p>Exposición en la Kultur Etxea: «Un paseo por la historia del Club y del fútbol regional vizcaíno».</p></li>
+      <li><div class="y num">1949</div><h2>Nace el club</h2><p>En agosto se funda el Club Deportivo Ortuella. Juan Antonio Ipiña, jugador del Real Madrid, forma el primer equipo.</p></li>
+      <li><div class="y num">1951</div><h2>Campo de Otxartaga</h2><p>Tras jugar en el Malecón de Muskiz y en la balsa de Bañales, el club estrena campo propio en la campa de Otxartaga.</p></li>
+      <li><div class="y num">1984</div><h2>Otxartaga Berri</h2><p>El 29 de agosto se inaugura el nuevo campo con un partido ante el Bilbao Athletic (0-3).</p></li>
+      <li><div class="y num">1985</div><h2>Tercera División</h2><p>Tras ascender en la promoción, el Ortuella juega la temporada 1985/86 en Tercera División.</p></li>
+      <li><div class="y num">2024</div><h2>75 aniversario</h2><p>Exposición en la Kultur Etxea: «Un paseo por la historia del Club y del fútbol regional vizcaíno».</p></li>
     </ol>
     <div class="story">
       <div class="prose">
@@ -443,7 +445,7 @@ PAGES["historia"] = dict(
         <p>En 1977 el club compró su sede actual, en Catalina Gibaja 1, con los directivos avalando el crédito con su propio patrimonio. Tras la conmoción del 23 de octubre de 1980, el equipo se quedó sin campo a mitad de temporada y jugó como local en Gallarta, hasta que en 1984 se inauguró Otxartaga Berri. El césped artificial llegó en 2005 y se renovó por completo en 2018, junto con los banquillos, el marcador, la cubierta de la tribuna y los vestuarios.</p>
       </div>
       <aside class="founders">
-        <h3>Junta fundadora (1949)</h3>
+        <h2>Junta fundadora (1949)</h2>
         <p><strong>Presidente:</strong> Pedro Mariscal Arana</p>
         <p><strong>Vicepresidente:</strong> Santiago Fernández Ruiz</p>
         <p><strong>Secretario:</strong> José Ángel Múgica García</p>
@@ -514,13 +516,13 @@ PAGES["campo"] = dict(
       <p>Hierba artificial renovada en 2018. Aforo máximo en partidos: 644 personas.</p>
     </div>
     <div class="prose">
-      <h3 style="margin-top:0">Cómo llegar</h3>
+      <h2 style="margin-top:0">Cómo llegar</h2>
       <p><strong>Dirección:</strong> Avenida de la Estación s/n, 48530 Ortuella (Bizkaia).</p>
       <p><a href="https://www.google.com/maps/search/?api=1&query=Campo+de+f%C3%BAtbol+Otxartaga+Ortuella" target="_blank" rel="noopener">Abrir en Google Maps</a>.</p>
-      <h3>Entradas</h3>
+      <h2>Entradas</h2>
       <div class="tickets" id="ticketList"></div>
       <p class="source">Precios de la web antigua, pendientes de confirmar.</p>
-      <h3>La tribuna</h3>
+      <h2>La tribuna</h2>
       <img src="img/entrada.jpg" loading="lazy" decoding="async" alt="Entrada al campo de Otxartaga Berri" style="border-radius:6px;display:block;width:100%;max-width:100%;aspect-ratio:16/9;object-fit:cover">
     </div>
   </div>
@@ -544,7 +546,7 @@ PAGES["socios"] = dict(
 <section class="block">
   <div class="wrap support">
     <div class="card-socio">
-      <h3>Carnet de socio</h3>
+      <h2>Carnet de socio</h2>
       <div class="price" id="socioPrice"></div>
       <p class="socio-other" id="socioOther"></p>
       <ul>
@@ -554,7 +556,7 @@ PAGES["socios"] = dict(
       <a class="btn" href="contacto.html">Quiero hacerme socio</a>
     </div>
     <div id="tienda">
-      <h3 class="mini">Tienda del club</h3>
+      <h2 class="mini">Tienda del club</h2>
       <div class="shop" id="shopList"></div>
       <p class="source">Para comprar, pásate por la oficina del club o escríbenos por redes sociales. <a href="tienda.html">Ver la tienda</a></p>
     </div>
@@ -673,7 +675,7 @@ PAGES["aviso-legal"] = dict(
  body=hero("Aviso legal", "Quién es el titular de esta web y en qué condiciones se puede usar.", "Aviso legal") + """
 <section class="block">
   <div class="wrap prose legal">
-    <h3>Titular de la web</h3>
+    <h2>Titular de la web</h2>
     <p>En cumplimiento del artículo 10 de la Ley 34/2002, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI), se informa de los datos del titular de esta web:</p>
     <dl class="legal-data">
       <dt>Denominación</dt><dd>""" + PEND + """</dd>
@@ -683,17 +685,17 @@ PAGES["aviso-legal"] = dict(
       <dt>Email</dt><dd>cdortuella@cdortuella.net</dd>
       <dt>Teléfono</dt><dd>946 353 598</dd>
     </dl>
-    <h3>Objeto</h3>
+    <h2>Objeto</h2>
     <p>Esta web informa sobre la actividad del Club Deportivo Ortuella: sus equipos, partidos, resultados, noticias, historia e instalaciones, y sobre cómo hacerse socio o colaborar con el club. Su uso es gratuito.</p>
-    <h3>Datos de competición</h3>
+    <h2>Datos de competición</h2>
     <p>Los calendarios, resultados, clasificaciones y goleadores se obtienen de la información pública de la Federación Vizcaína de Fútbol. El club los muestra con la mayor exactitud posible, pero la información oficial es la publicada por la Federación.</p>
-    <h3>Propiedad intelectual</h3>
+    <h2>Propiedad intelectual</h2>
     <p>El escudo, el nombre, los textos y las fotografías de esta web pertenecen al Club Deportivo Ortuella o se usan con permiso de sus autores. No se pueden reproducir con fines comerciales sin autorización del club. Los logotipos de patrocinadores y colaboradores pertenecen a sus respectivos titulares.</p>
-    <h3>Enlaces a otras webs</h3>
+    <h2>Enlaces a otras webs</h2>
     <p>Esta web enlaza con redes sociales y con webs de terceros, como la de la Federación. El club no se hace responsable de sus contenidos ni de sus políticas de privacidad.</p>
-    <h3>Responsabilidad</h3>
+    <h2>Responsabilidad</h2>
     <p>El club trabaja para que la información sea correcta y esté al día, pero no garantiza la ausencia de errores ni que la web esté disponible en todo momento.</p>
-    <h3>Legislación aplicable</h3>
+    <h2>Legislación aplicable</h2>
     <p>Este aviso legal se rige por la legislación española.</p>
     <p class="source">Última actualización: """ + "octubre de 2026" + """.</p>
   </div>
@@ -706,30 +708,30 @@ PAGES["privacidad"] = dict(
  body=hero("Privacidad", "Qué datos personales trata el club, para qué y cuáles son tus derechos.", "Privacidad") + """
 <section class="block">
   <div class="wrap prose legal">
-    <h3>Responsable del tratamiento</h3>
+    <h2>Responsable del tratamiento</h2>
     <p>""" + PEND + """ (Club Deportivo Ortuella), con CIF """ + PEND + """, domicilio en Catalina Gibaja 1, 48530 Ortuella (Bizkaia), y email cdortuella@cdortuella.net.</p>
 
-    <h3>Esta web no recoge datos</h3>
+    <h2>Esta web no recoge datos</h2>
     <p>La web no tiene formularios ni zona de usuarios, y no pide ningún dato a quien la visita. Si escribes o llamas al club usando los datos de contacto, usaremos lo que nos envíes solo para responderte y atender lo que pidas: inscripciones, hacerte socio, patrocinio o cualquier consulta.</p>
 
-    <h3>Jugadores, cuerpo técnico y directiva</h3>
+    <h2>Jugadores, cuerpo técnico y directiva</h2>
     <p>En la web aparecen nombres y, en su caso, fotografías de jugadores, técnicos y miembros de la directiva, para informar sobre la actividad deportiva del club. En el caso de menores de edad, se publican con el consentimiento de sus madres, padres o tutores. Cualquier persona puede pedir en cualquier momento que se retire su nombre o su imagen escribiendo a cdortuella@cdortuella.net, y el club lo hará sin demora.</p>
     <p>Los datos de competición (resultados, clasificaciones y goleadores) proceden de la información pública de la Federación Vizcaína de Fútbol.</p>
 
-    <h3>Base legal y conservación</h3>
+    <h2>Base legal y conservación</h2>
     <p>Tratamos los datos con tu consentimiento o porque son necesarios para la relación que tienes con el club (por ejemplo, como socio o jugador). Los conservamos mientras dure esa relación y, después, durante los plazos que exija la ley.</p>
 
-    <h3>Con quién se comparten</h3>
+    <h2>Con quién se comparten</h2>
     <p>El club no vende ni cede datos personales a terceros, salvo obligación legal o cuando sea necesario para la competición (por ejemplo, las fichas que se tramitan ante la Federación).</p>
     <p>La web está alojada en GitHub Pages, un servicio de GitHub Inc. (Microsoft). Como cualquier servidor web, GitHub registra la dirección IP de las visitas por motivos de seguridad. GitHub está adherida al Marco de Privacidad de Datos UE-EE. UU., que permite estas transferencias con garantías.</p>
 
-    <h3>Tus derechos</h3>
+    <h2>Tus derechos</h2>
     <p>Puedes pedir acceder a tus datos, corregirlos, borrarlos, oponerte a su uso, limitarlo o llevártelos a otro sitio, escribiendo a cdortuella@cdortuella.net. Si crees que no hemos atendido bien tu petición, puedes reclamar ante la Agencia Española de Protección de Datos (aepd.es).</p>
 
-    <h3>Cookies</h3>
+    <h2>Cookies</h2>
     <p>Esta web <strong>no usa cookies</strong>. Los tipos de letra y las imágenes se sirven desde la propia web. Si sigues un enlace a redes sociales o a otras webs, se aplicarán sus propias políticas de cookies.</p>
 
-    <h3>Estadísticas de visitas</h3>
+    <h2>Estadísticas de visitas</h2>
     <p>Para saber cuánta gente visita la web y qué páginas interesan más, usamos <strong>GoatCounter</strong> (goatcounter.com), un contador de visitas que no usa cookies, no guarda tu dirección IP y no permite identificarte ni seguirte por otras webs. Solo registra datos agregados: la página visitada, la web desde la que llegas, el tipo de dispositivo y navegador, el tamaño de pantalla y el país o la región aproximados. Si no quieres que se cuente tu visita, puedes usar un bloqueador de contenido en tu navegador.</p>
 
     <p class="source">Última actualización: octubre de 2026.</p>
@@ -771,7 +773,7 @@ PAGES["partido"] = dict(
   var o = played ? X.outcome(p, t) : "";
   var side = function (n) { return '<div class="fb-team">' + X.crest(n, t) + "<b>" + esc(n) + "</b></div>"; };
   var cat = t.categoria.indexOf(X.APODO[t.id]) === 0 ? t.categoria : X.APODO[t.id] + " · " + t.categoria;
-  board.innerHTML = '<div class="fb-meta">' + esc(cat) + " · Jornada " + p.jornada + "</div>" +
+  board.innerHTML = '<h1 class="sr-only">' + esc(p.local) + (played ? " " + p.gl + ", " + esc(p.visitante) + " " + p.gv : " contra " + esc(p.visitante)) + "</h1>" + '<div class="fb-meta">' + esc(cat) + " · Jornada " + p.jornada + "</div>" +
     '<div class="fb">' + side(p.local) + '<div class="fb-score">' + (played ? p.gl + '<i>-</i>' + p.gv : "VS") + "</div>" + side(p.visitante) + "</div>" +
     '<div class="fb-info"><span>' + X.longDate(p.fecha) + "</span>" +
     "<span>" + esc(a && a.campo ? a.campo : home ? "Otxartaga Berri" : "Fuera de casa") + (home ? "" : " " + X.mapsLink(p, a && a.campo)) + "</span>" +
@@ -794,10 +796,10 @@ PAGES["partido"] = dict(
   var ICO = { gol: '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ball"/></svg>', amarilla: '<i class="card y"></i>', roja: '<i class="card r"></i>', doble: '<i class="card y"></i><i class="card r"></i>' };
   var LBL = { gol: "Gol", amarilla: "Amarilla", roja: "Roja", doble: "Segunda amarilla" };
   var line = function (e) {
-    var body = '<span class="ev-ico" title="' + LBL[e.ico] + '">' + ICO[e.ico] + '</span><span class="ev-txt">' + e.txt + "</span>";
+    var body = '<span class="ev-ico" role="img" aria-label="' + LBL[e.ico] + '" title="' + LBL[e.ico] + '">' + ICO[e.ico] + '</span><span class="ev-txt">' + e.txt + "</span>";
     return '<li class="' + e.lado + (ours(e.lado) ? " us" : "") + '"><span class="ev-min">' + mlab(e) + "</span>" + body + "</li>";
   };
-  var html = "";
+  var html = '<h2 class="sr-only">Acta del partido</h2>';
   if (ev.length) html += '<div class="panel fi-sec"><h3>Lo que pasó</h3><div class="ev-head"><span>' + esc(p.local) + "</span><span>" + esc(p.visitante) + '</span></div><ol class="ev">' + ev.map(line).join("") + "</ol></div>";
 
   // Alineaciones
