@@ -174,7 +174,7 @@ def pagina(cuerpo, formato, clase):
 # Las filas se reparten por toda la zona entre el título y los patrocinadores (más separadas si hay pocas).
 ZONA_ORDUTEGIA = {"post": (300, 1045), "historia": (520, 1530)}
 ZONA_EMAITZAK = {"post": (308, 1000), "historia": (534, 1560)}
-ALTO_FILA = {"ordutegia": 66, "emaitzak": 86}
+ALTO_FILA = {"ordutegia": 96, "emaitzak": 86}
 PASO_MAXIMO = {"ordutegia": 125, "emaitzak": 200}
 
 
@@ -215,16 +215,19 @@ def icono(nombre):
 
 
 def html_ordutegia(filas, config, formato, fondo):
+    """Una cinta por categoría, como la de EMAITZAK: nuestra categoría siempre a la izquierda, en el centro el día
+    y la hora y a la derecha el rival. Sin partido esa semana: «—»."""
     lineas = ""
     posiciones = repartir("ordutegia", formato, len(filas))
     for i, (cat, p, equipo) in enumerate(filas):
         if p:
-            hora = f" {p['hora']}" if p.get("hora") else ""
-            dato = f'<span class="texto ajustar">{html.escape(corto(rival(p, equipo), config))} {date.fromisoformat(p["fecha"]):%d/%m}{hora}</span>'
-            dato += icono("casa" if en_casa(p, equipo) else "avion")
+            dia = f"{date.fromisoformat(p['fecha']):%d/%m/%Y}"
+            centro = f'<span class="dia">{dia}</span>' + (f'<span class="hora">{p["hora"]}</span>' if p.get("hora") else "")
+            otro = f'<span class="equipo derecha ajustar">{html.escape(corto(rival(p, equipo), config))}</span>'
         else:
-            dato = '<span class="texto">—</span>'
-        lineas += f'<div class="fila" style="top:{posiciones[i]}px"><div class="cat">{html.escape(cat)}</div><div class="dato">{dato}</div></div>'
+            centro, otro = '<span class="hora">—</span>', ""
+        lineas += (f'<div class="cinta" style="top:{posiciones[i]}px"><div class="banda"></div><div class="pieza">{centro}</div>'
+                   f'<span class="equipo izquierda ajustar">{html.escape(cat)}</span>{otro}</div>')
     return pagina(lienzo("ordutegia", formato, fondo) + lineas, formato, "ordutegia")
 
 
