@@ -49,7 +49,8 @@ Con lo aprendido en el flujo de publicaciones:
     Propuesta: en «¿Subo también la historia?», un tercer botón **«La subo yo con enlace»**: el bot manda la
     imagen al grupo y alguien la sube desde la app con el sticker (~30 s). La opción automática sigue sin enlace.
   - **Decidido (automático y sin trampas)**: la web en el enlace del perfil, y las plantillas con una línea bien
-    visible «Toda la información en la web · enlace en el perfil» (historias abajo; posts también en el texto).
+    visible «Toda la información en la web · enlace en el perfil» **en todas las imágenes, posts e historias**
+    (así es automático y no depende de que alguien se acuerde de escribirlo en el texto).
     Desde una historia son dos toques: @cdortuella → enlace. Nada de programas no oficiales que imitan la app
     (incumplen las normas de Instagram y piden la contraseña de la cuenta).
 
