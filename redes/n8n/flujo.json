@@ -3,9 +3,9 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## 1 · Revisar dos veces al día\nDespués de cada actualización de la web (8:30 y 23:30, hora de Madrid):\n- **Publicaciones**: manda al grupo cada pieza *lista*, una sola vez por semana, y pide el texto.\n- **Avisos**: manda los cambios de partido nuevos.\n\n⚠️ No lo ejecutes a mano: los nodos «No repetir…» apuntan lo enviado y luego ya no lo mandarían. Para probar, usa /publicar en el grupo.",
+        "content": "## 1 · Revisar dos veces al día\nDespués de cada actualización de la web (8:30 y 23:30, hora de Madrid):\n- **Publicaciones**: manda al grupo cada pieza *lista* que aún no se haya publicado esa semana, y pide el texto. La foto lleva el botón «🚫 Esta semana no».\n- **Avisos**: manda los cambios de partido nuevos.\n\n🧠 Lo publicado, lo descartado y lo enviado se apunta en la tabla de datos **memoria_ortuella** (*Data table*), no en el flujo: no se pierde al importarlo de nuevo.",
         "width": 600,
-        "height": 280
+        "height": 300
       },
       "id": "841d5375-8b9a-5ca5-9470-96926b6d270a",
       "name": "Nota 1",
@@ -53,7 +53,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Las piezas con \"lista\": true, con su clave de semana (p. ej. \"matchday-2026-10-19\")\nreturn Object.values($input.first().json.piezas || {})\n  .filter(p => p.lista)\n  .map(pieza => ({ json: { clave: `${pieza.tipo}-${pieza.semana}`, pieza } }));"
+        "jsCode": "// Las piezas con \"lista\": true que aún no se han publicado (ni descartado con «Esta semana no») esa semana.\n// La memoria es la tabla de datos «memoria_ortuella» de n8n (clave «pieza:tipo-semana», p. ej.\n// «pieza:matchday-2026-10-19»): vive fuera del flujo, así que no se pierde al volver a importarlo.\nconst hechas = new Set($input.all().map(i => i.json.clave).filter(Boolean));\nreturn Object.values($('Leer ultimo.json').first().json.piezas || {})\n  .filter(p => p.lista && !hechas.has(`pieza:${p.tipo}-${p.semana}`))\n  .map(pieza => ({ json: { pieza } }));"
       },
       "id": "3f64c045-6904-5423-8e25-9473d9af389d",
       "name": "Piezas listas",
@@ -61,22 +61,6 @@
       "typeVersion": 2,
       "position": [
         -80,
-        -200
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "removeItemsSeenInPreviousExecutions",
-        "logic": "removeItemsWithAlreadySeenKeyValues",
-        "dedupeValue": "={{ $json.clave }}",
-        "options": {}
-      },
-      "id": "da0df8fe-d9c9-5df8-9eed-a9825e522e6e",
-      "name": "No repetir piezas",
-      "type": "n8n-nodes-base.removeDuplicates",
-      "typeVersion": 2,
-      "position": [
-        160,
         -200
       ]
     },
@@ -97,7 +81,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Un elemento por aviso (cambios.json puede no existir aún: entonces no hay avisos)\nreturn ($input.first().json.avisos || []).map(a => ({ json: { id: a.id, texto: a.texto } }));"
+        "jsCode": "// Un elemento por aviso nuevo (cambios.json puede no existir aún: entonces no hay avisos). Nuevo = no está en\n// la memoria («aviso:id») y es de los últimos 2 días (así, con la memoria vacía, no se repiten los antiguos).\n// «accion: apuntar» → «¿Apuntar?» lo guarda en la memoria.\nconst vistos = new Set($input.all().map(i => i.json.clave).filter(Boolean));\nconst desde = Date.now() - 2 * 864e5;\nreturn ($('Leer cambios.json').first().json.avisos || [])\n  .filter(a => !vistos.has(`aviso:${a.id}`) && !(new Date(a.detectado) < desde))\n  .map(a => ({ json: { id: a.id, texto: a.texto, accion: 'apuntar', clave: `aviso:${a.id}`, estado: 'enviado' } }));"
       },
       "id": "28ee39d3-0efe-55ae-9c23-dfd195679ab1",
       "name": "Separar avisos",
@@ -105,22 +89,6 @@
       "typeVersion": 2,
       "position": [
         -80,
-        0
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "removeItemsSeenInPreviousExecutions",
-        "logic": "removeItemsWithAlreadySeenKeyValues",
-        "dedupeValue": "={{ $json.id }}",
-        "options": {}
-      },
-      "id": "49460a19-1da1-5cb2-a6d3-66cf4e49a7ec",
-      "name": "No repetir avisos",
-      "type": "n8n-nodes-base.removeDuplicates",
-      "typeVersion": 2,
-      "position": [
-        160,
         0
       ]
     },
@@ -143,7 +111,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Foto del post + petición del texto. La línea «🆔» dice qué pieza es: al responder, el bot la lee\n// de ahí (así no tiene que recordar nada).\n// En un carrusel, antes van sus imágenes (para verlo entero) y la portada la última: a ella se responde.\nreturn $input.all().flatMap(item => {\n  const p = item.json.pieza;\n  const falta = (p.faltan || []).length ? `\\n⚠️ Ojo, falta: ${p.faltan.join('; ')}` : '';\n  const resto = (p.carrusel || []).slice(1);\n  const carrusel = resto.map((foto, i) => ({ json: { foto, texto: `${p.nombre} · carrusel ${i + 2}/${resto.length + 1}` } }));\n  return [...carrusel, { json: { foto: p.post,\n    texto: `${p.nombre} lista para publicar ✅${falta}` + (resto.length ? `\\n📚 Carrusel de ${resto.length + 1} imágenes (esta es la portada; las demás, encima).` : '') +\n      `\\n\\n✍️ RESPONDE A ESTA FOTO (mantén pulsado → Responder) con el texto de la publicación.\\n🆔 ${p.tipo}` } }];\n});"
+        "jsCode": "// Foto del post + petición del texto. La línea «🆔» dice qué pieza es: al responder, el bot la lee\n// de ahí (así no tiene que recordar nada).\n// En un carrusel, antes van sus imágenes (para verlo entero) y la portada la última: a ella se responde.\n// La portada lleva el botón «Esta semana no» («¿Portada?» → Pedir texto); las demás, sin botón («Enseñar carrusel»).\nreturn $input.all().flatMap(item => {\n  const p = item.json.pieza;\n  const falta = (p.faltan || []).length ? `\\n⚠️ Ojo, falta: ${p.faltan.join('; ')}` : '';\n  const resto = (p.carrusel || []).slice(1);\n  const carrusel = resto.map((foto, i) => ({ json: { foto, texto: `${p.nombre} · carrusel ${i + 2}/${resto.length + 1}`, parte: 'carrusel' } }));\n  return [...carrusel, { json: { foto: p.post, parte: 'portada',\n    // Botón para que no se vuelva a ofrecer esta semana aunque no se publique\n    boton: '🚫 Esta semana no', dato: `nop:${p.tipo}:${p.semana}`,\n    texto: `${p.nombre} lista para publicar ✅${falta}` + (resto.length ? `\\n📚 Carrusel de ${resto.length + 1} imágenes (esta es la portada; las demás, encima).` : '') +\n      `\\n\\n✍️ RESPONDE A ESTA FOTO (mantén pulsado → Responder) con el texto de la publicación.\\n🆔 ${p.tipo}` } }];\n});"
       },
       "id": "e155bea2-6b3e-5494-8e98-db03a0b78969",
       "name": "Preparar pregunta",
@@ -161,6 +129,23 @@
         "file": "={{ $json.foto }}",
         "additionalFields": {
           "caption": "={{ $json.texto }}"
+        },
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "={{ $json.boton }}",
+                    "additionalFields": {
+                      "callback_data": "={{ $json.dato }}"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
         }
       },
       "id": "aec741c6-7fe5-5bcb-8ddc-21ab32129212",
@@ -168,13 +153,13 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        640,
+        760,
         -200
       ]
     },
     {
       "parameters": {
-        "content": "## 2 · Lo que se escribe en el grupo\n- **Respuesta citando una foto** del bot → es el texto: pide confirmación con botones.\n- **Botones** Publicar / Cancelar / historia.\n- **Comandos**: /estado, /horarios, /resultados, /matchday, /publicar …, /revisar instagram, /instagram, /probar noticia, /ayuda.\n\nEl resto de mensajes del grupo se ignora.\n\nAl pulsar **Publicar** se publica de verdad en Instagram (sección 4).",
+        "content": "## 2 · Lo que se escribe en el grupo\n- **Respuesta citando una foto** del bot → es el texto: pide confirmación con botones.\n- **Botones** Publicar / Cancelar / historia / Esta semana no.\n- **Comandos**: /estado, /horarios, /resultados, /matchday, /publicar …, /revisar instagram, /instagram, /probar noticia, /ayuda.\n\nEl resto de mensajes del grupo se ignora.\n\nAl pulsar **Publicar** se publica de verdad en Instagram (sección 4).",
         "width": 600,
         "height": 300
       },
@@ -273,7 +258,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Decide qué hacer con cada mensaje o botón del grupo. Sin IA y sin memoria: lo que hace falta\n// saber va escrito en los propios mensajes del bot («🆔 pieza» y el texto entre las rayas).\nconst upd = $('Telegram (grupo)').first().json;\nconst piezas = $('Leer ultimo.json (bot)').first().json.piezas || {};\n// Amistosos apuntados (datos-amistosos.js de la web; vacío si aún no existe)\nconst AMISTOSOS = (() => { try { const t = String($input.first().json.data || ''); return JSON.parse(t.slice(t.indexOf('['), t.lastIndexOf(']') + 1)); } catch (e) { return []; } })();\nconst CATS = { primer: 'SENIOR A', b: 'SENIOR B', juvenil: 'JUVENIL', cadete: 'CADETE', infantil: 'INFANTIL', alevin: 'ALEVÍN' };\nconst DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];\nconst fechaLarga = iso => { const d = new Date(iso + 'T12:00:00'); return `${DIAS[d.getDay()]} ${iso.slice(8)}/${iso.slice(5, 7)}/${iso.slice(0, 4)}`; };\nconst nombreNuestro = id => ({ b: 'Ortuella B' })[id] || 'Ortuella';\nconst marcador = (a, gl, gv) => a.casa ? `${nombreNuestro(a.equipo)} ${gl} - ${gv} ${a.rival}` : `${a.rival} ${gl} - ${gv} ${nombreNuestro(a.equipo)}`;\nconst salir = (...cosas) => cosas.map(json => ({ json }));\nconst mensaje = texto => ({ accion: 'mensaje', texto });\nconst RAYA = '────────────';\nconst pieza = tipo => piezas[tipo];\n\n// ---------- botones\n// ---------- noticias desde Instagram (botones «nsi/nno:id» y «web/nweb:id»)\nconst cbN = upd.callback_query;\nif (cbN && /^(nsi|nno|web|nweb):/.test(String(cbN.data))) {\n  const [accion, id] = String(cbN.data).split(':');\n  const original = String((cbN.message && cbN.message.text) || '');\n  const marcar = nota => ({ accion: 'quitar_botones', messageId: cbN.message && cbN.message.message_id,\n    texto: original.replace(/\\n?¿La ponemos como noticia en la web\\?$/, '').replace(/\\nSi quieres otro[^\\n]*$/, '') + `\\n${nota}` });\n  if (accion === 'nno') return salir(marcar('No es noticia'));\n  if (accion === 'nweb') return salir(marcar('❌ Cancelado'));\n  const titulo = accion === 'web' ? ((original.split(RAYA)[1] || '').trim()) : null;\n  // Para proponer el título (nsi) o ponerla en la web (web) hace falta leer la publicación de Instagram\n  return salir(marcar(accion === 'nsi' ? '✅ Sí, es noticia' : '⏳ Poniéndola en la web…'),\n               { accion: 'leer_publicacion', id, siguiente: accion === 'nsi' ? 'titulo' : 'web', titulo });\n}\n\n// ---------- amistosos (botones «ams:…» Apuntar / «amn:…» Cancelar); los datos van en la línea «🆔 amistoso|…»\nconst cbA = upd.callback_query;\nif (cbA && /^(ams|amn):/.test(String(cbA.data))) {\n  const original = String((cbA.message && cbA.message.text) || '');\n  const marcar = nota => ({ accion: 'quitar_botones', messageId: cbA.message && cbA.message.message_id,\n    texto: original.replace(/\\n?¿[^?\\n]*\\?$/, '') + `\\n${nota}` });\n  if (String(cbA.data).startsWith('amn:')) return salir(marcar('❌ Cancelado'));\n  const linea = (original.match(/🆔 (amistoso\\|[^\\n]*)/) || [])[1];\n  if (!linea) return salir(mensaje('🤔 No entiendo ese mensaje. Vuelve a escribir el comando.'));\n  const [, que, ...d] = linea.split('|');\n  const inputs = que === 'anadir' ? { accion: 'anadir', equipo: d[0], fecha: d[1], hora: d[2], fuera: d[3], rival: d[4], campo: d[5] || '' }\n    : que === 'resultado' ? { accion: 'resultado', id: d[0], gl: d[1], gv: d[2] } : { accion: 'borrar', id: d[0] };\n  return salir(marcar('⏳ Guardando en la web…'), { accion: 'amistoso_web', inputs });\n}\n\n// Cada botón lleva «acción:pieza:semana». Antes de llegar aquí, el nodo «Cada botón una sola vez» ya ha\n// descartado los repetidos: un mismo «Publicar» (o «Subir historia») de una pieza solo pasa una vez por semana.\nconst cb = upd.callback_query;\nif (cb) {\n  const [accion, tipo, semana] = String(cb.data || '').split(':');\n  const p = pieza(tipo);\n  if (!p || p.semana !== semana) return salir(mensaje('Esa publicación ya no está disponible (es de otra semana).'));\n  const original = String((cb.message && cb.message.text) || '');\n  // Deja el mensaje sin botones y con una marca de lo que se ha hecho\n  const quitarBotones = nota => {\n    const resto = original.replace(/\\n?¿(Publico con este texto|Subo también la historia[^?]*|Lo intento otra vez)\\?$/, '');\n    return { accion: 'quitar_botones', messageId: cb.message && cb.message.message_id,\n             texto: resto ? `${resto}\\n${nota}` : `Historia de ${p.nombre}: ${nota}` };\n  };\n  // Publicar (o reintentar, «rep») → sección 4, que publica en Instagram y luego pregunta por la historia\n  if (accion === 'pub' || accion === 'rep') {\n    const texto = (original.split(RAYA)[1] || '').trim();\n    return salir(quitarBotones('⏳ Publicando en Instagram…'),\n      { accion: 'publicar_ig', formato: 'post', tipo, semana, nombre: p.nombre, imagen: p.post, caption: texto, carrusel: p.carrusel || null,\n        // En un reintento, la hora del mensaje de error: por si aquel intento sí llegó a publicarse\n        fallo: accion === 'rep' && cb.message ? cb.message.date : null });\n  }\n  if (accion === 'can') return salir(quitarBotones('❌ Cancelado'),\n    mensaje(`❌ Cancelado. Para poner otro texto, responde otra vez a la foto de ${p.nombre}.`));\n  if (accion === 'his' || accion === 'reh') return salir(quitarBotones('⏳ Subiendo la historia…'),\n    { accion: 'publicar_ig', formato: 'historia', tipo, semana, nombre: p.nombre, imagen: p.historia });\n  if (accion === 'nohis') return salir(quitarBotones('no se sube'));\n  if (accion === 'nre') return salir(quitarBotones('❌ Cancelado'));\n  return [];\n}\n\n// ---------- mensajes\nconst msg = upd.message;\nif (!msg || !msg.text) return [];\nconst texto = msg.text.trim();\n\n// Respuesta a un mensaje del bot con «🆔 ig:» → es otro título para la noticia\nconst citada = msg.reply_to_message;\nconst ig = citada && citada.from && citada.from.is_bot && String(citada.text || '').match(/🆔 ig:(\\S+)/);\nif (ig) return salir({ accion: 'proponer_titulo', id: ig[1], titulo: texto });\n\n// Respuesta citando una foto del bot → es el texto de la publicación. La pieza va en la línea «🆔».\nif (citada && citada.from && citada.from.is_bot && citada.photo) {\n  const m = String(citada.caption || '').match(/🆔\\s*([a-z-]+)/);\n  const p = m && pieza(m[1]);\n  if (!p) return salir(mensaje('🤔 No sé de qué publicación es esa foto (puede ser de otra semana). Escribe /publicar y la publicación (por ejemplo /publicar match day A) y responde a la foto nueva.'));\n  if (texto.length > 2200) return salir(mensaje(`El texto tiene ${texto.length} caracteres y Instagram admite 2200. Acórtalo y vuelve a responder a la foto.`));\n  return salir({ accion: 'mensaje_botones',\n    texto: `📝 ${p.nombre}\\n${RAYA}\\n${texto}\\n${RAYA}\\n¿Publico con este texto?`,\n    boton1: '✅ Publicar', dato1: `pub:${p.tipo}:${p.semana}`, boton2: '❌ Cancelar', dato2: `can:${p.tipo}:${p.semana}` });\n}\n\n// Comandos (en castellano; también valen los nombres en euskera de las imágenes)\nif (!texto.startsWith('/')) return [];\nconst [orden, ...resto] = texto.split(/\\s+/);\nconst comando = orden.split('@')[0].toLowerCase();\n// «match day A», «matchday-b», «resultados»… → la pieza de ultimo.json\nconst QUE = { horarios: 'ordutegia', ordutegia: 'ordutegia', resultados: 'emaitzak', emaitzak: 'emaitzak',\n              matchdaya: 'matchday', matchday: 'matchday', a: 'matchday', matchdayb: 'matchday-b', b: 'matchday-b',\n              clasificacion: 'sailkapena', sailkapena: 'sailkapena' };\nconst cual = QUE[resto.join('').toLowerCase().replace(/[^a-z]/g, '')];\nconst NOMBRE = { ordutegia: 'Horarios (ORDUTEGIA)', emaitzak: 'Resultados (EMAITZAK)',\n                 matchday: 'Match day A', 'matchday-b': 'Match day B', sailkapena: 'Clasificación (SAILKAPENA)' };\nconst nombre = p => NOMBRE[p.tipo] || p.nombre;\nconst estado = p => p.lista ? 'lista ✅' : `no lista ⏳ (falta: ${(p.faltan || []).join('; ')})`;\nconst verPieza = p => ({ accion: 'foto', foto: p.post, texto: `${nombre(p)}: ${estado(p)}` });\n// Un carrusel se ve entero: la portada y después el resto\nconst verTodo = p => [verPieza(p), ...(p.carrusel || []).slice(1).map((foto, i) => ({ accion: 'foto', foto, texto: `${nombre(p)} · ${i + 2}/${p.carrusel.length}` }))];\nconst lista = Object.values(piezas);\n\nif (comando === '/estado') {\n  if (!lista.length) return salir(mensaje('Esta semana no hay ninguna publicación con datos.'));\n  return salir(mensaje('📋 Publicaciones de esta semana:\\n' + lista.map(p => `• ${nombre(p)}: ${estado(p)}`).join('\\n')));\n}\nconst VER = { '/horarios': ['ordutegia'], '/ordutegia': ['ordutegia'], '/resultados': ['emaitzak'], '/emaitzak': ['emaitzak'],\n              '/matchday': ['matchday', 'matchday-b'], '/clasificacion': ['sailkapena'], '/sailkapena': ['sailkapena'] };\nif (VER[comando]) {\n  const elegidas = VER[comando].map(pieza).filter(Boolean);\n  return elegidas.length ? salir(...elegidas.flatMap(verTodo)) : salir(mensaje('Esta semana no hay esa publicación.'));\n}\nif (comando === '/publicar') {\n  const p = cual && pieza(cual);\n  if (!p) return salir(mensaje('¿Cuál? Escribe una de estas:\\n/publicar horarios\\n/publicar resultados\\n/publicar match day A\\n/publicar match day B\\n/publicar clasificacion' +\n    (cual ? '\\n\\n(Esa publicación no tiene datos esta semana.)' : '')));\n  return salir({ accion: 'preguntar', pieza: p });\n}\nif (comando === '/revisar') return salir({ accion: 'revisar_instagram' });\n\n// ---------- amistosos\nconst RAYA_A = '────────────';\nconst botones = (texto, linea, pregunta = '¿Lo apunto?') => ({ accion: 'mensaje_botones', texto: `${texto}\\n🆔 ${linea}\\n${pregunta}`,\n  boton1: '✅ Apuntar', dato1: `ams:${Date.now().toString(36)}`, boton2: 'Cancelar', dato2: `amn:${Date.now().toString(36)}` });\nconst leerCat = palabras => {\n  const t = palabras.map(w => w.toLowerCase());\n  if (t[0] === 'senior' || t[0] === 'sénior') return t[1] === 'b' ? ['b', 2] : t[1] === 'a' ? ['primer', 2] : ['primer', 1];\n  const una = { juvenil: 'juvenil', cadete: 'cadete', infantil: 'infantil', alevin: 'alevin', 'alevín': 'alevin' }[t[0]];\n  return una ? [una, 1] : [null, 0];\n};\nif (comando === '/amistoso') {\n  const [equipo, n] = leerCat(resto);\n  const [dia, hora, ...mas] = resto.slice(n);\n  const m = /^(\\d{1,2})\\/(\\d{1,2})$/.exec(dia || '');\n  const uso = '\\n\\nEjemplo: /amistoso infantil 24/10 10:30 Escolapios\\nSi es fuera: /amistoso senior a 30/07 19:00 Barakaldo fuera en Lasesarre';\n  if (!equipo || !m || !/^\\d{1,2}:\\d{2}$/.test(hora || '') || !mas.length) return salir(mensaje('🤔 No lo he entendido.' + uso));\n  // El año: este, salvo que la fecha ya haya pasado hace más de un mes (entonces, el que viene)\n  const hoy = new Date(); let anio = hoy.getFullYear();\n  const f = new Date(anio, +m[2] - 1, +m[1]); if (hoy - f > 30 * 864e5) anio++;\n  const fecha = `${anio}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`;\n  const iFuera = mas.findIndex(w => w.toLowerCase() === 'fuera');\n  const rival = (iFuera >= 0 ? mas.slice(0, iFuera) : mas).join(' ');\n  const resto2 = iFuera >= 0 ? mas.slice(iFuera + 1) : [];\n  const campo = resto2[0] && resto2[0].toLowerCase() === 'en' ? resto2.slice(1).join(' ') : '';\n  if (!rival) return salir(mensaje('🤔 Falta el rival.' + uso));\n  const fuera = iFuera >= 0;\n  return salir(botones(`⚽ Amistoso\\n${RAYA_A}\\n${CATS[equipo]} · ${fechaLarga(fecha)} · ${hora.padStart(5, '0')}\\n` +\n    (fuera ? `${rival} – ${nombreNuestro(equipo)} · fuera${campo ? ' (' + campo + ')' : ' (campo sin poner: el MATCH DAY esperará al campo)'}` : `${nombreNuestro(equipo)} – ${rival} · en casa (Otxartaga)`) + `\\n${RAYA_A}`,\n    `amistoso|anadir|${equipo}|${fecha}|${hora.padStart(5, '0')}|${fuera ? 'si' : 'no'}|${rival}|${campo}`));\n}\nif (comando === '/resultado') {\n  const [equipo, n] = leerCat(resto);\n  const r = /^(\\d{1,2})-(\\d{1,2})$/.exec(resto.slice(n).join('') || '');\n  if (!equipo || !r) return salir(mensaje('🤔 No lo he entendido. Ejemplo: /resultado infantil 3-1 (primero los goles del que juega en casa).'));\n  const hoyIso = new Date().toISOString().slice(0, 10);\n  const a = AMISTOSOS.filter(x => x.equipo === equipo && x.gl == null && x.fecha <= hoyIso).pop();\n  if (!a) return salir(mensaje(`No hay ningún amistoso del ${CATS[equipo]} ya jugado y sin resultado. Mira la lista con /amistosos.`));\n  return salir(botones(`⚽ Resultado del amistoso\\n${RAYA_A}\\n${CATS[equipo]} · ${fechaLarga(a.fecha)}\\n${marcador(a, r[1], r[2])}\\n${RAYA_A}`,\n    `amistoso|resultado|${a.id}|${r[1]}|${r[2]}`));\n}\nif (comando === '/amistosos') {\n  if (!AMISTOSOS.length) return salir(mensaje('No hay amistosos apuntados. Para apuntar uno: /amistoso infantil 24/10 10:30 Escolapios'));\n  return salir(mensaje('⚽ Amistosos apuntados:\\n' + AMISTOSOS.map((a, i) => `${i + 1}. ${CATS[a.equipo]} · ${a.fecha.slice(8)}/${a.fecha.slice(5, 7)} ${a.hora || ''} · ` +\n    (a.gl != null ? marcador(a, a.gl, a.gv) : (a.casa ? `${nombreNuestro(a.equipo)} – ${a.rival}` : `${a.rival} – ${nombreNuestro(a.equipo)}`))).join('\\n') +\n    '\\n\\nPara quitar uno: /borrar amistoso 2 (el número de la lista).'));\n}\nif (comando === '/borrar') {\n  const num = parseInt(resto[resto.length - 1], 10);\n  const a = AMISTOSOS[num - 1];\n  if (!/^amistoso/i.test(resto[0] || '') || !a) return salir(mensaje('🤔 Escribe /borrar amistoso y el número de la lista de /amistosos (por ejemplo: /borrar amistoso 2).'));\n  return salir({ ...botones(`🗑️ Borrar amistoso\\n${RAYA_A}\\n${CATS[a.equipo]} · ${fechaLarga(a.fecha)} · ${a.casa ? nombreNuestro(a.equipo) + ' – ' + a.rival : a.rival + ' – ' + nombreNuestro(a.equipo)}\\n${RAYA_A}`,\n    `amistoso|borrar|${a.id}`, '¿Lo borro?'), boton1: '🗑️ Borrar' });\n}\nif (comando === '/instagram') return salir({ accion: 'comprobar_instagram' });\nif (comando === '/probar' && cual === undefined && resto.join(' ').toLowerCase() === 'noticia') {\n  return salir({ accion: 'nueva_publicacion', publicacion: { id: 'prueba' + Date.now().toString(36), prueba: true,\n    caption: '¡Homenaje a nuestros veteranos este sábado!\\n\\nA las 12:00 en Otxartaga Berri, antes del partido del Senior A. Os esperamos a todos 💙🤍\\n\\n#aupaortuella',\n    media_type: 'IMAGE', media_url: 'https://lehendakari02.github.io/web-cd-ortuella/img/campo.jpg',\n    permalink: 'https://www.instagram.com/cdortuella/', timestamp: new Date().toISOString() } });\n}\nconst AYUDA = {\n  ver: '👀 VER\\n/estado → qué publicaciones están listas y qué les falta\\n/horarios · /resultados · /matchday · /clasificacion → ver las imágenes de esta semana',\n  publicar: '📣 PUBLICAR EN INSTAGRAM\\nEl bot ofrece cada publicación cuando está lista. Para escribir el texto: mantén pulsada su foto → Responder, y escríbelo. Luego, Publicar o Cancelar, y si se sube la historia.\\n/publicar horarios · resultados · match day A · match day B · clasificacion → pedirla aunque no esté lista',\n  amistosos: '⚽ AMISTOSOS (los que no publica la Federación)\\n/amistoso infantil 24/10 10:30 Escolapios → apuntar uno en casa\\n/amistoso senior a 30/07 19:00 Barakaldo fuera en Lasesarre → fuera, con su campo\\n/resultado infantil 3-1 → resultado del último jugado (primero los goles del de casa)\\n/amistosos → lista numerada\\n/borrar amistoso 2 → quitar el número 2 de la lista\\nSalen en horarios, match day, resultados, la web y el calendario; no cuentan para la clasificación.',\n  noticias: '📰 NOTICIAS DE LA WEB\\nCada hora el bot mira si hay publicaciones nuevas en Instagram y pregunta si son noticia (Sí / No).\\n/revisar instagram → mirarlo ya\\n/probar noticia → prueba que no cambia la web',\n  instagram: '🔌 INSTAGRAM\\n/instagram → comprobar que el bot está conectado (también lo vigila solo cada día)',\n};\nif (comando === '/ayuda' || comando === '/start') {\n  const bloque = AYUDA[(resto[0] || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')];\n  if (bloque) return salir(mensaje(bloque));\n  return salir(mensaje('🤖 Lo que sabe hacer el bot\\n\\n' + Object.values(AYUDA).join('\\n\\n') +\n    '\\n\\nPara ver solo una parte: /ayuda amistosos (o ver, publicar, noticias, instagram).'));\n}\nreturn [];"
+        "jsCode": "// Decide qué hacer con cada mensaje o botón del grupo. Sin IA. Lo que hace falta saber va escrito en los\n// propios mensajes del bot («🆔 pieza» y el texto entre las rayas); lo ya publicado o descartado está en la\n// memoria (tabla de datos «memoria_ortuella», que llega como entrada de este nodo).\nconst upd = $('Telegram (grupo)').first().json;\nconst piezas = $('Leer ultimo.json (bot)').first().json.piezas || {};\n// Amistosos apuntados (datos-amistosos.js de la web; vacío si aún no existe)\nconst AMISTOSOS = (() => { try { const t = String($('Leer amistosos (bot)').first().json.data || ''); return JSON.parse(t.slice(t.indexOf('['), t.lastIndexOf(']') + 1)); } catch (e) { return []; } })();\nconst CATS = { primer: 'SENIOR A', b: 'SENIOR B', juvenil: 'JUVENIL', cadete: 'CADETE', infantil: 'INFANTIL', alevin: 'ALEVÍN' };\nconst DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];\nconst fechaLarga = iso => { const d = new Date(iso + 'T12:00:00'); return `${DIAS[d.getDay()]} ${iso.slice(8)}/${iso.slice(5, 7)}/${iso.slice(0, 4)}`; };\nconst nombreNuestro = id => ({ b: 'Ortuella B' })[id] || 'Ortuella';\nconst marcador = (a, gl, gv) => a.casa ? `${nombreNuestro(a.equipo)} ${gl} - ${gv} ${a.rival}` : `${a.rival} ${gl} - ${gv} ${nombreNuestro(a.equipo)}`;\nconst salir = (...cosas) => cosas.map(json => ({ json }));\nconst mensaje = texto => ({ accion: 'mensaje', texto });\nconst RAYA = '────────────';\nconst pieza = tipo => piezas[tipo];\n// Memoria: «pieza:tipo-semana» → «publicada» o «descartada»\nconst MEMORIA = new Map($input.all().filter(i => i.json.clave).map(i => [i.json.clave, i.json.estado]));\nconst hecha = p => MEMORIA.get(`pieza:${p.tipo}-${p.semana}`);\n\n// ---------- botones\n// ---------- noticias desde Instagram (botones «nsi/nno:id» y «web/nweb:id»)\nconst cbN = upd.callback_query;\nif (cbN && /^(nsi|nno|web|nweb):/.test(String(cbN.data))) {\n  const [accion, id] = String(cbN.data).split(':');\n  const original = String((cbN.message && cbN.message.text) || '');\n  const marcar = nota => ({ accion: 'quitar_botones', messageId: cbN.message && cbN.message.message_id,\n    texto: original.replace(/\\n?¿La ponemos como noticia en la web\\?$/, '').replace(/\\nSi quieres otro[^\\n]*$/, '') + `\\n${nota}` });\n  if (accion === 'nno') return salir(marcar('No es noticia'));\n  if (accion === 'nweb') return salir(marcar('❌ Cancelado'));\n  const titulo = accion === 'web' ? ((original.split(RAYA)[1] || '').trim()) : null;\n  // Para proponer el título (nsi) o ponerla en la web (web) hace falta leer la publicación de Instagram\n  return salir(marcar(accion === 'nsi' ? '✅ Sí, es noticia' : '⏳ Poniéndola en la web…'),\n               { accion: 'leer_publicacion', id, siguiente: accion === 'nsi' ? 'titulo' : 'web', titulo });\n}\n\n// ---------- amistosos (botones «ams:…» Apuntar / «amn:…» Cancelar); los datos van en la línea «🆔 amistoso|…»\nconst cbA = upd.callback_query;\nif (cbA && /^(ams|amn):/.test(String(cbA.data))) {\n  const original = String((cbA.message && cbA.message.text) || '');\n  const marcar = nota => ({ accion: 'quitar_botones', messageId: cbA.message && cbA.message.message_id,\n    texto: original.replace(/\\n?¿[^?\\n]*\\?$/, '') + `\\n${nota}` });\n  if (String(cbA.data).startsWith('amn:')) return salir(marcar('❌ Cancelado'));\n  const linea = (original.match(/🆔 (amistoso\\|[^\\n]*)/) || [])[1];\n  if (!linea) return salir(mensaje('🤔 No entiendo ese mensaje. Vuelve a escribir el comando.'));\n  const [, que, ...d] = linea.split('|');\n  const inputs = que === 'anadir' ? { accion: 'anadir', equipo: d[0], fecha: d[1], hora: d[2], fuera: d[3], rival: d[4], campo: d[5] || '' }\n    : que === 'resultado' ? { accion: 'resultado', id: d[0], gl: d[1], gv: d[2] } : { accion: 'borrar', id: d[0] };\n  return salir(marcar('⏳ Guardando en la web…'), { accion: 'amistoso_web', inputs });\n}\n\n// Cada botón lleva «acción:pieza:semana». Antes de llegar aquí, el nodo «Cada botón una sola vez» ya ha\n// descartado los repetidos: un mismo «Publicar» (o «Subir historia») de una pieza solo pasa una vez por semana.\nconst cb = upd.callback_query;\nif (cb) {\n  const [accion, tipo, semana] = String(cb.data || '').split(':');\n  const p = pieza(tipo);\n  if (!p || p.semana !== semana) return salir(mensaje('Esa publicación ya no está disponible (es de otra semana).'));\n  const original = String((cb.message && cb.message.text) || '');\n  // Deja el mensaje sin botones y con una marca de lo que se ha hecho\n  const quitarBotones = nota => {\n    const resto = original.replace(/\\n?¿(Publico con este texto|Subo también la historia[^?]*|Lo intento otra vez)\\?$/, '');\n    return { accion: 'quitar_botones', messageId: cb.message && cb.message.message_id,\n             texto: resto ? `${resto}\\n${nota}` : `Historia de ${p.nombre}: ${nota}` };\n  };\n  // «Esta semana no» (botón de la foto): se apunta como descartada y ya no se ofrece más esa semana\n  if (accion === 'nop') return hecha(p) === 'publicada' ? salir(mensaje(`✅ ${p.nombre} ya está publicada esta semana.`))\n    : salir({ accion: 'apuntar', clave: `pieza:${tipo}-${semana}`, estado: 'descartada' },\n            mensaje(`🚫 ${p.nombre}: esta semana no se publica y no se volverá a ofrecer. Si cambias de idea: /publicar.`));\n  // Un «Publicar» de una pieza ya publicada (p. ej. un botón antiguo) no publica otra vez\n  if (accion === 'pub' && hecha(p) === 'publicada') return salir(quitarBotones('✅ Ya estaba publicada'),\n    mensaje(`✅ ${p.nombre} ya se publicó esta semana: no la publico otra vez.`));\n  // Publicar (o reintentar, «rep») → sección 4, que publica en Instagram y luego pregunta por la historia\n  if (accion === 'pub' || accion === 'rep') {\n    const texto = (original.split(RAYA)[1] || '').trim();\n    return salir(quitarBotones('⏳ Publicando en Instagram…'),\n      { accion: 'publicar_ig', formato: 'post', tipo, semana, nombre: p.nombre, imagen: p.post, caption: texto, carrusel: p.carrusel || null,\n        // En un reintento, la hora del mensaje de error: por si aquel intento sí llegó a publicarse\n        fallo: accion === 'rep' && cb.message ? cb.message.date : null });\n  }\n  if (accion === 'can') return salir(quitarBotones('❌ Cancelado'),\n    mensaje(`❌ Cancelado. Para poner otro texto, responde otra vez a la foto de ${p.nombre}.`));\n  if (accion === 'his' || accion === 'reh') return salir(quitarBotones('⏳ Subiendo la historia…'),\n    { accion: 'publicar_ig', formato: 'historia', tipo, semana, nombre: p.nombre, imagen: p.historia });\n  if (accion === 'nohis') return salir(quitarBotones('no se sube'));\n  if (accion === 'nre') return salir(quitarBotones('❌ Cancelado'));\n  return [];\n}\n\n// ---------- mensajes\nconst msg = upd.message;\nif (!msg || !msg.text) return [];\nconst texto = msg.text.trim();\n\n// Respuesta a un mensaje del bot con «🆔 ig:» → es otro título para la noticia\nconst citada = msg.reply_to_message;\nconst ig = citada && citada.from && citada.from.is_bot && String(citada.text || '').match(/🆔 ig:(\\S+)/);\nif (ig) return salir({ accion: 'proponer_titulo', id: ig[1], titulo: texto });\n\n// Respuesta citando una foto del bot → es el texto de la publicación. La pieza va en la línea «🆔».\nif (citada && citada.from && citada.from.is_bot && citada.photo) {\n  const m = String(citada.caption || '').match(/🆔\\s*([a-z-]+)/);\n  const p = m && pieza(m[1]);\n  if (!p) return salir(mensaje('🤔 No sé de qué publicación es esa foto (puede ser de otra semana). Escribe /publicar y la publicación (por ejemplo /publicar match day A) y responde a la foto nueva.'));\n  if (texto.length > 2200) return salir(mensaje(`El texto tiene ${texto.length} caracteres y Instagram admite 2200. Acórtalo y vuelve a responder a la foto.`));\n  return salir({ accion: 'mensaje_botones',\n    texto: `📝 ${p.nombre}\\n${RAYA}\\n${texto}\\n${RAYA}\\n¿Publico con este texto?`,\n    boton1: '✅ Publicar', dato1: `pub:${p.tipo}:${p.semana}`, boton2: '❌ Cancelar', dato2: `can:${p.tipo}:${p.semana}` });\n}\n\n// Comandos (en castellano; también valen los nombres en euskera de las imágenes)\nif (!texto.startsWith('/')) return [];\nconst [orden, ...resto] = texto.split(/\\s+/);\nconst comando = orden.split('@')[0].toLowerCase();\n// «match day A», «matchday-b», «resultados»… → la pieza de ultimo.json\nconst QUE = { horarios: 'ordutegia', ordutegia: 'ordutegia', resultados: 'emaitzak', emaitzak: 'emaitzak',\n              matchdaya: 'matchday', matchday: 'matchday', a: 'matchday', matchdayb: 'matchday-b', b: 'matchday-b',\n              clasificacion: 'sailkapena', sailkapena: 'sailkapena' };\nconst cual = QUE[resto.join('').toLowerCase().replace(/[^a-z]/g, '')];\nconst NOMBRE = { ordutegia: 'Horarios (ORDUTEGIA)', emaitzak: 'Resultados (EMAITZAK)',\n                 matchday: 'Match day A', 'matchday-b': 'Match day B', sailkapena: 'Clasificación (SAILKAPENA)' };\nconst nombre = p => NOMBRE[p.tipo] || p.nombre;\nconst estado = p => hecha(p) === 'publicada' ? 'publicada 📣' : hecha(p) === 'descartada' ? 'esta semana no 🚫'\n  : p.lista ? 'lista ✅' : `no lista ⏳ (falta: ${(p.faltan || []).join('; ')})`;\nconst verPieza = p => ({ accion: 'foto', foto: p.post, texto: `${nombre(p)}: ${estado(p)}` });\n// Un carrusel se ve entero: la portada y después el resto\nconst verTodo = p => [verPieza(p), ...(p.carrusel || []).slice(1).map((foto, i) => ({ accion: 'foto', foto, texto: `${nombre(p)} · ${i + 2}/${p.carrusel.length}` }))];\nconst lista = Object.values(piezas);\n\nif (comando === '/estado') {\n  if (!lista.length) return salir(mensaje('Esta semana no hay ninguna publicación con datos.'));\n  return salir(mensaje('📋 Publicaciones de esta semana:\\n' + lista.map(p => `• ${nombre(p)}: ${estado(p)}`).join('\\n')));\n}\nconst VER = { '/horarios': ['ordutegia'], '/ordutegia': ['ordutegia'], '/resultados': ['emaitzak'], '/emaitzak': ['emaitzak'],\n              '/matchday': ['matchday', 'matchday-b'], '/clasificacion': ['sailkapena'], '/sailkapena': ['sailkapena'] };\nif (VER[comando]) {\n  const elegidas = VER[comando].map(pieza).filter(Boolean);\n  return elegidas.length ? salir(...elegidas.flatMap(verTodo)) : salir(mensaje('Esta semana no hay esa publicación.'));\n}\nif (comando === '/publicar') {\n  const p = cual && pieza(cual);\n  if (!p) return salir(mensaje('¿Cuál? Escribe una de estas:\\n/publicar horarios\\n/publicar resultados\\n/publicar match day A\\n/publicar match day B\\n/publicar clasificacion' +\n    (cual ? '\\n\\n(Esa publicación no tiene datos esta semana.)' : '')));\n  if (hecha(p) === 'publicada') return salir(mensaje(`✅ ${p.nombre} ya se publicó esta semana. Si de verdad hay que publicarla otra vez (p. ej. se borró en Instagram), borra su fila «pieza:${p.tipo}-${p.semana}» en la tabla memoria_ortuella de n8n y vuelve a escribir el comando.`));\n  return salir({ accion: 'preguntar', pieza: p });\n}\nif (comando === '/revisar') return salir({ accion: 'revisar_instagram' });\n\n// ---------- amistosos\nconst RAYA_A = '────────────';\nconst botones = (texto, linea, pregunta = '¿Lo apunto?') => ({ accion: 'mensaje_botones', texto: `${texto}\\n🆔 ${linea}\\n${pregunta}`,\n  boton1: '✅ Apuntar', dato1: `ams:${Date.now().toString(36)}`, boton2: 'Cancelar', dato2: `amn:${Date.now().toString(36)}` });\nconst leerCat = palabras => {\n  const t = palabras.map(w => w.toLowerCase());\n  if (t[0] === 'senior' || t[0] === 'sénior') return t[1] === 'b' ? ['b', 2] : t[1] === 'a' ? ['primer', 2] : ['primer', 1];\n  const una = { juvenil: 'juvenil', cadete: 'cadete', infantil: 'infantil', alevin: 'alevin', 'alevín': 'alevin' }[t[0]];\n  return una ? [una, 1] : [null, 0];\n};\nif (comando === '/amistoso') {\n  const [equipo, n] = leerCat(resto);\n  const [dia, hora, ...mas] = resto.slice(n);\n  const m = /^(\\d{1,2})\\/(\\d{1,2})$/.exec(dia || '');\n  const uso = '\\n\\nEjemplo: /amistoso infantil 24/10 10:30 Escolapios\\nSi es fuera: /amistoso senior a 30/07 19:00 Barakaldo fuera en Lasesarre';\n  if (!equipo || !m || !/^\\d{1,2}:\\d{2}$/.test(hora || '') || !mas.length) return salir(mensaje('🤔 No lo he entendido.' + uso));\n  // El año: este, salvo que la fecha ya haya pasado hace más de un mes (entonces, el que viene)\n  const hoy = new Date(); let anio = hoy.getFullYear();\n  const f = new Date(anio, +m[2] - 1, +m[1]); if (hoy - f > 30 * 864e5) anio++;\n  const fecha = `${anio}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`;\n  const iFuera = mas.findIndex(w => w.toLowerCase() === 'fuera');\n  const rival = (iFuera >= 0 ? mas.slice(0, iFuera) : mas).join(' ');\n  const resto2 = iFuera >= 0 ? mas.slice(iFuera + 1) : [];\n  const campo = resto2[0] && resto2[0].toLowerCase() === 'en' ? resto2.slice(1).join(' ') : '';\n  if (!rival) return salir(mensaje('🤔 Falta el rival.' + uso));\n  const fuera = iFuera >= 0;\n  return salir(botones(`⚽ Amistoso\\n${RAYA_A}\\n${CATS[equipo]} · ${fechaLarga(fecha)} · ${hora.padStart(5, '0')}\\n` +\n    (fuera ? `${rival} – ${nombreNuestro(equipo)} · fuera${campo ? ' (' + campo + ')' : ' (campo sin poner: el MATCH DAY esperará al campo)'}` : `${nombreNuestro(equipo)} – ${rival} · en casa (Otxartaga)`) + `\\n${RAYA_A}`,\n    `amistoso|anadir|${equipo}|${fecha}|${hora.padStart(5, '0')}|${fuera ? 'si' : 'no'}|${rival}|${campo}`));\n}\nif (comando === '/resultado') {\n  const [equipo, n] = leerCat(resto);\n  const r = /^(\\d{1,2})-(\\d{1,2})$/.exec(resto.slice(n).join('') || '');\n  if (!equipo || !r) return salir(mensaje('🤔 No lo he entendido. Ejemplo: /resultado infantil 3-1 (primero los goles del que juega en casa).'));\n  const hoyIso = new Date().toISOString().slice(0, 10);\n  const a = AMISTOSOS.filter(x => x.equipo === equipo && x.gl == null && x.fecha <= hoyIso).pop();\n  if (!a) return salir(mensaje(`No hay ningún amistoso del ${CATS[equipo]} ya jugado y sin resultado. Mira la lista con /amistosos.`));\n  return salir(botones(`⚽ Resultado del amistoso\\n${RAYA_A}\\n${CATS[equipo]} · ${fechaLarga(a.fecha)}\\n${marcador(a, r[1], r[2])}\\n${RAYA_A}`,\n    `amistoso|resultado|${a.id}|${r[1]}|${r[2]}`));\n}\nif (comando === '/amistosos') {\n  if (!AMISTOSOS.length) return salir(mensaje('No hay amistosos apuntados. Para apuntar uno: /amistoso infantil 24/10 10:30 Escolapios'));\n  return salir(mensaje('⚽ Amistosos apuntados:\\n' + AMISTOSOS.map((a, i) => `${i + 1}. ${CATS[a.equipo]} · ${a.fecha.slice(8)}/${a.fecha.slice(5, 7)} ${a.hora || ''} · ` +\n    (a.gl != null ? marcador(a, a.gl, a.gv) : (a.casa ? `${nombreNuestro(a.equipo)} – ${a.rival}` : `${a.rival} – ${nombreNuestro(a.equipo)}`))).join('\\n') +\n    '\\n\\nPara quitar uno: /borrar amistoso 2 (el número de la lista).'));\n}\nif (comando === '/borrar') {\n  const num = parseInt(resto[resto.length - 1], 10);\n  const a = AMISTOSOS[num - 1];\n  if (!/^amistoso/i.test(resto[0] || '') || !a) return salir(mensaje('🤔 Escribe /borrar amistoso y el número de la lista de /amistosos (por ejemplo: /borrar amistoso 2).'));\n  return salir({ ...botones(`🗑️ Borrar amistoso\\n${RAYA_A}\\n${CATS[a.equipo]} · ${fechaLarga(a.fecha)} · ${a.casa ? nombreNuestro(a.equipo) + ' – ' + a.rival : a.rival + ' – ' + nombreNuestro(a.equipo)}\\n${RAYA_A}`,\n    `amistoso|borrar|${a.id}`, '¿Lo borro?'), boton1: '🗑️ Borrar' });\n}\nif (comando === '/instagram') return salir({ accion: 'comprobar_instagram' });\nif (comando === '/probar' && cual === undefined && resto.join(' ').toLowerCase() === 'noticia') {\n  return salir({ accion: 'nueva_publicacion', publicacion: { id: 'prueba' + Date.now().toString(36), prueba: true,\n    caption: '¡Homenaje a nuestros veteranos este sábado!\\n\\nA las 12:00 en Otxartaga Berri, antes del partido del Senior A. Os esperamos a todos 💙🤍\\n\\n#aupaortuella',\n    media_type: 'IMAGE', media_url: 'https://lehendakari02.github.io/web-cd-ortuella/img/campo.jpg',\n    permalink: 'https://www.instagram.com/cdortuella/', timestamp: new Date().toISOString() } });\n}\nconst AYUDA = {\n  ver: '👀 VER\\n/estado → qué publicaciones están listas y qué les falta\\n/horarios · /resultados · /matchday · /clasificacion → ver las imágenes de esta semana',\n  publicar: '📣 PUBLICAR EN INSTAGRAM\\nEl bot ofrece cada publicación cuando está lista. Para escribir el texto: mantén pulsada su foto → Responder, y escríbelo. Luego, Publicar o Cancelar, y si se sube la historia.\\n/publicar horarios · resultados · match day A · match day B · clasificacion → pedirla aunque no esté lista',\n  amistosos: '⚽ AMISTOSOS (los que no publica la Federación)\\n/amistoso infantil 24/10 10:30 Escolapios → apuntar uno en casa\\n/amistoso senior a 30/07 19:00 Barakaldo fuera en Lasesarre → fuera, con su campo\\n/resultado infantil 3-1 → resultado del último jugado (primero los goles del de casa)\\n/amistosos → lista numerada\\n/borrar amistoso 2 → quitar el número 2 de la lista\\nSalen en horarios, match day, resultados, la web y el calendario; no cuentan para la clasificación.',\n  noticias: '📰 NOTICIAS DE LA WEB\\nCada hora el bot mira si hay publicaciones nuevas en Instagram y pregunta si son noticia (Sí / No).\\n/revisar instagram → mirarlo ya\\n/probar noticia → prueba que no cambia la web',\n  instagram: '🔌 INSTAGRAM\\n/instagram → comprobar que el bot está conectado (también lo vigila solo cada día)',\n};\nif (comando === '/ayuda' || comando === '/start') {\n  const bloque = AYUDA[(resto[0] || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')];\n  if (bloque) return salir(mensaje(bloque));\n  return salir(mensaje('🤖 Lo que sabe hacer el bot\\n\\n' + Object.values(AYUDA).join('\\n\\n') +\n    '\\n\\nPara ver solo una parte: /ayuda amistosos (o ver, publicar, noticias, instagram).'));\n}\nreturn [];"
       },
       "id": "0f57af9e-5662-596d-8584-a5e15818ebb1",
       "name": "Interpretar",
@@ -677,7 +662,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Una por publicación, solo las de los últimos 3 días (la primera vez no se ofrece todo lo antiguo)\nconst desde = Date.now() - 3 * 864e5;\nreturn ($input.first().json.data || [])\n  .filter(p => new Date(p.timestamp) >= desde)\n  .map(publicacion => ({ json: { id: publicacion.id, publicacion } }));"
+        "jsCode": "// Una por publicación nueva de los últimos 3 días. Nueva = no está en la memoria («ig:id»: ya ofrecida, o\n// publicada por el propio bot). «accion: apuntar» → «¿Apuntar?» la guarda en la memoria.\n// Si la memoria aún no tiene ninguna (tabla recién creada), se apuntan todas sin ofrecerlas: así no se\n// ofrece de golpe lo que ya se había visto.\nconst vistas = new Set($input.all().map(i => i.json.clave).filter(Boolean));\nconst primeraVez = ![...vistas].some(c => c.startsWith('ig:'));\nconst desde = Date.now() - 3 * 864e5;\nreturn ($('Leer publicaciones de Instagram').first().json.data || [])\n  .filter(p => new Date(p.timestamp) >= desde && !vistas.has(`ig:${p.id}`))\n  .map(publicacion => ({ json: { id: publicacion.id, accion: 'apuntar', clave: `ig:${publicacion.id}`,\n    estado: primeraVez ? 'vista' : 'ofrecida', ...(primeraVez ? {} : { publicacion }) } }));"
       },
       "id": "3500b0e0-8021-5f61-bd00-6b4ddfb8e956",
       "name": "Publicaciones recientes",
@@ -685,25 +670,6 @@
       "typeVersion": 2,
       "position": [
         160,
-        -700
-      ],
-      "alwaysOutputData": true
-    },
-    {
-      "parameters": {
-        "operation": "removeItemsSeenInPreviousExecutions",
-        "logic": "removeItemsWithAlreadySeenKeyValues",
-        "dedupeValue": "={{ $json.id || 'ninguna' }}",
-        "options": {
-          "scope": "workflow"
-        }
-      },
-      "id": "1e158068-b6ea-55d8-88f9-bb9d9d8bb507",
-      "name": "No repetir publicaciones",
-      "type": "n8n-nodes-base.removeDuplicates",
-      "typeVersion": 2,
-      "position": [
-        400,
         -700
       ],
       "alwaysOutputData": true
@@ -1239,7 +1205,7 @@
     },
     {
       "parameters": {
-        "content": "## 4 · Publicar en Instagram\nAl pulsar **Publicar** (o **Subir historia**): busca la cuenta de Instagram del club, comprueba que ese post no esté ya publicado, crea la publicación, espera a que Instagram la prepare y la publica. Contesta con el enlace y, tras el post, pregunta por la historia.\n\nSi algo falla, lo dice en el grupo con un botón **Reintentar** (nunca publica dos veces el mismo texto).\nLo que publica el bot se apunta para no ofrecerlo después como noticia.\n\n/instagram comprueba la conexión, y cada día a las 9:13 se vigila sola: si se pierde, avisa en el grupo.",
+        "content": "## 4 · Publicar en Instagram\nAl pulsar **Publicar** (o **Subir historia**): busca la cuenta de Instagram del club, comprueba que ese post no esté ya publicado, crea la publicación, espera a que Instagram la prepare y la publica. Contesta con el enlace y, tras el post, pregunta por la historia.\n\nSi algo falla, lo dice en el grupo con un botón **Reintentar** (nunca publica dos veces el mismo texto).\nLo que publica el bot se apunta en la memoria (memoria_ortuella): la pieza no se vuelve a ofrecer esa semana y la publicación no se ofrece como noticia.\n\n/instagram comprueba la conexión, y cada día a las 9:13 se vigila sola: si se pierde, avisa en el grupo.",
         "width": 600,
         "height": 320
       },
@@ -1321,7 +1287,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const RAYA = '────────────';\n// Mensaje de error con «Reintentar» (el botón lleva la hora, así que es nuevo y «Cada botón una sola vez» lo deja pasar)\nconst fallo = (q, motivo) => ({ accion: 'mensaje_botones',\n  texto: `⚠️ No se ha podido ${q.formato === 'historia' ? 'subir la historia' : 'publicar el post'} de ${q.nombre} en Instagram: ${motivo}` +\n    (q.formato === 'historia' ? '' : `\\n${RAYA}\\n${q.caption}\\n${RAYA}`) + '\\n¿Lo intento otra vez?',\n  boton1: '🔁 Reintentar', dato1: `${q.formato === 'historia' ? 'reh' : 'rep'}:${q.tipo}:${q.semana}:${Date.now().toString(36)}`,\n  boton2: 'Cancelar', dato2: `nre:${q.tipo}:${q.semana}:${Date.now().toString(36)}` });\nconst q = $('¿Publicar en Instagram?').first().json;\nconst error = n => { try { const e = $(n).first().json.error; return e && (e.message || e.description || 'error de Meta'); } catch (_) { return null; } };\nconst cuenta = ($('Cuenta de Instagram (publicar)').first().json.data || []).map(p => p.instagram_business_account).find(Boolean);\nif (!cuenta) return [{ json: fallo(q, error('Cuenta de Instagram (publicar)') || 'el token no tiene acceso a la cuenta de Instagram del club') }];\n// Guardia de los reintentos: si al reintentar resulta que el intento fallido sí se publicó (mismo texto,\n// publicado desde poco antes del mensaje de error), no se publica otra vez. Una publicación normal no se\n// compara por texto: dos piezas distintas pueden llevar el mismo texto («Publicar» ya vale una vez por semana).\nconst ya = q.formato === 'post' && q.fallo && ($input.first().json.data || []).find(m =>\n  String(m.caption || '').trim() === q.caption.trim() && new Date(m.timestamp) / 1000 >= q.fallo - 300);\nif (ya) return [{ json: { accion: 'mensaje', texto: `✅ El post de ${q.nombre} ya estaba publicado: ${ya.permalink}` } }];\nconst cuerpo = q.formato === 'historia' ? { image_url: q.imagen, media_type: 'STORIES' } : { image_url: q.imagen, caption: q.caption };\n// Carrusel: primero un contenedor por imagen y luego el del carrusel, que es el que se publica\nif (q.formato === 'post' && (q.carrusel || []).length > 1)\n  return q.carrusel.map(url => ({ json: { accion: 'crear_imagen', ig: cuenta.id, cuerpo: { image_url: url, is_carousel_item: true } } }));\nreturn [{ json: { accion: 'crear', ig: cuenta.id, usuario: cuenta.username, cuerpo } }];"
+        "jsCode": "const RAYA = '────────────';\n// Mensaje de error con «Reintentar» (el botón lleva la hora, así que es nuevo y «Cada botón una sola vez» lo deja pasar)\nconst fallo = (q, motivo) => ({ accion: 'mensaje_botones',\n  texto: `⚠️ No se ha podido ${q.formato === 'historia' ? 'subir la historia' : 'publicar el post'} de ${q.nombre} en Instagram: ${motivo}` +\n    (q.formato === 'historia' ? '' : `\\n${RAYA}\\n${q.caption}\\n${RAYA}`) + '\\n¿Lo intento otra vez?',\n  boton1: '🔁 Reintentar', dato1: `${q.formato === 'historia' ? 'reh' : 'rep'}:${q.tipo}:${q.semana}:${Date.now().toString(36)}`,\n  boton2: 'Cancelar', dato2: `nre:${q.tipo}:${q.semana}:${Date.now().toString(36)}` });\nconst q = $('¿Publicar en Instagram?').first().json;\nconst error = n => { try { const e = $(n).first().json.error; return e && (e.message || e.description || 'error de Meta'); } catch (_) { return null; } };\nconst cuenta = ($('Cuenta de Instagram (publicar)').first().json.data || []).map(p => p.instagram_business_account).find(Boolean);\nif (!cuenta) return [{ json: fallo(q, error('Cuenta de Instagram (publicar)') || 'el token no tiene acceso a la cuenta de Instagram del club') }];\n// Guardia de los reintentos: si al reintentar resulta que el intento fallido sí se publicó (mismo texto,\n// publicado desde poco antes del mensaje de error), no se publica otra vez. Una publicación normal no se\n// compara por texto: dos piezas distintas pueden llevar el mismo texto («Publicar» ya vale una vez por semana).\nconst ya = q.formato === 'post' && q.fallo && ($input.first().json.data || []).find(m =>\n  String(m.caption || '').trim() === q.caption.trim() && new Date(m.timestamp) / 1000 >= q.fallo - 300);\nif (ya) return [{ json: { accion: 'mensaje', texto: `✅ El post de ${q.nombre} ya estaba publicado: ${ya.permalink}` } },\n  { json: { accion: 'apuntar', clave: `pieza:${q.tipo}-${q.semana}`, estado: 'publicada' } }];\nconst cuerpo = q.formato === 'historia' ? { image_url: q.imagen, media_type: 'STORIES' } : { image_url: q.imagen, caption: q.caption };\n// Carrusel: primero un contenedor por imagen y luego el del carrusel, que es el que se publica\nif (q.formato === 'post' && (q.carrusel || []).length > 1)\n  return q.carrusel.map(url => ({ json: { accion: 'crear_imagen', ig: cuenta.id, cuerpo: { image_url: url, is_carousel_item: true } } }));\nreturn [{ json: { accion: 'crear', ig: cuenta.id, usuario: cuenta.username, cuerpo } }];"
       },
       "id": "de77af94-77b0-52bc-a404-2b5b67da9a71",
       "name": "¿Ya publicada?",
@@ -1441,7 +1407,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const RAYA = '────────────';\n// Mensaje de error con «Reintentar» (el botón lleva la hora, así que es nuevo y «Cada botón una sola vez» lo deja pasar)\nconst fallo = (q, motivo) => ({ accion: 'mensaje_botones',\n  texto: `⚠️ No se ha podido ${q.formato === 'historia' ? 'subir la historia' : 'publicar el post'} de ${q.nombre} en Instagram: ${motivo}` +\n    (q.formato === 'historia' ? '' : `\\n${RAYA}\\n${q.caption}\\n${RAYA}`) + '\\n¿Lo intento otra vez?',\n  boton1: '🔁 Reintentar', dato1: `${q.formato === 'historia' ? 'reh' : 'rep'}:${q.tipo}:${q.semana}:${Date.now().toString(36)}`,\n  boton2: 'Cancelar', dato2: `nre:${q.tipo}:${q.semana}:${Date.now().toString(36)}` });\nconst q = $('¿Publicar en Instagram?').first().json;\nconst error = n => { try { const e = $(n).first().json.error; return e && (e.message || e.description || 'error de Meta'); } catch (_) { return null; } };\nconst motivo = error('Crear en Instagram') || error('Publicar en Instagram');\nconst id = $('Publicar en Instagram').first().json.id;\nif (motivo || !id) return [{ json: fallo(q, motivo || 'Instagram no ha contestado') }];\nconst enlace = $input.first().json.permalink || '';\n// «apuntar»: lo que publica el bot no se ofrece después como noticia\nconst apuntar = { accion: 'apuntar', id: String(id) };\nif (q.formato === 'historia') return [{ json: { accion: 'mensaje', texto: `✅ Historia de ${q.nombre} subida a Instagram.` } }, { json: apuntar }];\nconst p = { tipo: q.tipo, semana: q.semana };\nconst pieza = ($('Leer ultimo.json (bot)').first().json.piezas || {})[q.tipo] || {};\nreturn [\n  { json: { accion: 'mensaje', texto: `✅ Publicado en Instagram: ${q.nombre}${enlace ? '\\n' + enlace : ''}` } },\n  ...(pieza.historia ? [\n    { json: { accion: 'foto', foto: pieza.historia, texto: `Historia de ${q.nombre}` } },\n    { json: { accion: 'mensaje_botones', texto: `¿Subo también la historia de ${q.nombre}?`,\n      boton1: '✅ Subir historia', dato1: `his:${p.tipo}:${p.semana}`, boton2: 'No', dato2: `nohis:${p.tipo}:${p.semana}` } }] : []),\n  { json: apuntar }];"
+        "jsCode": "const RAYA = '────────────';\n// Mensaje de error con «Reintentar» (el botón lleva la hora, así que es nuevo y «Cada botón una sola vez» lo deja pasar)\nconst fallo = (q, motivo) => ({ accion: 'mensaje_botones',\n  texto: `⚠️ No se ha podido ${q.formato === 'historia' ? 'subir la historia' : 'publicar el post'} de ${q.nombre} en Instagram: ${motivo}` +\n    (q.formato === 'historia' ? '' : `\\n${RAYA}\\n${q.caption}\\n${RAYA}`) + '\\n¿Lo intento otra vez?',\n  boton1: '🔁 Reintentar', dato1: `${q.formato === 'historia' ? 'reh' : 'rep'}:${q.tipo}:${q.semana}:${Date.now().toString(36)}`,\n  boton2: 'Cancelar', dato2: `nre:${q.tipo}:${q.semana}:${Date.now().toString(36)}` });\nconst q = $('¿Publicar en Instagram?').first().json;\nconst error = n => { try { const e = $(n).first().json.error; return e && (e.message || e.description || 'error de Meta'); } catch (_) { return null; } };\nconst motivo = error('Crear en Instagram') || error('Publicar en Instagram');\nconst id = $('Publicar en Instagram').first().json.id;\nif (motivo || !id) return [{ json: fallo(q, motivo || 'Instagram no ha contestado') }];\nconst enlace = $input.first().json.permalink || '';\n// «apuntar» (en la memoria): lo que publica el bot no se ofrece después como noticia, y la pieza publicada\n// no se vuelve a ofrecer esa semana\nconst apuntar = { accion: 'apuntar', clave: `ig:${id}`, estado: 'del bot' };\nif (q.formato === 'historia') return [{ json: { accion: 'mensaje', texto: `✅ Historia de ${q.nombre} subida a Instagram.` } }, { json: apuntar }];\nconst publicada = { accion: 'apuntar', clave: `pieza:${q.tipo}-${q.semana}`, estado: 'publicada' };\nconst p = { tipo: q.tipo, semana: q.semana };\nconst pieza = ($('Leer ultimo.json (bot)').first().json.piezas || {})[q.tipo] || {};\nreturn [\n  { json: { accion: 'mensaje', texto: `✅ Publicado en Instagram: ${q.nombre}${enlace ? '\\n' + enlace : ''}` } },\n  ...(pieza.historia ? [\n    { json: { accion: 'foto', foto: pieza.historia, texto: `Historia de ${q.nombre}` } },\n    { json: { accion: 'mensaje_botones', texto: `¿Subo también la historia de ${q.nombre}?`,\n      boton1: '✅ Subir historia', dato1: `his:${p.tipo}:${p.semana}`, boton2: 'No', dato2: `nohis:${p.tipo}:${p.semana}` } }] : []),\n  { json: apuntar }, { json: publicada }];"
       },
       "id": "c9ff489e-fea2-5c38-869a-f04926cf0b87",
       "name": "Resultado de Instagram",
@@ -1482,24 +1448,6 @@
       "typeVersion": 2.2,
       "position": [
         3040,
-        2120
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "removeItemsSeenInPreviousExecutions",
-        "logic": "removeItemsWithAlreadySeenKeyValues",
-        "dedupeValue": "={{ $json.id }}",
-        "options": {
-          "scope": "workflow"
-        }
-      },
-      "id": "7ec40db9-06a4-5a3b-b3b8-89756404ef17",
-      "name": "Apuntar publicación del bot",
-      "type": "n8n-nodes-base.removeDuplicates",
-      "typeVersion": 2,
-      "position": [
-        3280,
         2120
       ]
     },
@@ -1715,6 +1663,248 @@
         1120,
         2440
       ]
+    },
+    {
+      "parameters": {
+        "resource": "row",
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "memoria_ortuella"
+        },
+        "matchType": "anyCondition",
+        "filters": {},
+        "returnAll": true
+      },
+      "id": "57fb9391-afd9-5e67-848b-628f62950136",
+      "name": "Leer la memoria (piezas)",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        -320
+      ],
+      "executeOnce": true,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "resource": "row",
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "memoria_ortuella"
+        },
+        "matchType": "anyCondition",
+        "filters": {},
+        "returnAll": true
+      },
+      "id": "4d6f5caf-8a2f-5ab8-89ce-51650d7e50a4",
+      "name": "Leer la memoria (avisos)",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        120
+      ],
+      "executeOnce": true,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "resource": "row",
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "memoria_ortuella"
+        },
+        "matchType": "anyCondition",
+        "filters": {},
+        "returnAll": true
+      },
+      "id": "7949c984-068b-501b-bb14-a88e701445ca",
+      "name": "Leer la memoria (Instagram)",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        40,
+        -820
+      ],
+      "executeOnce": true,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "resource": "row",
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "memoria_ortuella"
+        },
+        "matchType": "anyCondition",
+        "filters": {},
+        "returnAll": true
+      },
+      "id": "edd54c1b-8f9d-57e3-beb6-3ca3a1ab2d5e",
+      "name": "Leer la memoria (bot)",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        400,
+        600
+      ],
+      "executeOnce": true,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "resource": "row",
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "memoria_ortuella"
+        },
+        "matchType": "anyCondition",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "clave",
+              "condition": "eq",
+              "keyValue": "={{ $json.clave }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "clave": "={{ $json.clave }}",
+            "estado": "={{ $json.estado }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "clave",
+              "displayName": "clave",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "a2cd8a3c-3527-5104-9631-ddfaac3db10e",
+      "name": "Apuntar en la memoria",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        3280,
+        2120
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "537cfe2c-856d-581e-90d3-c4dde40805ba",
+              "leftValue": "={{ $json.parte }}",
+              "rightValue": "carrusel",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "8901a3aa-a75d-5c3e-826f-91f05d562418",
+      "name": "¿Imagen del carrusel?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        520,
+        -360
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "bc17879b-d649-5b9e-9146-884183b44d78",
+              "leftValue": "={{ $json.parte }}",
+              "rightValue": "portada",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "848550df-86a3-50a6-9ca9-20cdc977f5aa",
+      "name": "¿Portada?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        520,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "CHAT_ID_DEL_GRUPO",
+        "file": "={{ $json.foto }}",
+        "additionalFields": {
+          "caption": "={{ $json.texto }}"
+        }
+      },
+      "id": "f7ead08d-bcea-5ae2-abcb-ee2630252bbb",
+      "name": "Enseñar carrusel",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        760,
+        -360
+      ]
     }
   ],
   "connections": {
@@ -1738,7 +1928,7 @@
       "main": [
         [
           {
-            "node": "Piezas listas",
+            "node": "Leer la memoria (piezas)",
             "type": "main",
             "index": 0
           }
@@ -1749,7 +1939,7 @@
       "main": [
         [
           {
-            "node": "No repetir piezas",
+            "node": "Preparar pregunta",
             "type": "main",
             "index": 0
           }
@@ -1760,7 +1950,7 @@
       "main": [
         [
           {
-            "node": "Separar avisos",
+            "node": "Leer la memoria (avisos)",
             "type": "main",
             "index": 0
           }
@@ -1771,29 +1961,12 @@
       "main": [
         [
           {
-            "node": "No repetir avisos",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "No repetir avisos": {
-      "main": [
-        [
-          {
             "node": "Mandar aviso",
             "type": "main",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "No repetir piezas": {
-      "main": [
-        [
+          },
           {
-            "node": "Preparar pregunta",
+            "node": "¿Apuntar?",
             "type": "main",
             "index": 0
           }
@@ -1804,7 +1977,12 @@
       "main": [
         [
           {
-            "node": "Pedir texto",
+            "node": "¿Imagen del carrusel?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "¿Portada?",
             "type": "main",
             "index": 0
           }
@@ -1880,7 +2058,7 @@
       "main": [
         [
           {
-            "node": "Interpretar",
+            "node": "Leer la memoria (bot)",
             "type": "main",
             "index": 0
           }
@@ -1947,6 +2125,11 @@
           },
           {
             "node": "¿Comprobar Instagram?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "¿Apuntar?",
             "type": "main",
             "index": 0
           }
@@ -2061,7 +2244,7 @@
       "main": [
         [
           {
-            "node": "Publicaciones recientes",
+            "node": "Leer la memoria (Instagram)",
             "type": "main",
             "index": 0
           }
@@ -2072,18 +2255,12 @@
       "main": [
         [
           {
-            "node": "No repetir publicaciones",
+            "node": "¿Hay nuevas?",
             "type": "main",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "No repetir publicaciones": {
-      "main": [
-        [
+          },
           {
-            "node": "¿Hay nuevas?",
+            "node": "¿Apuntar?",
             "type": "main",
             "index": 0
           }
@@ -2369,6 +2546,11 @@
             "node": "¿Carrusel?",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "¿Apuntar?",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -2507,7 +2689,7 @@
       "main": [
         [
           {
-            "node": "Apuntar publicación del bot",
+            "node": "Apuntar en la memoria",
             "type": "main",
             "index": 0
           }
@@ -2574,6 +2756,72 @@
         [
           {
             "node": "¿Mensaje?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer la memoria (piezas)": {
+      "main": [
+        [
+          {
+            "node": "Piezas listas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Imagen del carrusel?": {
+      "main": [
+        [
+          {
+            "node": "Enseñar carrusel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Portada?": {
+      "main": [
+        [
+          {
+            "node": "Pedir texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer la memoria (avisos)": {
+      "main": [
+        [
+          {
+            "node": "Separar avisos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer la memoria (Instagram)": {
+      "main": [
+        [
+          {
+            "node": "Publicaciones recientes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer la memoria (bot)": {
+      "main": [
+        [
+          {
+            "node": "Interpretar",
             "type": "main",
             "index": 0
           }

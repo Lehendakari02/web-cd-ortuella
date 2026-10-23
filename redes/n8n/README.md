@@ -3,7 +3,9 @@
 `flujo.json` se importa en n8n (probado para la versión 2.44). Hace cuatro cosas, sin IA y sin coste:
 
 1. **Publicaciones** (8:30 y 23:30, hora de Madrid): manda al grupo de Telegram cada pieza *lista*
-   (ORDUTEGIA, EMAITZAK, MATCH DAY A y B), **una sola vez por semana**, y pide el texto de la publicación.
+   (ORDUTEGIA, EMAITZAK, SAILKAPENA, MATCH DAY A y B) **que aún no se haya publicado esa semana**, y pide el
+   texto de la publicación. Si una pieza no se publica, vuelve a salir en la siguiente revisión (p. ej. el
+   MATCH DAY, hasta el día del partido); para que no salga más esa semana, botón **🚫 Esta semana no** de la foto.
    Se contesta **respondiendo a la foto** (mantener pulsado → Responder). El bot enseña la foto con el texto
    y los botones *Publicar* / *Cancelar*. Al publicar, lo sube a Instagram, contesta con el enlace y pregunta si
    se sube también la historia. Si Instagram falla, lo dice con un botón *Reintentar*; antes de publicar comprueba
@@ -44,6 +46,26 @@
   `/instagram` en el grupo dice si la conexión funciona, y cada día a las 9:13 el flujo lo comprueba solo:
   si el token deja de valer, avisa en el grupo (cada día, hasta que se arregle).
 
+## La memoria: tabla de datos `memoria_ortuella`
+
+El flujo apunta lo que ya está hecho en una **tabla de datos** de n8n (*Data table*), no dentro del flujo:
+así no se pierde al volver a importarlo. Cada fila tiene `clave` y `estado`:
+
+| `clave` | `estado` | Qué es |
+|---|---|---|
+| `pieza:matchday-2026-10-19` | `publicada` o `descartada` | Pieza publicada (o «Esta semana no»): no se vuelve a ofrecer esa semana |
+| `aviso:c927ba0cfbea` | `enviado` | Aviso de cambio de partido ya mandado |
+| `ig:1789…` | `ofrecida`, `del bot` o `vista` | Publicación de Instagram ya ofrecida como noticia, o publicada por el bot |
+
+**Crearla (una sola vez, antes de importar):** en n8n, **Overview** (menú de la izquierda) → pestaña
+**Data tables** → **Create data table** → nombre `memoria_ortuella` (exacto, en minúsculas) → añade dos
+columnas (*Add column*) de tipo **String**: `clave` y `estado`. Los nodos la buscan por el nombre (modo
+*By Name*), así que no hay que elegirla en cada nodo.
+
+- Si se borra una fila `pieza:…`, esa pieza se vuelve a ofrecer (y se puede publicar otra vez).
+- Si la tabla está vacía, los avisos de más de 2 días no se mandan y las publicaciones de Instagram que ya
+  hay se apuntan como `vista` sin ofrecerlas: así, al estrenarla, no se repite nada antiguo.
+
 ## Importarlo
 
 1. Si el archivo trae `CHAT_ID_DEL_GRUPO`, cámbialo por el Chat ID del grupo (con el `-` delante) en todo el
@@ -59,12 +81,12 @@
 - En el grupo, escribe `/estado` o `/matchday`: el bot debe contestar.
 - Para probar el recorrido completo: `/publicar matchday` → responder citando la foto → *Publicar*.
 
-**No ejecutes a mano la parte programada** («Revisar 8:30 y 23:30» y «Revisar Instagram cada hora»): los nodos *No repetir piezas* y
-*No repetir avisos* apuntan lo que se manda y luego ya no lo volverían a mandar. Para probar, usa los
-comandos en el grupo (`/publicar matchday`…).
+Ejecutar a mano la parte programada («Revisar 8:30 y 23:30») ya no estropea nada: manda lo que esté
+pendiente, igual que la revisión de la hora. Los avisos y las noticias que mande sí quedan apuntados.
 
-El bot no necesita recordar nada: en el pie de cada foto escribe qué pieza es (`🆔 matchday`) y, en el
-mensaje de confirmación, el texto va entre dos rayas. Al responder o pulsar un botón, lo lee de ahí.
+El texto y la pieza no se guardan: en el pie de cada foto el bot escribe qué pieza es (`🆔 matchday`) y, en
+el mensaje de confirmación, el texto va entre dos rayas. Al responder o pulsar un botón, lo lee de ahí.
+Lo único que recuerda es lo de la tabla `memoria_ortuella`.
 
 ## Lista de comandos para @BotFather
 
