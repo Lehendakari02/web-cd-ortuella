@@ -51,9 +51,8 @@ Con lo aprendido en el flujo de publicaciones:
   - **Decidido (automático y sin trampas)**: la web en el enlace del perfil, y las plantillas con una línea bien
     visible «Toda la información en la web · enlace en el perfil» **en todas las imágenes, posts e historias**
     (así es automático y no depende de que alguien se acuerde de escribirlo en el texto).
-    Texto propuesto, corto y diciendo qué hay en la web: **«Horarios, resultados y clasificaciones de todos los
-    equipos → enlace en el perfil»** (variantes cortas: «Toda la info del club → enlace en el perfil»). Si se quiere
-    también en euskera, que lo escriba o revise alguien del club.
+    Texto elegido: **«Toda la info del club → enlace en el perfil»** (breve y completo). Si se quiere también en
+    euskera, que lo escriba o revise alguien del club.
     Desde una historia son dos toques: @cdortuella → enlace. Nada de programas no oficiales que imitan la app
     (incumplen las normas de Instagram y piden la contraseña de la cuenta).
 
