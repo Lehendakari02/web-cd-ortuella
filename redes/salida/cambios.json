@@ -1,14 +1,3 @@
 {
- "avisos": [
-  {
-   "id": "4906d5c5f4ab",
-   "detectado": "2026-10-23T19:47+02:00",
-   "texto": "⚠️ SENIOR B · J2: Ortuella B – La Arboleda\nLa Federación ha quitado la hora (pendiente de fijar): IGANDEA 25/10, sin hora · OTXARTAGA BERRI"
-  },
-  {
-   "id": "73115272617a",
-   "detectado": "2026-10-23T19:47+02:00",
-   "texto": "⚠️ SENIOR B · J3: Menes – Ortuella B\nAntes: IGANDEA 01/11, sin hora · P. MUNICIPAL   VILLASANA\nAhora: IGANDEA 01/11, sin hora · LAS CARMENES BARRIA"
-  }
- ]
+ "avisos": []
 }
