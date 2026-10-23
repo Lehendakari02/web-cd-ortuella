@@ -12,21 +12,24 @@ la bitácora (`Lehendakari02/bitacora`). Cuando algo se hace, pasa a «Hecho».
    - Alternativas a probar: **Google Apps Script** (gratis, servidores de Google, sin aparatos: primero una prueba de
      10 minutos) o un **aparato en casa** (móvil Android viejo con Termux, o Raspberry Pi ~60-80 €).
    - Descartado: el servidor de Hetzner (bloqueado) y los *proxies* residenciales (sería saltarse el bloqueo).
-2. **Publicación automática con veto.** El bot manda la pieza con un texto predeterminado (frases que rotan, con datos)
-   y avisa: «se publicará sola a las 10:00; responde a la foto para cambiar el texto o pulsa Cancelar». Se puede
-   decidir por pieza (p. ej. MATCH DAY con texto vuestro). Cambia la regla de la bitácora «nada se publica sin
-   aprobación» por «nada se publica sin que la directiva haya podido verlo».
 
 ## Más adelante
 - Reimportar el flujo de n8n cuando toque otro cambio (lleva el mensaje «⏳ Apuntando…» de los amistosos).
 - Comprobaciones programadas del robot de la Federación: 26 y 29/10.
-- Alevín: añadir sus códigos a `EQUIPOS` en `actualizar_federacion.py` cuando la Federación publique su liga
-  (con eso sale solo un sexto robot).
-- Enlace a la web en todas las imágenes («Toda la info del club → enlace en el perfil») al lanzar `cdortuella.net`
-  (ver `redes/IDEAS.md`).
+- Alevín: comprobación semanal programada (lunes) de si la Federación ya publica su liga. Cuando salga: añadir sus
+  códigos a `EQUIPOS` en `actualizar_federacion.py` (sale solo un sexto robot) y **comprobar toda la cadena** con él
+  (robot, web, calendario, imágenes, avisos, amistosos y bot de Telegram) antes de darlo por bueno.
+- Lanzamiento en Cloudflare Pages + `cdortuella.net` (el repositorio sigue público).
+- Enlace a la web en todas las imágenes («Toda la info del club → enlace en el perfil»): **justo después** del
+  lanzamiento, nunca antes (ahora el enlace llevaría a GitHub). Ver `redes/IDEAS.md`.
 - Datos de la web que pone Julen: CIF, registro, precios, directiva, fotos de equipos, logos.
 
+## Aparcado
+- **Publicación automática con veto** (el bot publica solo a una hora salvo que se cancele). A la directiva le gusta
+  como está ahora (se publica al pulsar «Publicar»); la idea se guarda por si se quiere más adelante.
+
 ## Hecho
+- 2026-10-23 — Un robot de GitHub por equipo y otro que junta (PR #55): primera pasada con los 5 equipos leídos sin fallos.
 - 2026-10-23 — Instagram conectado (token de usuario del sistema «Nunca»); flujo definitivo de n8n con publicación real.
 - 2026-10-23 — SAILKAPENA (clasificación) en carrusel + historia; ORDUTEGIA con diseño nuevo; los cinco patrocinadores en la clasificación.
 - 2026-10-23 — Amistosos por Telegram (`/amistoso`, `/resultado`, `/amistosos`, `/borrar amistoso`) y `/ayuda` por bloques.
