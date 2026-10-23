@@ -56,7 +56,14 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Apuntar el cambio
+      - name: Instalar lo necesario para rehacer las imágenes
+        run: |
+          python3 -m pip install --quiet pillow playwright
+          python3 -m playwright install --with-deps chromium
+
+      # Si dos amistosos se apuntan seguidos, el segundo puede encontrarse la web ya cambiada al guardar.
+      # Entonces se pone al día, vuelve a aplicar su cambio y lo intenta otra vez (hasta 3 veces).
+      - name: Apuntar el cambio, rehacer imágenes y calendario, y guardar en la web
         env:
           ACCION: ${{ inputs.accion }}
           EQUIPO: ${{ inputs.equipo }}
@@ -69,33 +76,36 @@ jobs:
           GL: ${{ inputs.gl }}
           GV: ${{ inputs.gv }}
         run: |
-          case "$ACCION" in
-            anadir)    python3 amistosos.py anadir --equipo "$EQUIPO" --fecha "$FECHA" --hora "$HORA" --rival "$RIVAL" \
-                         --campo "$CAMPO" $([ "$FUERA" = "si" ] && echo --fuera) ;;
-            resultado) python3 amistosos.py resultado --id "$ID" --gl "$GL" --gv "$GV" ;;
-            borrar)    python3 amistosos.py borrar --id "$ID" ;;
-            *)         echo "Acción desconocida: $ACCION"; exit 1 ;;
-          esac
-
-      - name: Rehacer las publicaciones de Instagram y el calendario
-        run: |
-          python3 -m pip install --quiet pillow playwright
-          python3 -m playwright install --with-deps chromium
-          python3 redes/generar_redes.py || echo "::warning::No se pudieron generar las publicaciones"
-          python3 generar_calendario.py || echo "::warning::No se pudo rehacer el calendario"
-
-      - name: Guardar en la web
-        run: |
-          git add datos-amistosos.js
-          if [ -d redes/salida ]; then git add redes/salida/; fi
-          if [ -d calendario ]; then git add calendario/; fi
-          if git diff --cached --quiet; then
-            echo "Sin cambios"
-            exit 0
-          fi
-          git -c user.name="Actualización automática" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
-            commit -m "Amistoso: $ACCION"
-          git pull --rebase
-          git push
-        env:
-          ACCION: ${{ inputs.accion }}
+          aplicar() {
+            case "$ACCION" in
+              anadir)    python3 amistosos.py anadir --equipo "$EQUIPO" --fecha "$FECHA" --hora "$HORA" --rival "$RIVAL" \
+                           --campo "$CAMPO" $([ "$FUERA" = "si" ] && echo --fuera) ;;
+              resultado) python3 amistosos.py resultado --id "$ID" --gl "$GL" --gv "$GV" ;;
+              borrar)    python3 amistosos.py borrar --id "$ID" ;;
+              *)         echo "Acción desconocida: $ACCION"; return 1 ;;
+            esac
+            python3 redes/generar_redes.py || echo "::warning::No se pudieron generar las publicaciones"
+            python3 generar_calendario.py || echo "::warning::No se pudo rehacer el calendario"
+          }
+          for intento in 1 2 3; do
+            git fetch --quiet origin main
+            git reset --quiet --hard origin/main
+            aplicar
+            git add datos-amistosos.js
+            if [ -d redes/salida ]; then git add redes/salida/; fi
+            if [ -d calendario ]; then git add calendario/; fi
+            if git diff --cached --quiet; then
+              echo "Sin cambios"
+              exit 0
+            fi
+            git -c user.name="Actualización automática" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit --quiet -m "Amistoso: $ACCION"
+            if git push --quiet origin HEAD:main; then
+              echo "Guardado (intento $intento)"
+              exit 0
+            fi
+            echo "La web ha cambiado mientras tanto: se vuelve a intentar"
+            sleep $((intento * 10))
+          done
+          echo "::error::No se pudo guardar el amistoso tras 3 intentos"
+          exit 1

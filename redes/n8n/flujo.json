@@ -1180,7 +1180,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const fallo = $input.first().json.error;\nconst que = $('¿Amistoso a la web?').first().json.inputs.accion;\nif (fallo) return [{ json: { accion: 'mensaje', texto: `⚠️ No se ha podido guardar (${fallo.message || 'error de GitHub'}). Revisa la credencial de GitHub en n8n.` } }];\nconst hecho = { anadir: 'Apuntado', resultado: 'Resultado apuntado', borrar: 'Borrado' }[que] || 'Hecho';\nreturn [{ json: { accion: 'mensaje', texto: `✅ ${hecho}. En 2-3 minutos estará en las imágenes, la web y el calendario (/amistosos para ver la lista).` } }];"
+        "jsCode": "const fallo = $input.first().json.error;\nconst que = $('¿Amistoso a la web?').first().json.inputs.accion;\nif (fallo) return [{ json: { accion: 'mensaje', texto: `⚠️ No se ha podido guardar (${fallo.message || 'error de GitHub'}). Revisa la credencial de GitHub en n8n.` } }];\nconst hecho = { anadir: 'Apuntando', resultado: 'Apuntando el resultado', borrar: 'Borrando' }[que] || 'Guardando';\nreturn [{ json: { accion: 'mensaje', texto: `⏳ ${hecho}… En 3-5 minutos estará en las imágenes, la web y el calendario. Compruébalo con /amistosos.` } }];"
       },
       "id": "7fe78675-e33f-5cbf-a803-3a299f3f27dc",
       "name": "Resultado del amistoso",
