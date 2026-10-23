@@ -43,8 +43,18 @@ Con lo aprendido en el flujo de publicaciones:
   - En el pie de un post los enlaces **no se pueden pulsar**: poner la web en el perfil de @cdortuella y
     terminar el texto con «Más información: enlace en la bio».
   - En la propia imagen: una línea fija «cdortuella.net» en las plantillas del generador (coste 0).
-  - Historias: el sticker de enlace (*link sticker*) es lo único pulsable. Comprobar entonces si la API de
-    Instagram permite ponerlo; si no, añadirlo a mano al subir la historia o dejar la dirección en la imagen.
+  - Historias: el sticker de enlace (*link sticker*) es lo único pulsable, y **la API no lo permite**
+    (comprobado el 2026-10-23 en la documentación de Meta: «sticker publishing is not supported»; con la API
+    solo imagen o vídeo y etiquetas de cuentas). Una historia publicada tampoco se puede editar después.
+    Propuesta: en «¿Subo también la historia?», un tercer botón **«La subo yo con enlace»**: el bot manda la
+    imagen al grupo y alguien la sube desde la app con el sticker (~30 s). La opción automática sigue sin enlace.
+  - **Decidido (automático y sin trampas)**: la web en el enlace del perfil, y las plantillas con una línea bien
+    visible «Toda la información en la web · enlace en el perfil» **en todas las imágenes, posts e historias**
+    (así es automático y no depende de que alguien se acuerde de escribirlo en el texto).
+    Texto elegido: **«Toda la info del club → enlace en el perfil»** (breve y completo). Si se quiere también en
+    euskera, que lo escriba o revise alguien del club.
+    Desde una historia son dos toques: @cdortuella → enlace. Nada de programas no oficiales que imitan la app
+    (incumplen las normas de Instagram y piden la contraseña de la cuenta).
 
 ## Bot de Telegram
 
