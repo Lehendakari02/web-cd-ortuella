@@ -1,0 +1,101 @@
+# Apunta, pone el resultado o borra un partido amistoso. Lo lanza n8n cuando en el grupo de Telegram se confirma
+# /amistoso, /resultado o /borrar amistoso (también se puede lanzar a mano: Actions → Amistoso → Run workflow).
+# Después rehace las publicaciones de Instagram y el calendario, para que el amistoso salga ya.
+name: Amistoso
+
+on:
+  workflow_dispatch:
+    inputs:
+      accion:
+        description: "anadir, resultado o borrar"
+        required: true
+      equipo:
+        description: "primer, b, juvenil, cadete, infantil o alevin (para anadir)"
+        required: false
+      fecha:
+        description: "AAAA-MM-DD (para anadir)"
+        required: false
+      hora:
+        description: "HH:MM (para anadir)"
+        required: false
+      rival:
+        description: "Rival (para anadir)"
+        required: false
+      fuera:
+        description: "si, si se juega fuera (para anadir)"
+        required: false
+      campo:
+        description: "Campo, si se juega fuera (para anadir)"
+        required: false
+      id:
+        description: "Id del amistoso (para resultado y borrar)"
+        required: false
+      gl:
+        description: "Goles del local (para resultado)"
+        required: false
+      gv:
+        description: "Goles del visitante (para resultado)"
+        required: false
+
+permissions:
+  contents: write
+
+# Misma cola que el robot de la Federación, para no guardar cambios a la vez
+concurrency:
+  group: actualizar-federacion
+  cancel-in-progress: false
+
+jobs:
+  amistoso:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Apuntar el cambio
+        env:
+          ACCION: ${{ inputs.accion }}
+          EQUIPO: ${{ inputs.equipo }}
+          FECHA: ${{ inputs.fecha }}
+          HORA: ${{ inputs.hora }}
+          RIVAL: ${{ inputs.rival }}
+          FUERA: ${{ inputs.fuera }}
+          CAMPO: ${{ inputs.campo }}
+          ID: ${{ inputs.id }}
+          GL: ${{ inputs.gl }}
+          GV: ${{ inputs.gv }}
+        run: |
+          case "$ACCION" in
+            anadir)    python3 amistosos.py anadir --equipo "$EQUIPO" --fecha "$FECHA" --hora "$HORA" --rival "$RIVAL" \
+                         --campo "$CAMPO" $([ "$FUERA" = "si" ] && echo --fuera) ;;
+            resultado) python3 amistosos.py resultado --id "$ID" --gl "$GL" --gv "$GV" ;;
+            borrar)    python3 amistosos.py borrar --id "$ID" ;;
+            *)         echo "Acción desconocida: $ACCION"; exit 1 ;;
+          esac
+
+      - name: Rehacer las publicaciones de Instagram y el calendario
+        run: |
+          python3 -m pip install --quiet pillow playwright
+          python3 -m playwright install --with-deps chromium
+          python3 redes/generar_redes.py || echo "::warning::No se pudieron generar las publicaciones"
+          python3 generar_calendario.py || echo "::warning::No se pudo rehacer el calendario"
+
+      - name: Guardar en la web
+        run: |
+          git add datos-amistosos.js
+          if [ -d redes/salida ]; then git add redes/salida/; fi
+          if [ -d calendario ]; then git add calendario/; fi
+          if git diff --cached --quiet; then
+            echo "Sin cambios"
+            exit 0
+          fi
+          git -c user.name="Actualización automática" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -m "Amistoso: $ACCION"
+          git pull --rebase
+          git push
+        env:
+          ACCION: ${{ inputs.accion }}
