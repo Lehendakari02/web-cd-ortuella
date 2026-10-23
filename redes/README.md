@@ -82,7 +82,7 @@ python3 redes/generar_redes.py --fecha 2026-10-22
 
 ## Publicar con n8n (con revisión por Telegram)
 
-**Flujo listo para importar:** [`n8n/flujo-ensayo.json`](n8n/flujo-ensayo.json), con instrucciones en
+**Flujo listo para importar:** [`n8n/flujo.json`](n8n/flujo.json), con instrucciones en
 [`n8n/README.md`](n8n/README.md). Lo de abajo explica cómo funciona por dentro.
 
 El pie de foto de cada publicación lo escribe una persona por Telegram, porque depende del momento
@@ -107,12 +107,10 @@ Cómo funciona el flujo (un solo flujo para todo):
   escribe en el grupo sin citar una foto se ignora.
 - El bot enseña la foto con ese texto y los botones **Publicar / Cancelar**; al publicar, pregunta aparte
   si se sube también la **historia** (sin texto).
-- 🧪 **Modo ensayo**: mientras no haya token de Instagram, en vez de publicar contesta «(ensayo) Se habría
-  publicado…». Para publicar de verdad: crear el contenedor con `image_url` = `post` y `caption` = el texto
-  (en la historia, `image_url` = `historia` y `media_type` = `STORIES`) y publicarlo, en los dos puntos
-  marcados con `🧪 ENSAYO` del nodo *Interpretar*.
+- **Publicar**: crea el contenedor de Instagram con `image_url` = `post` y `caption` = el texto (en la
+  historia, `image_url` = `historia` y `media_type` = `STORIES`), espera a que esté listo y lo publica.
 - También lee `cambios.json` y manda los **avisos de cambios de partido** nuevos, y contesta a los
-  **comandos** `/estado`, `/ordutegia`, `/emaitzak`, `/matchday`, `/publicar <pieza>` y `/ayuda`.
+  **comandos** `/estado`, `/horarios`, `/resultados`, `/matchday`, `/publicar <pieza>`, `/revisar instagram`, `/instagram`, `/probar noticia` y `/ayuda`.
 
 Coste: 0 €. El bot de Telegram se crea gratis con @BotFather y se conecta en n8n con su token; n8n está
 en el servidor propio; la API de Instagram es gratuita. Mientras espera la respuesta, n8n no gasta nada.
