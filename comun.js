@@ -24,7 +24,16 @@
   var federados = function () { return F.equipos.filter(function (t) { return !t.base; }); };
   var team = function (id) { return F.equipos.filter(function (t) { return t.id === id; })[0]; };
   var isUs = function (name, t) { return name === t.nombreFederacion; };
-  var played = function (t) { return t.partidos.filter(function (p) { return p.gl != null; }); };
+  // Amistosos apuntados por Telegram (datos-amistosos.js): salen en los partidos y el calendario, no en la clasificación
+  (window.AMISTOSOS || []).forEach(function (a) {
+    var t = team(a.equipo); if (!t) return;
+    var us = t.nombreFederacion;
+    t.partidos.push({ jornada: null, amistoso: true, id: a.id, fecha: a.fecha, hora: a.hora, local: a.casa ? us : a.rival,
+      visitante: a.casa ? a.rival : us, campo: a.casa ? null : a.campo, gl: a.gl, gv: a.gv });
+    t.partidos.sort(function (x, y) { return x.fecha < y.fecha ? -1 : x.fecha > y.fecha ? 1 : 0; });
+  });
+  var jor = function (p) { return p.amistoso ? "Amistoso" : "Jornada " + p.jornada; };
+  var played = function (t) { return t.partidos.filter(function (p) { return p.gl != null && !p.amistoso; }); };   // oficiales
   var upcoming = function (t) { return t.partidos.filter(function (p) { return p.gl == null && day(p.fecha) >= today; }); };
   var outcome = function (p, t) { var us = isUs(p.local, t) ? p.gl : p.gv, them = isUs(p.local, t) ? p.gv : p.gl; return us > them ? "w" : us === them ? "d" : "l"; };
   var initials = function (n) { return n.split(/\s+/).filter(function (w) { return w.length > 1; }).map(function (w) { return w[0]; }).join("").slice(0, 2).toUpperCase(); };
@@ -132,7 +141,7 @@
     if (!p) return "";
     var d = day(p.fecha), days = Math.round((d - today) / 864e5);
     var when = days === 0 ? "Hoy" : days === 1 ? "Mañana" : "Faltan " + days + " días";
-    return '<article class="match"><div class="head"><span><b>' + APODO[t.id] + "</b> · Jornada " + p.jornada + '</span><span class="days">' + when + "</span></div>" +
+    return '<article class="match"><div class="head"><span><b>' + APODO[t.id] + "</b> · " + jor(p) + '</span><span class="days">' + when + "</span></div>" +
       '<div class="teams"><div class="team">' + crest(p.local, t) + "<b>" + esc(p.local) + '</b></div><div class="vs">VS</div><div class="team">' + crest(p.visitante, t) + "<b>" + esc(p.visitante) + "</b></div></div>" +
       '<div class="info"><span><strong>' + DIAL[d.getDay()] + " " + fdate(p.fecha) + "</strong></span><span>" + (isUs(p.local, t) ? "Otxartaga Berri" : esc(p.campo || "Fuera de casa")) + "</span><span>" + (p.hora ? "<strong>" + p.hora + " h</strong>" : "Hora por confirmar") + "</span></div>" +
       (isUs(p.local, t) ? "" : mapsLink(p)) + shareLink(matchShareText(p, t), "Compartir este partido por WhatsApp") + "</article>";
@@ -175,10 +184,11 @@
     var name = function (n) { return isUs(n, t) ? '<span class="us">' + esc(n) + "</span>" : esc(n); };
     return list.map(function (p) {
       var x = day(p.fecha), right;
-      if (p.gl != null) { var o = outcome(p, t); right = '<a class="score ' + o + '" href="' + fichaUrl(t, p) + '" title="Ver la ficha del partido" aria-label="' + { w: "Victoria", d: "Empate", l: "Derrota" }[o] + " " + p.gl + " a " + p.gv + ". Ver la ficha del partido" + '">' + p.gl + "-" + p.gv + "</a>"; }
+      if (p.gl != null && p.amistoso) right = '<span class="score ' + outcome(p, t) + '">' + p.gl + "-" + p.gv + "</span>";   // sin ficha
+      else if (p.gl != null) { var o = outcome(p, t); right = '<a class="score ' + o + '" href="' + fichaUrl(t, p) + '" title="Ver la ficha del partido" aria-label="' + { w: "Victoria", d: "Empate", l: "Derrota" }[o] + " " + p.gl + " a " + p.gv + ". Ver la ficha del partido" + '">' + p.gl + "-" + p.gv + "</a>"; }
       else if (results) right = '<span class="score na">Sin cargar</span>';
       else right = p.hora ? '<span class="hour">' + p.hora + "</span>" : '<span class="hour tbc">Hora por confirmar</span>';
-      return '<li><div class="d">' + DIA[x.getDay()] + '<b class="num">' + x.getDate() + " " + MES[x.getMonth()] + '</b></div><div class="m">' + name(p.local) + " – " + name(p.visitante) + "<small>Jornada " + p.jornada + " · " + (isUs(p.local, t) ? "En casa" : "Fuera" + (p.campo ? " · " + esc(p.campo) : "") + (results ? "" : " " + mapsLink(p))) + "</small></div>" + right + "</li>";
+      return '<li><div class="d">' + DIA[x.getDay()] + '<b class="num">' + x.getDate() + " " + MES[x.getMonth()] + '</b></div><div class="m">' + name(p.local) + " – " + name(p.visitante) + "<small>" + jor(p) + " · " + (isUs(p.local, t) ? "En casa" : "Fuera" + (p.campo ? " · " + esc(p.campo) : "") + (results ? "" : " " + mapsLink(p))) + "</small></div>" + right + "</li>";
     }).join("");
   }
 
@@ -270,7 +280,7 @@
     return APODO[t.id] + ": " + p.local + " – " + p.visitante + (p.hora ? ", " + p.hora + " h" : "") + (isUs(p.local, t) ? " (en casa, Otxartaga Berri)" : " (fuera)");
   }
   function matchShareText(p, t) {
-    return "⚽ " + APODO[t.id] + " · Jornada " + p.jornada + "\n" + p.local + " – " + p.visitante + "\n📅 " + longDate(p.fecha) + (isUs(p.local, t) ? " · Otxartaga Berri" : " · Fuera de casa" + (p.campo ? " (" + p.campo + ")" : "")) + "\n" + (p.hora ? "🕐 " + p.hora + " h" : "Hora por confirmar") + "\n\n" + webUrl("partidos.html");
+    return "⚽ " + APODO[t.id] + " · " + jor(p) + "\n" + p.local + " – " + p.visitante + "\n📅 " + longDate(p.fecha) + (isUs(p.local, t) ? " · Otxartaga Berri" : " · Fuera de casa" + (p.campo ? " (" + p.campo + ")" : "")) + "\n" + (p.hora ? "🕐 " + p.hora + " h" : "Hora por confirmar") + "\n\n" + webUrl("partidos.html");
   }
   // Enlaces para suscribirse al calendario .ics de un equipo (o "todos")
   function calHrefs(slug) {
@@ -315,6 +325,6 @@
     e.preventDefault(); next.focus(); next.click();
   });
 
-  window.CDO = { sponsorCard: sponsorCard, C: C, SLUG: SLUG, formDots: formDots, crest: crest, F: F, esc: esc, fdate: fdate, day: day, APODO: APODO, team: team, isUs: isUs, played: played, upcoming: upcoming, outcome: outcome, ourRow: ourRow,
+  window.CDO = { jor: jor, sponsorCard: sponsorCard, C: C, SLUG: SLUG, formDots: formDots, crest: crest, F: F, esc: esc, fdate: fdate, day: day, APODO: APODO, team: team, isUs: isUs, played: played, upcoming: upcoming, outcome: outcome, ourRow: ourRow,
     matchCard: matchCard, resultsStrip: resultsStrip, tableRows: tableRows, TABLE_HEAD: TABLE_HEAD, gamesList: gamesList, scorersList: scorersList, keepersList: keepersList, sourceNote: sourceNote, newsCard: newsCard, copyButtons: copyButtons, shareLink: shareLink, mapsLink: mapsLink, fichaUrl: fichaUrl, cardsList: cardsList, federados: federados, matchLine: matchLine, longDate: longDate, webUrl: webUrl, calHrefs: calHrefs };
 })();

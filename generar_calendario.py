@@ -72,12 +72,13 @@ def evento(equipo, p, sello, web):
         titulo = f"{p['local']} {p['gl']}-{p['gv']} {p['visitante']}"
     else:
         titulo = f"{p['local']} – {p['visitante']}"
-    detalle = (f"{APODO[equipo['id']]} · Jornada {p['jornada']} · {equipo['categoria']}\n"
+    cual = "Amistoso" if p.get("amistoso") else f"Jornada {p['jornada']}"
+    detalle = (f"{APODO[equipo['id']]} · {cual} · {equipo['categoria']}\n"
                f"{'En casa' if en_casa else 'Fuera'}. {'Hora: ' + p['hora'] if p.get('hora') else 'Hora por confirmar'}.\n"
                f"Más información: {web}/partidos.html")
     lineas = [
         "BEGIN:VEVENT",
-        f"UID:cdortuella-{equipo['id']}-j{p['jornada']}@cdortuella",
+        f"UID:cdortuella-{equipo['id']}-{'a-' + p['id'] if p.get('amistoso') else 'j' + str(p['jornada'])}@cdortuella",
         f"DTSTAMP:{sello}",
         *horario(dia, p.get("hora")),
         f"SUMMARY:{texto_ics('⚽ ' + APODO[equipo['id']] + ': ' + titulo)}",
@@ -113,7 +114,8 @@ def calendario(nombre, equipos, sello, web):
 
 
 def main():
-    datos = leer_datos()
+    from amistosos import con_amistosos   # los amistosos apuntados por Telegram también van al calendario
+    datos = con_amistosos(leer_datos())
     web = sitio()
     # Sello fijo (la hora de la última actualización), para que el archivo solo cambie si cambian los datos
     sello = re.sub(r"[-:]", "", datos["actualizado"][:16]) + "00Z"

@@ -360,7 +360,10 @@ def main():
     fecha = opciones.parse_args().fecha
     hoy = date.fromisoformat(fecha) if fecha else datetime.now(ZoneInfo("Europe/Madrid")).date()
 
-    datos, config = leer_datos(), leer_config()
+    # Los amistosos apuntados por Telegram cuentan como partidos (salen en todas las piezas menos en la clasificación)
+    sys.path.insert(0, RAIZ)
+    from amistosos import con_amistosos
+    datos, config = con_amistosos(leer_datos()), leer_config()
     equipos = {e["id"]: e for e in datos["equipos"]}
     os.makedirs(SALIDA, exist_ok=True)
 
@@ -429,7 +432,8 @@ def main():
                 nuestra = next((f for f in tabla if f["equipo"] == eq.get("nombreFederacion")), None) if eq else None
                 if not nuestra or not nuestra["pj"]:
                     continue
-                jugados = [p for p in eq["partidos"] if p.get("gl") is not None and p["fecha"] <= f"{ult_domingo}"]
+                jugados = [p for p in eq["partidos"] if p.get("gl") is not None and p["fecha"] <= f"{ult_domingo}"
+                           and not p.get("amistoso")]
                 if nuestra["pj"] < len(jugados):
                     faltan_clasif.append(f"{c['emaitzak']}: la Federación aún no ha actualizado la clasificación")
                 jornada = max((p["jornada"] for p in jugados), default=None)
