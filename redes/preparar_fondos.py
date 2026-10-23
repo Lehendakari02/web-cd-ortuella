@@ -8,6 +8,8 @@ generar_redes.py. Solo hay que volver a ejecutarlo si se cambia la plantilla en 
   plantillas/fondo-emaitzak-post.png  / -historia.png
   plantillas/capa-ordutegia-post.png / -historia.png    solo título + patrocinadores, con transparencia
   plantillas/capa-emaitzak-post.png  / -historia.png    (para ponerlos encima de una foto difuminada)
+  plantillas/fondo-sailkapena-*.png / capa-sailkapena-*.png   como EMAITZAK pero sin título (SAILKAPENA lo
+                                  escribe el generador)
   plantillas/fila-emaitzak.png    la cinta de un resultado (LOCAL ⚽ VISITANTE) con transparencia
   fondos/*.jpg                    fotos de MATCH DAY sacadas de Canva (ya llevan su velo)
   escudos/Ortuella.png            nuestro escudo en buena calidad
@@ -47,6 +49,43 @@ PIEZAS = {
     "emaitzak": {"origen": RESULTADOS, "titulo": (110, 262), "banda": (1165, 1350), "banda_y": (20, 167),
                  "post": (110, 1004), "historia": (360, 1580)},
 }
+# Clasificación: el fondo de EMAITZAK, sin título (no hay plantilla de Canva con «SAILKAPENA»), y una banda
+# con los cinco patrocinadores (en horarios y resultados el tercero rota: Euskadi LowCost o Irish Pub)
+PIEZAS["sailkapena"] = {**PIEZAS["emaitzak"], "titulo": None, "cinco": True}
+GRIS_BANDA = (236, 235, 234)
+
+
+def logos(origen, desde, hasta, arriba, abajo, huecos):
+    """Recorta cada logo de una banda de Canva: en cada hueco (x desde, x hasta), lo que no es el gris de la banda."""
+    franja = Image.open(origen).convert("RGB").crop((0, desde + arriba + 8, 1080, desde + abajo - 8))
+    trozos = []
+    for x0, x1 in huecos:
+        logo = franja.crop((x0, 0, x1, franja.height))
+        distinto = Image.eval(logo, lambda v: v).point(lambda v: v).convert("L").point(lambda v: 255 if v < 222 else 0)
+        trozos.append(logo.crop(distinto.getbbox()))
+    return trozos
+
+
+def banda_cinco():
+    """La banda de EMAITZAK con los cinco patrocinadores repartidos: Tesoralia, Markofer, Euskadi LowCost,
+    Irish Pub y Sukalde (cada uno, del sitio donde está en Canva)."""
+    p = PIEZAS["emaitzak"]
+    banda = Image.open(RESULTADOS).convert("RGB").crop((0, p["banda"][0], 1080, p["banda"][1]))
+    arriba, abajo = p["banda_y"]
+    ImageDraw.Draw(banda).polygon([(BANDA_X[0] + 6, arriba + 6), (BANDA_X[0] + 984, arriba + 6),
+                                   (BANDA_X[1] + 984, abajo - 6), (BANDA_X[1] + 6, abajo - 6)], fill=GRIS_BANDA)
+    huecos = [(90, 325), (330, 562), (562, 775), (780, 990)]   # dónde está cada logo en las bandas de Canva
+    r = logos(RESULTADOS, *p["banda"], *p["banda_y"], huecos)          # tesoralia, markofer, irish, sukalde
+    o = PIEZAS["ordutegia"]
+    h = logos(HORARIOS, *o["banda"], *o["banda_y"], huecos)            # el tercero es Euskadi LowCost
+    cinco = [r[0], r[1], h[2], r[2], r[3]]
+    hueco, alto_max, centro_y = 172, 84, (arriba + abajo) // 2
+    for i, logo in enumerate(cinco):
+        escala = min(1, (hueco - 18) / logo.width, alto_max / logo.height)
+        logo = logo.resize((round(logo.width * escala), round(logo.height * escala)), Image.LANCZOS)
+        cx = 120 + hueco // 2 + i * hueco   # entre la esquina inclinada de la izquierda y la de la derecha
+        banda.paste(logo, (cx - logo.width // 2, centro_y - logo.height // 2))
+    return banda
 ALTO = {"post": 1350, "historia": 1920}
 
 
@@ -79,8 +118,11 @@ def lienzo(pieza, formato):
     origen = Image.open(p["origen"]).convert("RGB")
     fondo = fondo_continuo(ALTO[formato])
     y_titulo, y_banda = p[formato]
-    for (desde, hasta), y in ((p["titulo"], y_titulo), (p["banda"], y_banda)):
-        trozo = origen.crop((0, desde, 1080, hasta))
+    for franja, y in ((p["titulo"], y_titulo), (p["banda"], y_banda)):
+        if not franja:
+            continue
+        desde, hasta = franja
+        trozo = banda_cinco() if p.get("cinco") and franja == p["banda"] else origen.crop((0, desde, 1080, hasta))
         fondo.paste(trozo, (0, y), mascara_fundido(1080, trozo.height, abajo=y + trozo.height < ALTO[formato]))
     return fondo
 
@@ -92,12 +134,13 @@ def capa(pieza, formato):
     origen = Image.open(p["origen"]).convert("RGB")
     capa = Image.new("RGBA", (1080, ALTO[formato]), (0, 0, 0, 0))
     y_titulo, y_banda = p[formato]
-    titulo = origen.crop((0, p["titulo"][0], 1080, p["titulo"][1]))
-    brillo = titulo.convert("L").point(lambda v: max(0, min(255, (v - 110) * 255 // 120)))
-    blanco = Image.new("RGBA", titulo.size, (255, 255, 255, 0))
-    blanco.putalpha(brillo)
-    capa.alpha_composite(blanco, (0, y_titulo))
-    banda = origen.crop((0, p["banda"][0], 1080, p["banda"][1])).convert("RGBA")
+    if p["titulo"]:
+        titulo = origen.crop((0, p["titulo"][0], 1080, p["titulo"][1]))
+        brillo = titulo.convert("L").point(lambda v: max(0, min(255, (v - 110) * 255 // 120)))
+        blanco = Image.new("RGBA", titulo.size, (255, 255, 255, 0))
+        blanco.putalpha(brillo)
+        capa.alpha_composite(blanco, (0, y_titulo))
+    banda = (banda_cinco() if p.get("cinco") else origen.crop((0, p["banda"][0], 1080, p["banda"][1]))).convert("RGBA")
     arriba, abajo = p["banda_y"]
     forma = Image.new("L", banda.size, 0)
     ImageDraw.Draw(forma).polygon([(BANDA_X[0], arriba), (BANDA_X[0] + 990, arriba),

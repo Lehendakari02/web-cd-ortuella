@@ -2,7 +2,7 @@
   "_ayuda": "Configuración del generador de publicaciones (generar_redes.py). Se puede editar a mano.",
 
   "categorias": [
-    { "id": "primer",   "ordutegia": "SENIOR",   "emaitzak": "SENIOR A" },
+    { "id": "primer",   "ordutegia": "SENIOR A", "emaitzak": "SENIOR A" },
     { "id": "b",        "ordutegia": "SENIOR B", "emaitzak": "SENIOR B" },
     { "id": "juvenil",  "ordutegia": "JUVENIL",  "emaitzak": "JUVENIL" },
     { "id": "cadete",   "ordutegia": "CADETE",   "emaitzak": "CADETE" },

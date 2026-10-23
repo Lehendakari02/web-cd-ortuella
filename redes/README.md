@@ -5,9 +5,10 @@
 
 | Pieza | Qué muestra | Semana |
 |---|---|---|
-| ORDUTEGIA | Rival, día, hora y 🏠/✈️ de cada categoría | La de mañana (el domingo ya muestra el finde siguiente) |
+| ORDUTEGIA | Una cinta por categoría: nuestra categoría (siempre a la izquierda), día y hora, y el rival | La de mañana (el domingo ya muestra el finde siguiente) |
 | EMAITZAK | Resultados jugados, cada equipo en su sitio (local / visitante) | La del último domingo |
 | MATCH DAY | Partido de cada equipo de `config.json` (Senior A y Senior B): escudos, día en euskera, hora y campo | La de mañana |
+| SAILKAPENA | Clasificación. Carrusel: portada con el puesto, los puntos y el último resultado de cada equipo, y una tabla por equipo (Pos · Equipo · PJ · Pts, el Ortuella resaltado, sin retirados). Historia: la portada. Banda con los cinco patrocinadores | La del último domingo |
 
 Se ejecuta solo con el robot de la Federación (2 veces al día), justo después de actualizar los datos.
 Deja el resultado en `redes/salida/`:
@@ -23,6 +24,8 @@ Generar no es publicar: las imágenes se rehacen cada vez que se actualiza la we
 - EMAITZAK: cuando todos los partidos del fin de semana tienen resultado. Si el martes sigue faltando alguno
   (un partido aplazado), se ofrece igualmente sin él, con `"faltan"` diciendo cuál, para decidir si se publica.
 - MATCH DAY (cada equipo por separado): cuando se sabe el día, la hora y el campo.
+- SAILKAPENA: como EMAITZAK, y además cuando la Federación ha actualizado la clasificación de cada equipo
+  (sus partidos jugados en la tabla = sus partidos con resultado). En `ultimo.json` lleva `carrusel` con todas las imágenes.
 
 Si falta algo, `"faltan"` dice qué. Si una pieza no tiene ningún dato (no hay partidos esa semana), no aparece.
 

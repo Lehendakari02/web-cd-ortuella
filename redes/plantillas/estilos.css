@@ -19,15 +19,22 @@ main { position: relative; height: 100%; display: flex; flex-direction: column; 
 
 .lienzo { position: absolute; inset: 0; width: 100%; height: 100%; }
 
-/* ------------------------------------------------ ORDUTEGIA (anchos de la plantilla de Canva) */
+/* ------------------------------------------------ ORDUTEGIA (cinta como la de EMAITZAK: categoría · día y hora · rival) */
 
-.ordutegia .fila { position: absolute; left: 0; height: 66px; width: 100%; }
-.ordutegia .cat, .ordutegia .dato { position: absolute; top: 0; height: 66px; display: flex; align-items: center;
-  justify-content: center; background: #f0efee; color: #011a36; font-weight: 800; font-size: 35px; letter-spacing: 1.5px; }
-.ordutegia .cat { left: 108px; width: 257px; }
-.ordutegia .dato { left: 383px; width: 589px; padding: 0 84px 0 24px; }
-.ordutegia .dato .texto { display: block; width: 100%; height: 62px; line-height: 62px; overflow: hidden; white-space: nowrap; text-align: center; }
-.ordutegia .icono { position: absolute; right: 12px; width: 50px; height: 50px; }
+.ordutegia .cinta { position: absolute; left: 0; width: 100%; height: 96px; }
+.ordutegia .banda { position: absolute; left: 0; top: 10px; width: 100%; height: 76px; background: #e9e8ef;
+  clip-path: polygon(70px 0, 1052px 0, 1006px 100%, 116px 100%); }
+.ordutegia .banda::after { content: ""; position: absolute; inset: 0; background: #1e1c3d;
+  clip-path: polygon(76px 3px, 1046px 3px, 1002px calc(100% - 3px), 120px calc(100% - 3px)); }
+.ordutegia .pieza { position: absolute; left: 390px; top: 0; width: 300px; height: 96px; background: #fff;
+  clip-path: polygon(0 0, 100% 0, 88% 100%, 12% 100%); display: flex; flex-direction: column; align-items: center;
+  justify-content: center; color: #1e1c3d; font-weight: 800; line-height: 1.05; }
+.ordutegia .dia { font-size: 25px; letter-spacing: .5px; }
+.ordutegia .hora { font-size: 44px; }
+.ordutegia .equipo { position: absolute; top: 24px; height: 50px; line-height: 50px; overflow: hidden; white-space: nowrap;
+  text-align: center; font-size: 40px; font-weight: 800; color: #fff; }
+.ordutegia .izquierda { left: 120px; width: 290px; }
+.ordutegia .derecha { left: 688px; width: 312px; }
 
 /* ------------------------------------------------ EMAITZAK (la cinta es la de la plantilla de Canva) */
 
@@ -74,3 +81,35 @@ main { position: relative; height: 100%; display: flex; flex-direction: column; 
 .v1 .grande { white-space: nowrap; font-size: 140px; font-weight: 800; line-height: 1; letter-spacing: 2px; margin-left: -6px; }
 .v1 .donde { overflow: hidden; white-space: nowrap; text-align: right; font-size: 50px; font-weight: 800; margin-top: 10px; }
 .v1 .escudos { margin-top: -10px; }
+
+/* ------------------------------------------------ SAILKAPENA (fondo y patrocinadores de EMAITZAK; el título, aquí) */
+
+.titulo { position: absolute; left: 0; width: 100%; top: 132px; text-align: center; }
+.historia .titulo { top: 382px; }
+.titulo p:first-child { display: inline-block; font-size: 104px; font-weight: 700; letter-spacing: 7px; line-height: 1;
+  padding: 0 14px 18px; border-bottom: 5px solid #fff; }
+.titulo .sub { margin-top: 18px; font-size: 38px; font-weight: 800; letter-spacing: 3px; }
+.titulo.compacto { top: 52px; }
+.titulo.compacto p:first-child { font-size: 84px; padding-bottom: 12px; }
+.titulo.compacto .sub { margin-top: 14px; font-size: 34px; }
+
+.sailkapena.resumen .fila { position: absolute; left: 0; height: 66px; width: 100%; }
+.sailkapena.resumen .cat, .sailkapena.resumen .dato { position: absolute; top: 0; height: 66px; display: flex; align-items: center;
+  justify-content: center; background: #f0efee; color: #011a36; font-weight: 800; font-size: 35px; letter-spacing: 1.5px; }
+.sailkapena.resumen .cat { left: 108px; width: 257px; }
+.sailkapena.resumen .dato { left: 383px; width: 589px; }
+.sailkapena.resumen .sep { margin: 0 14px; }
+.sailkapena.resumen .ultimo { position: absolute; top: 80px; left: 108px; width: 864px; text-align: center; white-space: nowrap;
+  overflow: hidden; font-size: 30px; font-weight: 700; letter-spacing: 1.5px; color: #fff; }
+
+.sailkapena.tabla .cabecera, .sailkapena.tabla .fila { position: absolute; left: 58px; width: 964px; display: flex; gap: 8px; }
+.sailkapena.tabla .cabecera { height: 34px; font-size: 24px; font-weight: 800; letter-spacing: 2px; align-items: center; }
+.sailkapena.tabla .fila span { display: flex; align-items: center; justify-content: center; background: #f0efee; color: #011a36;
+  font-weight: 800; font-size: 25px; letter-spacing: 1px; height: 100%; }
+.sailkapena.tabla .pos { width: 80px; flex: none; }
+.sailkapena.tabla .eq { width: 640px; flex: none; justify-content: flex-start !important; padding: 0 20px; overflow: hidden; white-space: nowrap; }
+.sailkapena.tabla .eq .ajustar { display: block; width: 100%; height: auto; background: none !important; overflow: hidden; }
+.sailkapena.tabla .pj { width: 100px; flex: none; justify-content: center; }
+.sailkapena.tabla .pts { width: 120px; flex: none; }
+.sailkapena.tabla .cabecera span { justify-content: center; display: flex; }
+.sailkapena.tabla .fila.nuestro span { background: #1f4fa8; color: #fff; }

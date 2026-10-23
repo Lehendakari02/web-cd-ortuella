@@ -143,7 +143,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Foto del post + petición del texto. La línea «🆔» dice qué pieza es: al responder, el bot la lee\n// de ahí (así no tiene que recordar nada).\nreturn $input.all().map(item => {\n  const p = item.json.pieza;\n  const falta = (p.faltan || []).length ? `\\n⚠️ Ojo, falta: ${p.faltan.join('; ')}` : '';\n  return { json: { foto: p.post,\n    texto: `${p.nombre} lista para publicar ✅${falta}\\n\\n✍️ RESPONDE A ESTA FOTO (mantén pulsado → Responder) con el texto de la publicación.\\n🆔 ${p.tipo}` } };\n});"
+        "jsCode": "// Foto del post + petición del texto. La línea «🆔» dice qué pieza es: al responder, el bot la lee\n// de ahí (así no tiene que recordar nada).\n// En un carrusel, antes van sus imágenes (para verlo entero) y la portada la última: a ella se responde.\nreturn $input.all().flatMap(item => {\n  const p = item.json.pieza;\n  const falta = (p.faltan || []).length ? `\\n⚠️ Ojo, falta: ${p.faltan.join('; ')}` : '';\n  const resto = (p.carrusel || []).slice(1);\n  const carrusel = resto.map((foto, i) => ({ json: { foto, texto: `${p.nombre} · carrusel ${i + 2}/${resto.length + 1}` } }));\n  return [...carrusel, { json: { foto: p.post,\n    texto: `${p.nombre} lista para publicar ✅${falta}` + (resto.length ? `\\n📚 Carrusel de ${resto.length + 1} imágenes (esta es la portada; las demás, encima).` : '') +\n      `\\n\\n✍️ RESPONDE A ESTA FOTO (mantén pulsado → Responder) con el texto de la publicación.\\n🆔 ${p.tipo}` } }];\n});"
       },
       "id": "e155bea2-6b3e-5494-8e98-db03a0b78969",
       "name": "Preparar pregunta",
@@ -273,7 +273,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Decide qué hacer con cada mensaje o botón del grupo. Sin IA y sin memoria: lo que hace falta\n// saber va escrito en los propios mensajes del bot («🆔 pieza» y el texto entre las rayas).\nconst upd = $('Telegram (grupo)').first().json;\nconst piezas = $input.first().json.piezas || {};\nconst salir = (...cosas) => cosas.map(json => ({ json }));\nconst mensaje = texto => ({ accion: 'mensaje', texto });\nconst RAYA = '────────────';\nconst pieza = tipo => piezas[tipo];\n\n// ---------- botones\n// ---------- noticias desde Instagram (botones «nsi/nno:id» y «web/nweb:id»)\nconst cbN = upd.callback_query;\nif (cbN && /^(nsi|nno|web|nweb):/.test(String(cbN.data))) {\n  const [accion, id] = String(cbN.data).split(':');\n  const original = String((cbN.message && cbN.message.text) || '');\n  const marcar = nota => ({ accion: 'quitar_botones', messageId: cbN.message && cbN.message.message_id,\n    texto: original.replace(/\\n?¿La ponemos como noticia en la web\\?$/, '').replace(/\\nSi quieres otro[^\\n]*$/, '') + `\\n${nota}` });\n  if (accion === 'nno') return salir(marcar('No es noticia'));\n  if (accion === 'nweb') return salir(marcar('❌ Cancelado'));\n  const titulo = accion === 'web' ? ((original.split(RAYA)[1] || '').trim()) : null;\n  // Para proponer el título (nsi) o ponerla en la web (web) hace falta leer la publicación de Instagram\n  return salir(marcar(accion === 'nsi' ? '✅ Sí, es noticia' : '⏳ Poniéndola en la web…'),\n               { accion: 'leer_publicacion', id, siguiente: accion === 'nsi' ? 'titulo' : 'web', titulo });\n}\n\n// Cada botón lleva «acción:pieza:semana». Antes de llegar aquí, el nodo «Cada botón una sola vez» ya ha\n// descartado los repetidos: un mismo «Publicar» (o «Subir historia») de una pieza solo pasa una vez por semana.\nconst cb = upd.callback_query;\nif (cb) {\n  const [accion, tipo, semana] = String(cb.data || '').split(':');\n  const p = pieza(tipo);\n  if (!p || p.semana !== semana) return salir(mensaje('Esa publicación ya no está disponible (es de otra semana).'));\n  const original = String((cb.message && cb.message.text) || '');\n  // Deja el mensaje sin botones y con una marca de lo que se ha hecho\n  const quitarBotones = nota => {\n    const resto = original.replace(/\\n?¿(Publico con este texto|Subo también la historia[^?]*|Lo intento otra vez)\\?$/, '');\n    return { accion: 'quitar_botones', messageId: cb.message && cb.message.message_id,\n             texto: resto ? `${resto}\\n${nota}` : `Historia de ${p.nombre}: ${nota}` };\n  };\n  // Publicar (o reintentar, «rep») → sección 4, que publica en Instagram y luego pregunta por la historia\n  if (accion === 'pub' || accion === 'rep') {\n    const texto = (original.split(RAYA)[1] || '').trim();\n    return salir(quitarBotones('⏳ Publicando en Instagram…'),\n      { accion: 'publicar_ig', formato: 'post', tipo, semana, nombre: p.nombre, imagen: p.post, caption: texto,\n        // En un reintento, la hora del mensaje de error: por si aquel intento sí llegó a publicarse\n        fallo: accion === 'rep' && cb.message ? cb.message.date : null });\n  }\n  if (accion === 'can') return salir(quitarBotones('❌ Cancelado'),\n    mensaje(`❌ Cancelado. Para poner otro texto, responde otra vez a la foto de ${p.nombre}.`));\n  if (accion === 'his' || accion === 'reh') return salir(quitarBotones('⏳ Subiendo la historia…'),\n    { accion: 'publicar_ig', formato: 'historia', tipo, semana, nombre: p.nombre, imagen: p.historia });\n  if (accion === 'nohis') return salir(quitarBotones('no se sube'));\n  if (accion === 'nre') return salir(quitarBotones('❌ Cancelado'));\n  return [];\n}\n\n// ---------- mensajes\nconst msg = upd.message;\nif (!msg || !msg.text) return [];\nconst texto = msg.text.trim();\n\n// Respuesta a un mensaje del bot con «🆔 ig:» → es otro título para la noticia\nconst citada = msg.reply_to_message;\nconst ig = citada && citada.from && citada.from.is_bot && String(citada.text || '').match(/🆔 ig:(\\S+)/);\nif (ig) return salir({ accion: 'proponer_titulo', id: ig[1], titulo: texto });\n\n// Respuesta citando una foto del bot → es el texto de la publicación. La pieza va en la línea «🆔».\nif (citada && citada.from && citada.from.is_bot && citada.photo) {\n  const m = String(citada.caption || '').match(/🆔\\s*([a-z-]+)/);\n  const p = m && pieza(m[1]);\n  if (!p) return salir(mensaje('🤔 No sé de qué publicación es esa foto (puede ser de otra semana). Escribe /publicar y la publicación (por ejemplo /publicar match day A) y responde a la foto nueva.'));\n  if (texto.length > 2200) return salir(mensaje(`El texto tiene ${texto.length} caracteres y Instagram admite 2200. Acórtalo y vuelve a responder a la foto.`));\n  return salir({ accion: 'mensaje_botones',\n    texto: `📝 ${p.nombre}\\n${RAYA}\\n${texto}\\n${RAYA}\\n¿Publico con este texto?`,\n    boton1: '✅ Publicar', dato1: `pub:${p.tipo}:${p.semana}`, boton2: '❌ Cancelar', dato2: `can:${p.tipo}:${p.semana}` });\n}\n\n// Comandos (en castellano; también valen los nombres en euskera de las imágenes)\nif (!texto.startsWith('/')) return [];\nconst [orden, ...resto] = texto.split(/\\s+/);\nconst comando = orden.split('@')[0].toLowerCase();\n// «match day A», «matchday-b», «resultados»… → la pieza de ultimo.json\nconst QUE = { horarios: 'ordutegia', ordutegia: 'ordutegia', resultados: 'emaitzak', emaitzak: 'emaitzak',\n              matchdaya: 'matchday', matchday: 'matchday', a: 'matchday', matchdayb: 'matchday-b', b: 'matchday-b' };\nconst cual = QUE[resto.join('').toLowerCase().replace(/[^a-z]/g, '')];\nconst NOMBRE = { ordutegia: 'Horarios (ORDUTEGIA)', emaitzak: 'Resultados (EMAITZAK)',\n                 matchday: 'Match day A', 'matchday-b': 'Match day B' };\nconst nombre = p => NOMBRE[p.tipo] || p.nombre;\nconst estado = p => p.lista ? 'lista ✅' : `no lista ⏳ (falta: ${(p.faltan || []).join('; ')})`;\nconst verPieza = p => ({ accion: 'foto', foto: p.post, texto: `${nombre(p)}: ${estado(p)}` });\nconst lista = Object.values(piezas);\n\nif (comando === '/estado') {\n  if (!lista.length) return salir(mensaje('Esta semana no hay ninguna publicación con datos.'));\n  return salir(mensaje('📋 Publicaciones de esta semana:\\n' + lista.map(p => `• ${nombre(p)}: ${estado(p)}`).join('\\n')));\n}\nconst VER = { '/horarios': ['ordutegia'], '/ordutegia': ['ordutegia'], '/resultados': ['emaitzak'], '/emaitzak': ['emaitzak'],\n              '/matchday': ['matchday', 'matchday-b'] };\nif (VER[comando]) {\n  const elegidas = VER[comando].map(pieza).filter(Boolean);\n  return elegidas.length ? salir(...elegidas.map(verPieza)) : salir(mensaje('Esta semana no hay esa publicación.'));\n}\nif (comando === '/publicar') {\n  const p = cual && pieza(cual);\n  if (!p) return salir(mensaje('¿Cuál? Escribe una de estas:\\n/publicar horarios\\n/publicar resultados\\n/publicar match day A\\n/publicar match day B' +\n    (cual ? '\\n\\n(Esa publicación no tiene datos esta semana.)' : '')));\n  return salir({ accion: 'preguntar', pieza: p });\n}\nif (comando === '/revisar') return salir({ accion: 'revisar_instagram' });\nif (comando === '/instagram') return salir({ accion: 'comprobar_instagram' });\nif (comando === '/probar' && cual === undefined && resto.join(' ').toLowerCase() === 'noticia') {\n  return salir({ accion: 'nueva_publicacion', publicacion: { id: 'prueba' + Date.now().toString(36), prueba: true,\n    caption: '¡Homenaje a nuestros veteranos este sábado!\\n\\nA las 12:00 en Otxartaga Berri, antes del partido del Senior A. Os esperamos a todos 💙🤍\\n\\n#aupaortuella',\n    media_type: 'IMAGE', media_url: 'https://lehendakari02.github.io/web-cd-ortuella/img/campo.jpg',\n    permalink: 'https://www.instagram.com/cdortuella/', timestamp: new Date().toISOString() } });\n}\nif (comando === '/ayuda' || comando === '/start') {\n  return salir(mensaje('🤖 Comandos:\\n/estado → qué publicaciones están listas y qué falta\\n/horarios, /resultados, /matchday → ver la imagen\\n/publicar horarios · /publicar resultados · /publicar match day A · /publicar match day B → publicar aunque no esté lista\\n/revisar instagram → buscar ya las publicaciones nuevas de Instagram (para ponerlas como noticia)\\n/instagram → comprobar que el bot está conectado a Instagram\\n/probar noticia → probar cómo llega una noticia de Instagram\\n\\nPara poner el texto de una publicación, responde citando la foto que manda el bot.'));\n}\nreturn [];"
+        "jsCode": "// Decide qué hacer con cada mensaje o botón del grupo. Sin IA y sin memoria: lo que hace falta\n// saber va escrito en los propios mensajes del bot («🆔 pieza» y el texto entre las rayas).\nconst upd = $('Telegram (grupo)').first().json;\nconst piezas = $input.first().json.piezas || {};\nconst salir = (...cosas) => cosas.map(json => ({ json }));\nconst mensaje = texto => ({ accion: 'mensaje', texto });\nconst RAYA = '────────────';\nconst pieza = tipo => piezas[tipo];\n\n// ---------- botones\n// ---------- noticias desde Instagram (botones «nsi/nno:id» y «web/nweb:id»)\nconst cbN = upd.callback_query;\nif (cbN && /^(nsi|nno|web|nweb):/.test(String(cbN.data))) {\n  const [accion, id] = String(cbN.data).split(':');\n  const original = String((cbN.message && cbN.message.text) || '');\n  const marcar = nota => ({ accion: 'quitar_botones', messageId: cbN.message && cbN.message.message_id,\n    texto: original.replace(/\\n?¿La ponemos como noticia en la web\\?$/, '').replace(/\\nSi quieres otro[^\\n]*$/, '') + `\\n${nota}` });\n  if (accion === 'nno') return salir(marcar('No es noticia'));\n  if (accion === 'nweb') return salir(marcar('❌ Cancelado'));\n  const titulo = accion === 'web' ? ((original.split(RAYA)[1] || '').trim()) : null;\n  // Para proponer el título (nsi) o ponerla en la web (web) hace falta leer la publicación de Instagram\n  return salir(marcar(accion === 'nsi' ? '✅ Sí, es noticia' : '⏳ Poniéndola en la web…'),\n               { accion: 'leer_publicacion', id, siguiente: accion === 'nsi' ? 'titulo' : 'web', titulo });\n}\n\n// Cada botón lleva «acción:pieza:semana». Antes de llegar aquí, el nodo «Cada botón una sola vez» ya ha\n// descartado los repetidos: un mismo «Publicar» (o «Subir historia») de una pieza solo pasa una vez por semana.\nconst cb = upd.callback_query;\nif (cb) {\n  const [accion, tipo, semana] = String(cb.data || '').split(':');\n  const p = pieza(tipo);\n  if (!p || p.semana !== semana) return salir(mensaje('Esa publicación ya no está disponible (es de otra semana).'));\n  const original = String((cb.message && cb.message.text) || '');\n  // Deja el mensaje sin botones y con una marca de lo que se ha hecho\n  const quitarBotones = nota => {\n    const resto = original.replace(/\\n?¿(Publico con este texto|Subo también la historia[^?]*|Lo intento otra vez)\\?$/, '');\n    return { accion: 'quitar_botones', messageId: cb.message && cb.message.message_id,\n             texto: resto ? `${resto}\\n${nota}` : `Historia de ${p.nombre}: ${nota}` };\n  };\n  // Publicar (o reintentar, «rep») → sección 4, que publica en Instagram y luego pregunta por la historia\n  if (accion === 'pub' || accion === 'rep') {\n    const texto = (original.split(RAYA)[1] || '').trim();\n    return salir(quitarBotones('⏳ Publicando en Instagram…'),\n      { accion: 'publicar_ig', formato: 'post', tipo, semana, nombre: p.nombre, imagen: p.post, caption: texto, carrusel: p.carrusel || null,\n        // En un reintento, la hora del mensaje de error: por si aquel intento sí llegó a publicarse\n        fallo: accion === 'rep' && cb.message ? cb.message.date : null });\n  }\n  if (accion === 'can') return salir(quitarBotones('❌ Cancelado'),\n    mensaje(`❌ Cancelado. Para poner otro texto, responde otra vez a la foto de ${p.nombre}.`));\n  if (accion === 'his' || accion === 'reh') return salir(quitarBotones('⏳ Subiendo la historia…'),\n    { accion: 'publicar_ig', formato: 'historia', tipo, semana, nombre: p.nombre, imagen: p.historia });\n  if (accion === 'nohis') return salir(quitarBotones('no se sube'));\n  if (accion === 'nre') return salir(quitarBotones('❌ Cancelado'));\n  return [];\n}\n\n// ---------- mensajes\nconst msg = upd.message;\nif (!msg || !msg.text) return [];\nconst texto = msg.text.trim();\n\n// Respuesta a un mensaje del bot con «🆔 ig:» → es otro título para la noticia\nconst citada = msg.reply_to_message;\nconst ig = citada && citada.from && citada.from.is_bot && String(citada.text || '').match(/🆔 ig:(\\S+)/);\nif (ig) return salir({ accion: 'proponer_titulo', id: ig[1], titulo: texto });\n\n// Respuesta citando una foto del bot → es el texto de la publicación. La pieza va en la línea «🆔».\nif (citada && citada.from && citada.from.is_bot && citada.photo) {\n  const m = String(citada.caption || '').match(/🆔\\s*([a-z-]+)/);\n  const p = m && pieza(m[1]);\n  if (!p) return salir(mensaje('🤔 No sé de qué publicación es esa foto (puede ser de otra semana). Escribe /publicar y la publicación (por ejemplo /publicar match day A) y responde a la foto nueva.'));\n  if (texto.length > 2200) return salir(mensaje(`El texto tiene ${texto.length} caracteres y Instagram admite 2200. Acórtalo y vuelve a responder a la foto.`));\n  return salir({ accion: 'mensaje_botones',\n    texto: `📝 ${p.nombre}\\n${RAYA}\\n${texto}\\n${RAYA}\\n¿Publico con este texto?`,\n    boton1: '✅ Publicar', dato1: `pub:${p.tipo}:${p.semana}`, boton2: '❌ Cancelar', dato2: `can:${p.tipo}:${p.semana}` });\n}\n\n// Comandos (en castellano; también valen los nombres en euskera de las imágenes)\nif (!texto.startsWith('/')) return [];\nconst [orden, ...resto] = texto.split(/\\s+/);\nconst comando = orden.split('@')[0].toLowerCase();\n// «match day A», «matchday-b», «resultados»… → la pieza de ultimo.json\nconst QUE = { horarios: 'ordutegia', ordutegia: 'ordutegia', resultados: 'emaitzak', emaitzak: 'emaitzak',\n              matchdaya: 'matchday', matchday: 'matchday', a: 'matchday', matchdayb: 'matchday-b', b: 'matchday-b',\n              clasificacion: 'sailkapena', sailkapena: 'sailkapena' };\nconst cual = QUE[resto.join('').toLowerCase().replace(/[^a-z]/g, '')];\nconst NOMBRE = { ordutegia: 'Horarios (ORDUTEGIA)', emaitzak: 'Resultados (EMAITZAK)',\n                 matchday: 'Match day A', 'matchday-b': 'Match day B', sailkapena: 'Clasificación (SAILKAPENA)' };\nconst nombre = p => NOMBRE[p.tipo] || p.nombre;\nconst estado = p => p.lista ? 'lista ✅' : `no lista ⏳ (falta: ${(p.faltan || []).join('; ')})`;\nconst verPieza = p => ({ accion: 'foto', foto: p.post, texto: `${nombre(p)}: ${estado(p)}` });\n// Un carrusel se ve entero: la portada y después el resto\nconst verTodo = p => [verPieza(p), ...(p.carrusel || []).slice(1).map((foto, i) => ({ accion: 'foto', foto, texto: `${nombre(p)} · ${i + 2}/${p.carrusel.length}` }))];\nconst lista = Object.values(piezas);\n\nif (comando === '/estado') {\n  if (!lista.length) return salir(mensaje('Esta semana no hay ninguna publicación con datos.'));\n  return salir(mensaje('📋 Publicaciones de esta semana:\\n' + lista.map(p => `• ${nombre(p)}: ${estado(p)}`).join('\\n')));\n}\nconst VER = { '/horarios': ['ordutegia'], '/ordutegia': ['ordutegia'], '/resultados': ['emaitzak'], '/emaitzak': ['emaitzak'],\n              '/matchday': ['matchday', 'matchday-b'], '/clasificacion': ['sailkapena'], '/sailkapena': ['sailkapena'] };\nif (VER[comando]) {\n  const elegidas = VER[comando].map(pieza).filter(Boolean);\n  return elegidas.length ? salir(...elegidas.flatMap(verTodo)) : salir(mensaje('Esta semana no hay esa publicación.'));\n}\nif (comando === '/publicar') {\n  const p = cual && pieza(cual);\n  if (!p) return salir(mensaje('¿Cuál? Escribe una de estas:\\n/publicar horarios\\n/publicar resultados\\n/publicar match day A\\n/publicar match day B\\n/publicar clasificacion' +\n    (cual ? '\\n\\n(Esa publicación no tiene datos esta semana.)' : '')));\n  return salir({ accion: 'preguntar', pieza: p });\n}\nif (comando === '/revisar') return salir({ accion: 'revisar_instagram' });\nif (comando === '/instagram') return salir({ accion: 'comprobar_instagram' });\nif (comando === '/probar' && cual === undefined && resto.join(' ').toLowerCase() === 'noticia') {\n  return salir({ accion: 'nueva_publicacion', publicacion: { id: 'prueba' + Date.now().toString(36), prueba: true,\n    caption: '¡Homenaje a nuestros veteranos este sábado!\\n\\nA las 12:00 en Otxartaga Berri, antes del partido del Senior A. Os esperamos a todos 💙🤍\\n\\n#aupaortuella',\n    media_type: 'IMAGE', media_url: 'https://lehendakari02.github.io/web-cd-ortuella/img/campo.jpg',\n    permalink: 'https://www.instagram.com/cdortuella/', timestamp: new Date().toISOString() } });\n}\nif (comando === '/ayuda' || comando === '/start') {\n  return salir(mensaje('🤖 Comandos:\\n/estado → qué publicaciones están listas y qué falta\\n/horarios, /resultados, /matchday, /clasificacion → ver la imagen\\n/publicar horarios · /publicar resultados · /publicar match day A · /publicar match day B · /publicar clasificacion → publicar aunque no esté lista\\n/revisar instagram → buscar ya las publicaciones nuevas de Instagram (para ponerlas como noticia)\\n/instagram → comprobar que el bot está conectado a Instagram\\n/probar noticia → probar cómo llega una noticia de Instagram\\n\\nPara poner el texto de una publicación, responde citando la foto que manda el bot.'));\n}\nreturn [];"
       },
       "id": "0f57af9e-5662-596d-8584-a5e15818ebb1",
       "name": "Interpretar",
@@ -1233,7 +1233,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const RAYA = '────────────';\n// Mensaje de error con «Reintentar» (el botón lleva la hora, así que es nuevo y «Cada botón una sola vez» lo deja pasar)\nconst fallo = (q, motivo) => ({ accion: 'mensaje_botones',\n  texto: `⚠️ No se ha podido ${q.formato === 'historia' ? 'subir la historia' : 'publicar el post'} de ${q.nombre} en Instagram: ${motivo}` +\n    (q.formato === 'historia' ? '' : `\\n${RAYA}\\n${q.caption}\\n${RAYA}`) + '\\n¿Lo intento otra vez?',\n  boton1: '🔁 Reintentar', dato1: `${q.formato === 'historia' ? 'reh' : 'rep'}:${q.tipo}:${q.semana}:${Date.now().toString(36)}`,\n  boton2: 'Cancelar', dato2: `nre:${q.tipo}:${q.semana}:${Date.now().toString(36)}` });\nconst q = $('¿Publicar en Instagram?').first().json;\nconst error = n => { try { const e = $(n).first().json.error; return e && (e.message || e.description || 'error de Meta'); } catch (_) { return null; } };\nconst cuenta = ($('Cuenta de Instagram (publicar)').first().json.data || []).map(p => p.instagram_business_account).find(Boolean);\nif (!cuenta) return [{ json: fallo(q, error('Cuenta de Instagram (publicar)') || 'el token no tiene acceso a la cuenta de Instagram del club') }];\n// Guardia de los reintentos: si al reintentar resulta que el intento fallido sí se publicó (mismo texto,\n// publicado desde poco antes del mensaje de error), no se publica otra vez. Una publicación normal no se\n// compara por texto: dos piezas distintas pueden llevar el mismo texto («Publicar» ya vale una vez por semana).\nconst ya = q.formato === 'post' && q.fallo && ($input.first().json.data || []).find(m =>\n  String(m.caption || '').trim() === q.caption.trim() && new Date(m.timestamp) / 1000 >= q.fallo - 300);\nif (ya) return [{ json: { accion: 'mensaje', texto: `✅ El post de ${q.nombre} ya estaba publicado: ${ya.permalink}` } }];\nconst cuerpo = q.formato === 'historia' ? { image_url: q.imagen, media_type: 'STORIES' } : { image_url: q.imagen, caption: q.caption };\nreturn [{ json: { accion: 'crear', ig: cuenta.id, usuario: cuenta.username, cuerpo } }];"
+        "jsCode": "const RAYA = '────────────';\n// Mensaje de error con «Reintentar» (el botón lleva la hora, así que es nuevo y «Cada botón una sola vez» lo deja pasar)\nconst fallo = (q, motivo) => ({ accion: 'mensaje_botones',\n  texto: `⚠️ No se ha podido ${q.formato === 'historia' ? 'subir la historia' : 'publicar el post'} de ${q.nombre} en Instagram: ${motivo}` +\n    (q.formato === 'historia' ? '' : `\\n${RAYA}\\n${q.caption}\\n${RAYA}`) + '\\n¿Lo intento otra vez?',\n  boton1: '🔁 Reintentar', dato1: `${q.formato === 'historia' ? 'reh' : 'rep'}:${q.tipo}:${q.semana}:${Date.now().toString(36)}`,\n  boton2: 'Cancelar', dato2: `nre:${q.tipo}:${q.semana}:${Date.now().toString(36)}` });\nconst q = $('¿Publicar en Instagram?').first().json;\nconst error = n => { try { const e = $(n).first().json.error; return e && (e.message || e.description || 'error de Meta'); } catch (_) { return null; } };\nconst cuenta = ($('Cuenta de Instagram (publicar)').first().json.data || []).map(p => p.instagram_business_account).find(Boolean);\nif (!cuenta) return [{ json: fallo(q, error('Cuenta de Instagram (publicar)') || 'el token no tiene acceso a la cuenta de Instagram del club') }];\n// Guardia de los reintentos: si al reintentar resulta que el intento fallido sí se publicó (mismo texto,\n// publicado desde poco antes del mensaje de error), no se publica otra vez. Una publicación normal no se\n// compara por texto: dos piezas distintas pueden llevar el mismo texto («Publicar» ya vale una vez por semana).\nconst ya = q.formato === 'post' && q.fallo && ($input.first().json.data || []).find(m =>\n  String(m.caption || '').trim() === q.caption.trim() && new Date(m.timestamp) / 1000 >= q.fallo - 300);\nif (ya) return [{ json: { accion: 'mensaje', texto: `✅ El post de ${q.nombre} ya estaba publicado: ${ya.permalink}` } }];\nconst cuerpo = q.formato === 'historia' ? { image_url: q.imagen, media_type: 'STORIES' } : { image_url: q.imagen, caption: q.caption };\n// Carrusel: primero un contenedor por imagen y luego el del carrusel, que es el que se publica\nif (q.formato === 'post' && (q.carrusel || []).length > 1)\n  return q.carrusel.map(url => ({ json: { accion: 'crear_imagen', ig: cuenta.id, cuerpo: { image_url: url, is_carousel_item: true } } }));\nreturn [{ json: { accion: 'crear', ig: cuenta.id, usuario: cuenta.username, cuerpo } }];"
       },
       "id": "de77af94-77b0-52bc-a404-2b5b67da9a71",
       "name": "¿Ya publicada?",
@@ -1412,6 +1412,106 @@
       "typeVersion": 2,
       "position": [
         3280,
+        2120
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2f30f87a-8a6a-5d8f-82e0-4e561fad4e1b",
+              "leftValue": "={{ $json.accion }}",
+              "rightValue": "crear_imagen",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0e3389c2-9d84-572c-adee-eb396ff208be",
+      "name": "¿Carrusel?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1600,
+        2120
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v24.0/{{ $json.ig }}/media",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "options": {},
+        "method": "POST",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.cuerpo) }}"
+      },
+      "id": "f60d85c8-999f-59fb-9011-bc9516f5d631",
+      "name": "Crear imagen del carrusel",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1840,
+        2120
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const RAYA = '────────────';\n// Mensaje de error con «Reintentar» (el botón lleva la hora, así que es nuevo y «Cada botón una sola vez» lo deja pasar)\nconst fallo = (q, motivo) => ({ accion: 'mensaje_botones',\n  texto: `⚠️ No se ha podido ${q.formato === 'historia' ? 'subir la historia' : 'publicar el post'} de ${q.nombre} en Instagram: ${motivo}` +\n    (q.formato === 'historia' ? '' : `\\n${RAYA}\\n${q.caption}\\n${RAYA}`) + '\\n¿Lo intento otra vez?',\n  boton1: '🔁 Reintentar', dato1: `${q.formato === 'historia' ? 'reh' : 'rep'}:${q.tipo}:${q.semana}:${Date.now().toString(36)}`,\n  boton2: 'Cancelar', dato2: `nre:${q.tipo}:${q.semana}:${Date.now().toString(36)}` });\nconst q = $('¿Publicar en Instagram?').first().json;\nconst error = n => { try { const e = $(n).first().json.error; return e && (e.message || e.description || 'error de Meta'); } catch (_) { return null; } };\n// Si alguna imagen no se ha podido preparar, no se publica nada\nconst hechas = $input.all().map(i => i.json);\nconst mal = hechas.find(h => h.error || !h.id);\nif (mal) return [{ json: fallo(q, (mal.error && (mal.error.message || 'error de Meta')) || 'Instagram no ha preparado una imagen del carrusel') }];\nconst ig = $('¿Ya publicada?').first().json.ig;\nreturn [{ json: { accion: 'crear', ig, cuerpo: { media_type: 'CAROUSEL', children: hechas.map(h => h.id).join(','), caption: q.caption } } }];"
+      },
+      "id": "6c442702-2a5a-5a70-8141-97af4751097a",
+      "name": "Juntar el carrusel",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2080,
+        2120
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e0368b1a-09fe-5397-a77b-5e49e3a6ec5b",
+              "leftValue": "={{ $json.accion }}",
+              "rightValue": "crear",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "2508feb5-8f4c-5eac-8d6a-2d9995b64c2c",
+      "name": "¿Crear el carrusel?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        2320,
         2120
       ]
     },
@@ -2125,6 +2225,60 @@
           },
           {
             "node": "¿Crear?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "¿Carrusel?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Carrusel?": {
+      "main": [
+        [
+          {
+            "node": "Crear imagen del carrusel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear imagen del carrusel": {
+      "main": [
+        [
+          {
+            "node": "Juntar el carrusel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Juntar el carrusel": {
+      "main": [
+        [
+          {
+            "node": "¿Crear el carrusel?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "¿Mensaje con botones?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Crear el carrusel?": {
+      "main": [
+        [
+          {
+            "node": "Crear en Instagram",
             "type": "main",
             "index": 0
           }
