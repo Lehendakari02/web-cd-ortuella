@@ -1,7 +1,7 @@
 /* Archivo generado automáticamente por actualizar_federacion.py. No editar a mano. */
 window.FEDERACION = {
  "temporada": "2026/27",
- "actualizado": "2026-10-23T17:47+00:00",
+ "actualizado": "2026-10-23T21:47+00:00",
  "equipos": [
   {
    "id": "primer",
@@ -269,12 +269,13 @@ window.FEDERACION = {
     },
     {
      "jornada": 7,
-     "fecha": "2026-11-01",
+     "fecha": "2026-10-31",
      "local": "Zazpi Landa",
      "visitante": "Ortuella",
      "gl": null,
      "gv": null,
      "acta": null,
+     "hora": "20:00",
      "campo": "P.M. Zorroza, Bilbao"
     },
     {
@@ -1241,20 +1242,20 @@ window.FEDERACION = {
      "fecha": "2026-10-25",
      "local": "Ortuella B",
      "visitante": "La Arboleda",
+     "hora": "12:00",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "hora": "12:00"
+     "acta": null
     },
     {
      "jornada": 3,
      "fecha": "2026-11-01",
      "local": "Menes",
      "visitante": "Ortuella B",
+     "campo": "P. Municipal - Villasana, Valle de Mena",
      "gl": null,
      "gv": null,
-     "acta": null,
-     "campo": "P. Municipal - Villasana, Valle de Mena"
+     "acta": null
     },
     {
      "jornada": 4,
