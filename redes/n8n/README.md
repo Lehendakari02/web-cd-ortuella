@@ -10,7 +10,10 @@
    que ese mismo texto no esté ya publicado (nunca sale dos veces).
 2. **Avisos de cambios de partido**: manda al grupo los avisos nuevos de `cambios.json`.
 3. **Comandos** en el grupo: `/estado`, `/horarios`, `/resultados`, `/matchday`, `/publicar <pieza>`,
-   `/clasificacion`, `/revisar instagram`, `/instagram` (comprobar la conexión), `/probar noticia`, `/ayuda`.
+   `/clasificacion`, `/amistoso`, `/resultado`, `/amistosos`, `/borrar amistoso`, `/revisar instagram`,
+   `/instagram` (comprobar la conexión), `/probar noticia`, `/ayuda` (y `/ayuda amistosos`, `ver`, `publicar`…).
+   **Amistosos**: el bot pide confirmación y lanza el robot de GitHub **Amistoso** (`amistoso.yml`), que los guarda en
+   `datos-amistosos.js` y rehace imágenes y calendario. Usa la misma credencial de GitHub que las noticias.
    La clasificación es un **carrusel**: el bot manda antes sus imágenes y, al final, la portada a la que se responde.
    El resto de mensajes del grupo se ignora (el bot puede tener la privacidad de grupo activada).
 
@@ -62,3 +65,24 @@ comandos en el grupo (`/publicar matchday`…).
 
 El bot no necesita recordar nada: en el pie de cada foto escribe qué pieza es (`🆔 matchday`) y, en el
 mensaje de confirmación, el texto va entre dos rayas. Al responder o pulsar un botón, lo lee de ahí.
+
+## Lista de comandos para @BotFather
+
+`/setcommands` → el bot → pegar entera:
+
+```
+ayuda - Qué sabe hacer el bot (y /ayuda amistosos, ver, publicar…)
+estado - Qué publicaciones están listas y qué falta
+horarios - Ver la imagen de horarios (ORDUTEGIA)
+resultados - Ver la imagen de resultados (EMAITZAK)
+matchday - Ver las imágenes de MATCH DAY A y B
+clasificacion - Ver la clasificación (carrusel)
+publicar - Publicar una pieza: /publicar horarios, resultados, match day A o B, clasificacion
+amistoso - Apuntar un amistoso: /amistoso infantil 24/10 10:30 Escolapios
+resultado - Resultado de un amistoso: /resultado infantil 3-1
+amistosos - Ver los amistosos apuntados
+borrar - Borrar un amistoso: /borrar amistoso 2
+revisar - Revisar Instagram ahora: /revisar instagram
+instagram - Comprobar la conexión con Instagram
+probar - Probar una noticia de Instagram: /probar noticia
+```
