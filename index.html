@@ -25,7 +25,7 @@
 <meta name="theme-color" content="#0b2a5b">
 <meta name="apple-mobile-web-app-title" content="CD Ortuella">
 <link rel="preload" href="fuentes/big-shoulders-display.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="estilos.css?v=fd143712">
+<link rel="stylesheet" href="estilos.css?v=7c527de6">
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -53,10 +53,11 @@
 <section class="hero">
   <div class="wrap">
     <div class="flip" id="flip">
+      <h1 class="sr-only">Club Deportivo Ortuella</h1>
       <div class="flip-in">
         <div class="face club">
           <span class="eyebrow"><span>Otxartaga Berri · Ortuella</span><i class="sep"> · </i><span>Desde 1949</span></span>
-          <h1>Club Deportivo <span>Ortuella</span></h1>
+          <p class="hero-title" aria-hidden="true">Club Deportivo <span>Ortuella</span></p>
           <p class="lead">Más de 75 años de fútbol en Ortuella. Primer equipo, filial y cantera, todos de azul y blanco.</p>
           <div class="btns">
             <a class="btn" href="partidos.html">Partidos y resultados</a>
@@ -114,7 +115,7 @@
 <script src="datos.js?v=5ac0fd3a"></script>
 <script src="datos-federacion.js"></script>
 <script src="datos-noticias.js"></script>
-<script src="comun.js?v=ae74399f"></script>
+<script src="comun.js?v=194afc1b"></script>
 <!-- Contador de visitas anónimo, sin cookies. Panel privado: https://cdortuella.goatcounter.com -->
 <script data-goatcounter="https://cdortuella.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 <script>
@@ -125,21 +126,22 @@
     var d = C.destacado, flip = document.getElementById("flip");
     if (!d || (d.hasta && d.hasta < new Date().toISOString().slice(0, 10))) return;
     var face = document.getElementById("destacado"), dots = document.getElementById("flipDots");
-    face.innerHTML = (d.foto ? '<a class="dest-pic" href="' + esc(d.enlace) + '" tabindex="-1"><img src="' + esc(d.foto) + '" alt="" decoding="async"></a>' : "") +
+    face.innerHTML = (d.foto ? '<a class="dest-pic" href="' + esc(d.enlace) + '" tabindex="-1" aria-hidden="true"><img src="' + esc(d.foto) + '" alt="" decoding="async"></a>' : "") +
       '<div class="dest-txt"><span class="eyebrow">' + esc(d.etiqueta || "Novedad") + '</span><h2>' + esc(d.titulo) + "</h2>" +
       (d.texto ? '<p class="lead">' + esc(d.texto) + "</p>" : "") +
       (d.enlace ? '<div class="btns"><a class="btn" href="' + esc(d.enlace) + '">' + esc(d.boton || "Ver más") + "</a></div>" : "") + "</div>";
     face.hidden = false; dots.hidden = false;
     dots.innerHTML = '<button type="button" aria-label="Ver la novedad"></button><button type="button" aria-label="Ver el club"></button>';
-    var showClub = false, paused = false, timer;
+    // Si se toca un punto, se queda en esa cara y deja de girar (WCAG 2.2.2). Con «reducir movimiento» no gira solo.
+    var showClub = false, paused = false, stopped = window.matchMedia("(prefers-reduced-motion: reduce)").matches, timer;
     function render() {
       flip.classList.toggle("on-club", showClub);
       face.setAttribute("aria-hidden", showClub); flip.querySelector(".club").setAttribute("aria-hidden", !showClub);
-      [].forEach.call(flip.querySelectorAll(".face"), function (f) { [].forEach.call(f.querySelectorAll("a"), function (a) { a.tabIndex = (f.getAttribute("aria-hidden") === "true" || a.parentNode.className === "dest-pic") ? -1 : 0; }); });
+      [].forEach.call(flip.querySelectorAll(".face"), function (f) { [].forEach.call(f.querySelectorAll("a"), function (a) { a.tabIndex = (f.getAttribute("aria-hidden") === "true" || a.className === "dest-pic") ? -1 : 0; }); });
       [].forEach.call(dots.children, function (b, i) { b.setAttribute("aria-pressed", (i === 1) === showClub); });
     }
-    function loop() { clearTimeout(timer); timer = setTimeout(function () { if (!paused) { showClub = !showClub; render(); } loop(); }, 5000); }
-    [].forEach.call(dots.children, function (b, i) { b.addEventListener("click", function () { showClub = i === 1; render(); loop(); }); });
+    function loop() { clearTimeout(timer); if (stopped) return; timer = setTimeout(function () { if (!paused) { showClub = !showClub; render(); } loop(); }, 5000); }
+    [].forEach.call(dots.children, function (b, i) { b.addEventListener("click", function () { showClub = i === 1; stopped = true; render(); loop(); }); });
     // Pausa mientras el ratón o el foco están encima, para poder leer y pulsar
     flip.addEventListener("mouseenter", function () { paused = true; });
     flip.addEventListener("mouseleave", function () { paused = false; });
@@ -164,7 +166,7 @@
   }).join("");
   document.getElementById("source").innerHTML = X.sourceNote();
 
-  document.getElementById("newsList").innerHTML = C.noticias.slice(0, 4).map(X.newsCard).join("");
+  document.getElementById("newsList").innerHTML = C.noticias.slice(0, 4).map(function (n) { return X.newsCard(n, 3); }).join("");
 
   // Avisos: socio, tienda e inscripciones
   var price = function (name) { var it = (C.tienda || []).filter(function (x) { return x.nombre.indexOf(name) === 0; })[0]; return it && it.precio ? it.precio : ""; };

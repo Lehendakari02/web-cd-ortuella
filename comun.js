@@ -69,10 +69,10 @@
         m.sub.map(function (s) { return '<li><a href="' + s.h + '"' + (isCurrent(s.h) ? ' aria-current="page"' : "") + ">" + s.t + "<small>" + s.d + "</small></a></li>"; }).join("") + "</ul></li>";
     }).join("");
     el.innerHTML =
-      '<div class="topbar"><div class="wrap"><span class="hide-sm">Avda. de la Estación s/n · Ortuella · <span class="num">946 353 598</span></span>' +
+      '<div class="topbar" role="region" aria-label="Contacto y redes sociales"><div class="wrap"><span class="hide-sm">Avda. de la Estación s/n · Ortuella · <span class="num">946 353 598</span></span>' +
       '<span class="socials"><a href="https://www.instagram.com/cdortuella/" target="_blank" rel="noopener">Instagram</a><a href="https://www.facebook.com/cdortuella1945/" target="_blank" rel="noopener">Facebook</a><a href="https://x.com/CD_Ortuella" target="_blank" rel="noopener">X</a></span></div></div>' +
       '<header class="top"><div class="wrap">' +
-      '<a class="brand" href="./" aria-label="Club Deportivo Ortuella, inicio"><img src="img/escudo.webp" alt=""><span><b>CD Ortuella</b><small>Desde 1949</small></span></a>' +
+      '<a class="brand" href="./"><img src="img/escudo.webp" alt=""><span><b>CD Ortuella</b><small>Desde 1949</small></span><span class="sr-only">, ir al inicio</span></a>' +
       '<button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu"><i></i>Menú</button>' +
       '<nav class="menu" id="menu" aria-label="Menú principal"><ul>' + items + '</ul><a class="cta" href="socios.html"' + (page === "socios" ? ' aria-current="page"' : "") + ">Hazte socio</a></nav>" +
       "</div></header>";
@@ -90,7 +90,15 @@
       });
     });
     document.addEventListener("click", function (e) { if (!menu.contains(e.target)) closeAll(); });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeAll(); });
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "Escape") return;
+      var open = menu.querySelector("li.open");
+      if (open && open.contains(document.activeElement)) open.querySelector(".drop-btn").focus();
+      closeAll();
+      if (menu.classList.contains("open")) { menu.classList.remove("open"); btn.setAttribute("aria-expanded", "false"); btn.focus(); }
+    });
+    // Al salir con el tabulador de un desplegable, se cierra para que no tape lo de debajo
+    menu.addEventListener("focusout", function (e) { var li = e.target.closest("li.open"); if (li && !li.contains(e.relatedTarget)) closeAll(); });
     // Al ir a otro equipo dentro de la misma página, cerrar el menú
     menu.addEventListener("click", function (e) { if (e.target.closest("a")) { closeAll(); menu.classList.remove("open"); btn.setAttribute("aria-expanded", "false"); } });
   }
@@ -154,7 +162,9 @@
       return '<tr class="' + (isUs(r.equipo, t) ? "us " : "") + (r.pos === 1 ? "first" : "") + '"><td><span class="pos">' + r.pos + '</span></td><td class="t">' + esc(r.equipo) + "</td><td>" + r.pj + '</td><td class="x">' + r.g + '</td><td class="x">' + r.e + '</td><td class="x">' + r.p + '</td><td class="x">' + r.gf + '</td><td class="x">' + r.gc + '</td><td class="pts">' + r.pts + "</td></tr>";
     }).join("");
   }
-  var TABLE_HEAD = '<thead><tr><th>#</th><th class="t">Equipo</th><th title="Partidos jugados">PJ</th><th class="x" title="Ganados">G</th><th class="x" title="Empatados">E</th><th class="x" title="Perdidos">P</th><th class="x" title="Goles a favor">GF</th><th class="x" title="Goles en contra">GC</th><th title="Puntos">Pts</th></tr></thead>';
+  var abbr = function (a, full, cls) { return "<th" + (cls ? ' class="' + cls + '"' : "") + ' title="' + full + '"><span aria-hidden="true">' + a + '</span><span class="sr-only">' + full + "</span></th>"; };
+  var TABLE_HEAD = "<thead><tr>" + abbr("#", "Posición") + '<th class="t">Equipo</th>' + abbr("PJ", "Partidos jugados") + abbr("G", "Ganados", "x") + abbr("E", "Empatados", "x") + abbr("P", "Perdidos", "x") +
+    abbr("GF", "Goles a favor", "x") + abbr("GC", "Goles en contra", "x") + abbr("Pts", "Puntos") + "</tr></thead>";
 
   var fichaUrl = function (t, p) { return "partido.html?e=" + t.id + "&j=" + p.jornada; };
 
@@ -186,7 +196,7 @@
     var list = Object.keys(n).map(function (k) { return n[k]; }).sort(function (a, b) { return b.r - a.r || b.y - a.y || a.nombre.localeCompare(b.nombre); });
     if (!list.length) return "";
     return '<ul class="cards-list">' + list.map(function (x) {
-      return "<li><b>" + esc(x.nombre) + '</b><span class="cnt" aria-label="' + x.y + " amarillas" + (x.r ? " y " + x.r + " rojas" : "") + '"><i class="card y"></i>' + x.y + (x.r ? ' <i class="card r"></i>' + x.r : "") + "</span></li>";
+      return "<li><b>" + esc(x.nombre) + '</b><span class="cnt"><i class="card y" aria-hidden="true"></i>' + x.y + '<span class="sr-only"> amarillas</span>' + (x.r ? ' <i class="card r" aria-hidden="true"></i>' + x.r + '<span class="sr-only"> rojas</span>' : "") + "</span></li>";
     }).join("") + "</ul>";
   }
 
@@ -215,15 +225,17 @@
       (t ? '. <a href="' + esc(t.enlace) + '" target="_blank" rel="noopener">Ver en la web de la Federación</a>' : ".");
   }
 
-  function newsCard(n) {
+  function newsCard(n, nivel) {
+    var h = "h" + (nivel || 3);
     return "<article>" + (n.foto ? '<img class="pic" src="' + esc(n.foto) + '" alt="" loading="lazy">' : "") + '<div class="body">' +
       '<div class="meta"><span class="cat">' + esc(n.etiqueta) + "</span><span>" + esc(n.fechaTexto || fdate(n.fecha, true)) + "</span></div>" +
-      "<h3>" + esc(n.titulo) + "</h3><p>" + esc(n.texto) + "</p>" +
+      "<" + h + ">" + esc(n.titulo) + "</" + h + "><p>" + esc(n.texto) + "</p>" +
       (n.enlace ? '<a class="more" href="' + esc(n.enlace) + '" target="_blank" rel="noopener">Ver en Instagram</a>' : "") + "</div></article>";
   }
 
   function copyButtons() {
     document.querySelectorAll(".copy").forEach(function (b) {
+      b.setAttribute("aria-live", "polite");
       b.addEventListener("click", function () {
         if (!navigator.clipboard) return;
         navigator.clipboard.writeText(b.dataset.copy).then(function () { b.textContent = "Copiado"; setTimeout(function () { b.textContent = "Copiar"; }, 1500); }, function () {});
@@ -267,7 +279,9 @@
   }
 
   function formDots(t) {
-    return '<div class="form-dots">' + played(t).slice(-5).map(function (p) { var o = outcome(p, t); return '<i class="' + o + '" title="' + esc(p.local + " " + p.gl + "-" + p.gv + " " + p.visitante) + '">' + { w: "V", d: "E", l: "D" }[o] + "</i>"; }).join("") + "</div>";
+    var WORD = { w: "victoria", d: "empate", l: "derrota" };
+    var label = "Últimos resultados: " + played(t).slice(-5).map(function (p) { return WORD[outcome(p, t)]; }).join(", ");
+    return '<div class="form-dots" role="img" aria-label="' + label + '">' + played(t).slice(-5).map(function (p) { var o = outcome(p, t); return '<i class="' + o + '" title="' + esc(p.local + " " + p.gl + "-" + p.gv + " " + p.visitante) + '">' + { w: "V", d: "E", l: "D" }[o] + "</i>"; }).join("") + "</div>";
   }
 
   sprite();
@@ -290,6 +304,15 @@
   });
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape") [].forEach.call(document.querySelectorAll("details.cal-pop[open]"), function (d) { d.open = false; });
+  });
+
+  // Pestañas (Próximos / Resultados, Goleadores / Porteros, alineaciones): se cambia con las flechas, como en cualquier programa
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    var tab = e.target.closest && e.target.closest('[role="tab"]'); if (!tab) return;
+    var tabs = [].slice.call(tab.parentNode.querySelectorAll('[role="tab"]')), i = tabs.indexOf(tab);
+    var next = tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length];
+    e.preventDefault(); next.focus(); next.click();
   });
 
   window.CDO = { sponsorCard: sponsorCard, C: C, SLUG: SLUG, formDots: formDots, crest: crest, F: F, esc: esc, fdate: fdate, day: day, APODO: APODO, team: team, isUs: isUs, played: played, upcoming: upcoming, outcome: outcome, ourRow: ourRow,

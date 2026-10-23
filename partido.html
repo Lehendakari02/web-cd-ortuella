@@ -25,7 +25,7 @@
 <meta name="theme-color" content="#0b2a5b">
 <meta name="apple-mobile-web-app-title" content="CD Ortuella">
 <link rel="preload" href="fuentes/big-shoulders-display.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="estilos.css?v=fd143712">
+<link rel="stylesheet" href="estilos.css?v=7c527de6">
 </head>
 <body data-page="partido">
 <a class="skip" href="#contenido">Saltar al contenido</a>
@@ -45,7 +45,7 @@
 <script src="datos.js?v=5ac0fd3a"></script>
 <script src="datos-federacion.js"></script>
 <script src="datos-noticias.js"></script>
-<script src="comun.js?v=ae74399f"></script>
+<script src="comun.js?v=194afc1b"></script>
 <!-- Contador de visitas anónimo, sin cookies. Panel privado: https://cdortuella.goatcounter.com -->
 <script data-goatcounter="https://cdortuella.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 <script>
@@ -67,7 +67,7 @@
   var o = played ? X.outcome(p, t) : "";
   var side = function (n) { return '<div class="fb-team">' + X.crest(n, t) + "<b>" + esc(n) + "</b></div>"; };
   var cat = t.categoria.indexOf(X.APODO[t.id]) === 0 ? t.categoria : X.APODO[t.id] + " · " + t.categoria;
-  board.innerHTML = '<div class="fb-meta">' + esc(cat) + " · Jornada " + p.jornada + "</div>" +
+  board.innerHTML = '<h1 class="sr-only">' + esc(p.local) + (played ? " " + p.gl + ", " + esc(p.visitante) + " " + p.gv : " contra " + esc(p.visitante)) + "</h1>" + '<div class="fb-meta">' + esc(cat) + " · Jornada " + p.jornada + "</div>" +
     '<div class="fb">' + side(p.local) + '<div class="fb-score">' + (played ? p.gl + '<i>-</i>' + p.gv : "VS") + "</div>" + side(p.visitante) + "</div>" +
     '<div class="fb-info"><span>' + X.longDate(p.fecha) + "</span>" +
     "<span>" + esc(a && a.campo ? a.campo : home ? "Otxartaga Berri" : "Fuera de casa") + (home ? "" : " " + X.mapsLink(p, a && a.campo)) + "</span>" +
@@ -90,10 +90,10 @@
   var ICO = { gol: '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ball"/></svg>', amarilla: '<i class="card y"></i>', roja: '<i class="card r"></i>', doble: '<i class="card y"></i><i class="card r"></i>' };
   var LBL = { gol: "Gol", amarilla: "Amarilla", roja: "Roja", doble: "Segunda amarilla" };
   var line = function (e) {
-    var body = '<span class="ev-ico" title="' + LBL[e.ico] + '">' + ICO[e.ico] + '</span><span class="ev-txt">' + e.txt + "</span>";
+    var body = '<span class="ev-ico" role="img" aria-label="' + LBL[e.ico] + '" title="' + LBL[e.ico] + '">' + ICO[e.ico] + '</span><span class="ev-txt">' + e.txt + "</span>";
     return '<li class="' + e.lado + (ours(e.lado) ? " us" : "") + '"><span class="ev-min">' + mlab(e) + "</span>" + body + "</li>";
   };
-  var html = "";
+  var html = '<h2 class="sr-only">Acta del partido</h2>';
   if (ev.length) html += '<div class="panel fi-sec"><h3>Lo que pasó</h3><div class="ev-head"><span>' + esc(p.local) + "</span><span>" + esc(p.visitante) + '</span></div><ol class="ev">' + ev.map(line).join("") + "</ol></div>";
 
   // Alineaciones
