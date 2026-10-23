@@ -38,6 +38,13 @@ Con lo aprendido en el flujo de publicaciones:
 - Rachas y estadísticas detectadas solas ("5 partidos sin perder", "portería a cero"…).
 - Resumen del mes o de la temporada.
 - Agradecimiento a los patrocinadores, rotando cada mes.
+- **Llevar a la web desde Instagram** (cuando la web esté en `cdortuella.net`; anunciar la dirección de
+  pruebas no tiene sentido). Que quien vea resultados, horarios, clasificación o MATCH DAY pueda ir a la web:
+  - En el pie de un post los enlaces **no se pueden pulsar**: poner la web en el perfil de @cdortuella y
+    terminar el texto con «Más información: enlace en la bio».
+  - En la propia imagen: una línea fija «cdortuella.net» en las plantillas del generador (coste 0).
+  - Historias: el sticker de enlace (*link sticker*) es lo único pulsable. Comprobar entonces si la API de
+    Instagram permite ponerlo; si no, añadirlo a mano al subir la historia o dejar la dirección en la imagen.
 
 ## Bot de Telegram
 
