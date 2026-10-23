@@ -276,7 +276,7 @@ def html_sailkapena_tabla(cat, tabla, nuestro, jornada, config, formato, fondo):
         clase = " nuestro" if f["equipo"] == nuestro else ""
         nombre = corto(f["equipo"], config)
         lineas += (f'<div class="fila{clase}" style="top:{desde + 40 + i * alto:.0f}px;height:{alto - 4:.0f}px">'
-                   f'<span class="pos">{f["pos"] or "—"}</span><span class="eq"><span class="ajustar">{html.escape(nombre)}</span></span>'
+                   f'<span class="pos">{f["pos"]}</span><span class="eq"><span class="ajustar">{html.escape(nombre)}</span></span>'
                    f'<span class="pj">{f["pj"]}</span><span class="pts">{f["pts"]}</span></div>')
     sub = f"{cat} · J{jornada}" if jornada else cat
     return pagina(lienzo("sailkapena", formato, fondo) + titulo("SAILKAPENA", sub, compacto=True) + lineas,
@@ -415,7 +415,8 @@ def main():
             clasif, faltan_clasif = [], [f for f in faltan_resultados]
             for c in config["categorias"]:
                 eq = equipos.get(c["id"])
-                tabla = (eq or {}).get("clasificacion") or []
+                # Sin los equipos retirados (la Federación los pone debajo con puesto 0; la web tampoco los enseña)
+                tabla = [f for f in (eq or {}).get("clasificacion") or [] if f["pos"]]
                 nuestra = next((f for f in tabla if f["equipo"] == eq.get("nombreFederacion")), None) if eq else None
                 if not nuestra or not nuestra["pj"]:
                     continue
