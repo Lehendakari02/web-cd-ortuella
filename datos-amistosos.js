@@ -10,5 +10,16 @@ window.AMISTOSOS = [
   "campo": null,
   "gl": null,
   "gv": null
+ },
+ {
+  "id": "2026-10-24-alevin-gallarta",
+  "equipo": "alevin",
+  "fecha": "2026-10-24",
+  "hora": "12:15",
+  "rival": "Gallarta",
+  "casa": true,
+  "campo": null,
+  "gl": null,
+  "gv": null
  }
 ];

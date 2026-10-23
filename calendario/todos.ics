@@ -1592,4 +1592,16 @@ DESCRIPTION:Infantil · Jornada 14 · Infantil Liga D (Bizkaia) · Grupo 1\
  ub.io/web-cd-ortuella/partidos.html
 TRANSP:TRANSPARENT
 END:VEVENT
+BEGIN:VEVENT
+UID:cdortuella-alevin-a-2026-10-24-alevin-gallarta@cdortuella
+DTSTAMP:20261023T174700Z
+DTSTART:20261024T101500Z
+DTEND:20261024T121500Z
+SUMMARY:⚽ Alevín: Ortuella – Gallarta
+DESCRIPTION:Alevín · Amistoso · Amistosos\nEn casa. Hora: 12:15.\nMás i
+ nformación: https://lehendakari02.github.io/web-cd-ortuella/partidos.html
+TRANSP:TRANSPARENT
+LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
+ zkaia)
+END:VEVENT
 END:VCALENDAR
