@@ -1,22 +1,18 @@
 # Lee los datos de la Federación Vizcaína y actualiza la web sola.
-# Se ejecuta sola 7 veces al día (y también se puede lanzar a mano: Actions → Actualizar datos de la Federación → Run workflow).
-# Son tantas porque la Federación bloquea a menudo a las máquinas de GitHub (y siempre a los centros de datos como Hetzner):
-# cada pasada guarda lo que consigue leer sin estropear lo demás, y las máquinas de GitHub cambian de dirección,
-# así que entre todas las pasadas del día los datos van llegando.
-# Si la Federación no responde para algún equipo, ese equipo conserva sus últimos datos buenos hasta la siguiente pasada.
+# Se ejecuta sola 2 veces al día (y también se puede lanzar a mano: Actions → Actualizar datos de la Federación → Run workflow).
+# La Federación corta a cada máquina de GitHub tras unas cuantas páginas (y bloquea del todo a centros de datos como
+# Hetzner). Por eso hay un robot (una máquina distinta) por equipo, cada uno con sus propias páginas, y al final
+# otro robot junta lo de todos y guarda una sola vez. Los equipos salen de EQUIPOS en actualizar_federacion.py:
+# al añadir uno allí (p. ej. el Alevín cuando empiece su liga), aquí sale un robot más sin tocar nada.
+# Si un equipo no se puede leer, conserva sus últimos datos buenos hasta la siguiente pasada.
 name: Actualizar datos de la Federación
 
 on:
   workflow_dispatch:
   schedule:
-    # Horas en UTC (en Madrid, +2 en verano y +1 en invierno). Las de las 6 y las 21 van justo antes de que n8n
-    # ofrezca las publicaciones (8:30 y 23:30 en Madrid); la de la 1, para los resultados que la Federación sube tarde.
-    - cron: "0 1 * * *"
+    # Horas en UTC (en Madrid, +2 en verano y +1 en invierno): justo antes de que n8n ofrezca las publicaciones
+    # (8:30 y 23:30 en Madrid).
     - cron: "0 6 * * *"
-    - cron: "0 9 * * *"
-    - cron: "0 12 * * *"
-    - cron: "0 15 * * *"
-    - cron: "0 18 * * *"
     - cron: "0 21 * * *"
 
 permissions:
@@ -27,9 +23,25 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  actualizar:
+  equipos:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    outputs:
+      lista: ${{ steps.lista.outputs.lista }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: lista
+        run: echo "lista=$(python3 actualizar_federacion.py --lista)" >> "$GITHUB_OUTPUT"
+
+  leer:
+    # Un robot por equipo. Cada uno lee solo las páginas de su equipo (clasificación, calendario, resultados de las
+    # jornadas nuevas, actas nuevas, próximas jornadas, porteros y goleadores) y deja lo leído para el robot "juntar".
+    needs: equipos
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false            # si un equipo falla, los demás siguen
+      matrix:
+        equipo: ${{ fromJson(needs.equipos.outputs.lista) }}
     steps:
       - uses: actions/checkout@v4
 
@@ -40,12 +52,50 @@ jobs:
       - name: Instalar Pillow (para dejar ligeros los escudos de los rivales)
         run: python3 -m pip install --quiet pillow
 
+      - name: Leer la Federación (${{ matrix.equipo }})
+        run: |
+          mkdir -p robot
+          python3 actualizar_federacion.py --equipo ${{ matrix.equipo }} robot/parcial-${{ matrix.equipo }}.json \
+            || echo "::warning::${{ matrix.equipo }}: no se pudo leer todo"
+          # Escudos nuevos de rivales que haya bajado este robot
+          git ls-files --others --exclude-standard img/escudos | while read -r f; do
+            mkdir -p "robot/$(dirname "$f")"; cp "$f" "robot/$f"
+          done
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: parcial-${{ matrix.equipo }}
+          path: robot/
+          retention-days: 1
+          if-no-files-found: ignore
+
+  juntar:
+    needs: leer
+    if: always()                  # aunque algún equipo haya fallado: los demás se guardan
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: parcial-*
+          path: robot
+          merge-multiple: true
+
       - name: Guardar una copia de los datos de antes (para avisar de los cambios)
         run: cp datos-federacion.js "$RUNNER_TEMP/datos-antes.js"
 
-      - name: Leer la Federación
-        # Si falla un equipo, el script guarda los demás y avisa; la web sigue con los últimos datos buenos
-        run: python3 actualizar_federacion.py || echo "::warning::No se pudieron actualizar todos los equipos"
+      - name: Juntar lo de todos los robots
+        # El equipo que no se haya leído conserva sus últimos datos buenos
+        run: |
+          if [ -d robot/img/escudos ]; then mkdir -p img/escudos; cp -n robot/img/escudos/* img/escudos/; fi
+          python3 actualizar_federacion.py --juntar robot/parcial-*.json \
+            || echo "::warning::No se pudieron actualizar todos los equipos"
 
       - name: Instalar el navegador que dibuja las publicaciones de Instagram
         run: |
