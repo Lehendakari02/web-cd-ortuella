@@ -520,6 +520,14 @@ def actualizar_equipo(eq, anterior, comun):
         except RuntimeError as e:
             print(f"  aviso: jornada {p['jornada']} sin leer ({e})", file=sys.stderr)
             sin_leer.append(f"horario de la jornada {p['jornada']}")
+            # Sin la página de la jornada, el partido se queda con el día, la hora y el campo que ya tenía
+            # (si no, parecería que la Federación ha quitado la hora o cambiado el campo, y no es así)
+            antes = next((v for v in anterior.get("partidos", []) if v["jornada"] == p["jornada"]
+                          and {a_fed(v["local"]), a_fed(v["visitante"])} == {p["local"], p["visitante"]}), None)
+            if antes:
+                for campo in ("fecha", "hora", "campo"):
+                    if antes.get(campo):
+                        p[campo] = antes[campo]
             continue
         for x in jornada:
             guardar_escudos(zip((x["local"], x["visitante"]), x["escudos"]), comun)

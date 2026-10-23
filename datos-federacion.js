@@ -1243,7 +1243,8 @@ window.FEDERACION = {
      "visitante": "La Arboleda",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "hora": "12:00"
     },
     {
      "jornada": 3,
@@ -1252,7 +1253,8 @@ window.FEDERACION = {
      "visitante": "Ortuella B",
      "gl": null,
      "gv": null,
-     "acta": null
+     "acta": null,
+     "campo": "P. Municipal - Villasana, Valle de Mena"
     },
     {
      "jornada": 4,

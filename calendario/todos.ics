@@ -434,12 +434,12 @@ END:VEVENT
 BEGIN:VEVENT
 UID:cdortuella-b-j2@cdortuella
 DTSTAMP:20261023T174700Z
-DTSTART;VALUE=DATE:20261025
-DTEND;VALUE=DATE:20261026
+DTSTART:20261025T110000Z
+DTEND:20261025T130000Z
 SUMMARY:⚽ Senior B: Ortuella B – La Arboleda
 DESCRIPTION:Senior B · Jornada 2 · Tercera División (3A) · Grupo 1\nEn 
- casa. Hora por confirmar.\nMás información: https://lehendakari02.github
- .io/web-cd-ortuella/partidos.html
+ casa. Hora: 12:00.\nMás información: https://lehendakari02.github.io/web
+ -cd-ortuella/partidos.html
 TRANSP:TRANSPARENT
 LOCATION:Otxartaga Berri\, Avenida de la Estación s/n\, 48530 Ortuella (Bi
  zkaia)
@@ -454,6 +454,7 @@ DESCRIPTION:Senior B · Jornada 3 · Tercera División (3A) · Grupo 1\nFue
  ra. Hora por confirmar.\nMás información: https://lehendakari02.github.i
  o/web-cd-ortuella/partidos.html
 TRANSP:TRANSPARENT
+LOCATION:P. Municipal - Villasana\, Valle de Mena
 END:VEVENT
 BEGIN:VEVENT
 UID:cdortuella-b-j4@cdortuella
