@@ -10,7 +10,8 @@
    que ese mismo texto no esté ya publicado (nunca sale dos veces).
 2. **Avisos de cambios de partido**: manda al grupo los avisos nuevos de `cambios.json`.
 3. **Comandos** en el grupo: `/estado`, `/horarios`, `/resultados`, `/matchday`, `/publicar <pieza>`,
-   `/revisar instagram`, `/instagram` (comprobar la conexión), `/probar noticia`, `/ayuda`.
+   `/clasificacion`, `/revisar instagram`, `/instagram` (comprobar la conexión), `/probar noticia`, `/ayuda`.
+   La clasificación es un **carrusel**: el bot manda antes sus imágenes y, al final, la portada a la que se responde.
    El resto de mensajes del grupo se ignora (el bot puede tener la privacidad de grupo activada).
 
 4. **Noticias de la web desde Instagram**: **cada hora** (a y 7) lee las publicaciones nuevas de la cuenta
