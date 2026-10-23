@@ -92,6 +92,8 @@ main { position: relative; height: 100%; display: flex; flex-direction: column; 
 .sailkapena.resumen .cat { left: 108px; width: 257px; }
 .sailkapena.resumen .dato { left: 383px; width: 589px; }
 .sailkapena.resumen .sep { margin: 0 14px; }
+.sailkapena.resumen .ultimo { position: absolute; top: 80px; left: 108px; width: 864px; text-align: center; white-space: nowrap;
+  overflow: hidden; font-size: 30px; font-weight: 700; letter-spacing: 1.5px; color: #fff; }
 
 .sailkapena.tabla .cabecera, .sailkapena.tabla .fila { position: absolute; left: 58px; width: 964px; display: flex; gap: 8px; }
 .sailkapena.tabla .cabecera { height: 34px; font-size: 24px; font-weight: 800; letter-spacing: 2px; align-items: center; }

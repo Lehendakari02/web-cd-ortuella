@@ -255,14 +255,20 @@ def puesto(fila):
     return f"{fila['pos']}.º"
 
 
-def html_sailkapena_resumen(filas, formato, fondo):
-    """Portada del carrusel e historia: dónde está cada equipo del club."""
-    posiciones = repartir("emaitzak", formato, len(filas)) if len(filas) > 1 else [round(sum(ZONA_EMAITZAK[formato]) / 2 - 33)]
+def html_sailkapena_resumen(filas, config, formato, fondo):
+    """Portada del carrusel e historia: dónde está cada equipo del club y, debajo, su último resultado."""
+    # Cada equipo ocupa su fila (66 px) y el resultado debajo (~50 px): se reparten en la zona de EMAITZAK
+    desde, hasta = ZONA_EMAITZAK[formato]
+    paso = min(220, (hasta - desde - 116) / max(len(filas) - 1, 1))
+    primera = desde + (hasta - desde - 116 - paso * (len(filas) - 1)) / 2
+    posiciones = [round(primera + paso * i) for i in range(len(filas))]
     lineas = ""
-    for i, (cat, nuestra, _, _) in enumerate(filas):
+    for i, (cat, nuestra, _, _, ultimo) in enumerate(filas):
         dato = f'{puesto(nuestra)} <span class="sep">·</span> {nuestra["pts"]} PTS'
+        resultado = (f'<p class="ultimo ajustar">{html.escape(corto(ultimo["local"], config))} {ultimo["gl"]} - '
+                     f'{ultimo["gv"]} {html.escape(corto(ultimo["visitante"], config))}</p>') if ultimo else ""
         lineas += (f'<div class="fila" style="top:{posiciones[i]}px"><div class="cat">{html.escape(cat)}</div>'
-                   f'<div class="dato"><span class="texto">{dato}</span></div></div>')
+                   f'<div class="dato"><span class="texto">{dato}</span></div>{resultado}</div>')
     return pagina(lienzo("sailkapena", formato, fondo) + titulo("SAILKAPENA") + lineas, formato, "sailkapena resumen")
 
 
@@ -424,10 +430,11 @@ def main():
                 if nuestra["pj"] < len(jugados):
                     faltan_clasif.append(f"{c['emaitzak']}: la Federación aún no ha actualizado la clasificación")
                 jornada = max((p["jornada"] for p in jugados), default=None)
-                clasif.append((c["emaitzak"], nuestra, tabla, jornada))
+                ultimo = max(jugados, key=lambda p: p["fecha"], default=None)
+                clasif.append((c["emaitzak"], nuestra, tabla, jornada, ultimo))
             if clasif:
                 fondo_s = fondo_de_la_semana(config["fondos"]["tablas"], ult_lunes, 1)   # otra foto que EMAITZAK
-                guardar("sailkapena", "SAILKAPENA", lambda f: html_sailkapena_resumen(clasif, f, fondo_s), ult_lunes,
+                guardar("sailkapena", "SAILKAPENA", lambda f: html_sailkapena_resumen(clasif, config, f, fondo_s), ult_lunes,
                         faltan_clasif,
                         [lambda f, c=c: html_sailkapena_tabla(c[0], c[2], c[1]["equipo"], c[3], config, f, fondo_s) for c in clasif])
                 if faltan_clasif and hoy >= ult_domingo + timedelta(days=2):
