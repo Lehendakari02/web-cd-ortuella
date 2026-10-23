@@ -5,6 +5,8 @@ Genera las publicaciones de Instagram del club (post e historia) a partir de dat
   ORDUTEGIA  horarios del próximo fin de semana
   EMAITZAK   resultados del último fin de semana
   MATCH DAY  partido del próximo fin de semana de cada equipo de config.json (Senior A y B)
+  SAILKAPENA clasificación tras el último fin de semana: carrusel (portada resumen + una tabla por equipo)
+             e historia con el resumen
 
 Deja en redes/salida/ las imágenes (JPG, que es lo que acepta Instagram) y ultimo.json con la
 dirección pública de cada imagen, para que n8n las publique (el texto del pie lo escribe una persona por Telegram).
@@ -243,6 +245,44 @@ def html_emaitzak(filas, config, formato, fondo):
     return pagina(lienzo("emaitzak", formato, fondo) + lineas, formato, "emaitzak")
 
 
+def titulo(texto, sub=None, compacto=False):
+    """Título como los de Canva (ORDUTEGIA, EMAITZAK): grande, blanco y subrayado; opcional, un subtítulo."""
+    sub_html = f'<p class="sub">{html.escape(sub)}</p>' if sub else ""
+    return f'<div class="titulo{" compacto" if compacto else ""}"><p>{texto}</p>{sub_html}</div>'
+
+
+def puesto(fila):
+    return f"{fila['pos']}.º"
+
+
+def html_sailkapena_resumen(filas, formato, fondo):
+    """Portada del carrusel e historia: dónde está cada equipo del club."""
+    posiciones = repartir("emaitzak", formato, len(filas)) if len(filas) > 1 else [round(sum(ZONA_EMAITZAK[formato]) / 2 - 33)]
+    lineas = ""
+    for i, (cat, nuestra, _, _) in enumerate(filas):
+        dato = f'{puesto(nuestra)} <span class="sep">·</span> {nuestra["pts"]} PTS'
+        lineas += (f'<div class="fila" style="top:{posiciones[i]}px"><div class="cat">{html.escape(cat)}</div>'
+                   f'<div class="dato"><span class="texto">{dato}</span></div></div>')
+    return pagina(lienzo("sailkapena", formato, fondo) + titulo("SAILKAPENA") + lineas, formato, "sailkapena resumen")
+
+
+def html_sailkapena_tabla(cat, tabla, nuestro, jornada, config, formato, fondo):
+    """Una tabla completa: posición, equipo, partidos jugados y puntos; nuestra fila, resaltada."""
+    desde, hasta = 262, 1004
+    alto = min(54, (hasta - desde - 40) / max(len(tabla), 1))
+    lineas = (f'<div class="cabecera" style="top:{desde}px"><span class="pos"></span><span class="eq"></span>'
+              f'<span class="pj">PJ</span><span class="pts">PTS</span></div>')
+    for i, f in enumerate(tabla):
+        clase = " nuestro" if f["equipo"] == nuestro else ""
+        nombre = corto(f["equipo"], config)
+        lineas += (f'<div class="fila{clase}" style="top:{desde + 40 + i * alto:.0f}px;height:{alto - 4:.0f}px">'
+                   f'<span class="pos">{f["pos"] or "—"}</span><span class="eq"><span class="ajustar">{html.escape(nombre)}</span></span>'
+                   f'<span class="pj">{f["pj"]}</span><span class="pts">{f["pts"]}</span></div>')
+    sub = f"{cat} · J{jornada}" if jornada else cat
+    return pagina(lienzo("sailkapena", formato, fondo) + titulo("SAILKAPENA", sub, compacto=True) + lineas,
+                  formato, "sailkapena tabla")
+
+
 def html_matchday(p, equipo, datos, config, formato, variante, fondo, club):
     variante = fondo.get("diseno", variante)   # algunas fotos van mejor con un diseño concreto
     casa = en_casa(p, equipo)
@@ -341,13 +381,20 @@ def main():
     base = sitio() + "/redes/salida/"
     dib = Dibujante()
     try:
-        def guardar(tipo, nombre, hacer_html, lunes, faltan):
+        def guardar(tipo, nombre, hacer_html, lunes, faltan, mas_post=()):
             # "lista": n8n solo la publica cuando es true, y una sola vez por semana (ver README)
             piezas[tipo] = {"tipo": tipo, "nombre": nombre, "semana": f"{lunes:%Y-%m-%d}", "lista": not faltan, "faltan": faltan}
             for formato in TAMANOS:
                 archivo = f"{tipo}-{formato}.jpg"
                 huella = dib.jpg(hacer_html(formato), formato, os.path.join(SALIDA, archivo))
                 piezas[tipo][formato] = f"{base}{archivo}?v={huella}"   # ?v= para que Instagram no use una copia vieja
+            # Carrusel: el post es la primera imagen y le siguen estas (solo en formato post)
+            if mas_post:
+                piezas[tipo]["carrusel"] = [piezas[tipo]["post"]]
+                for i, hacer in enumerate(mas_post, 1):
+                    archivo = f"{tipo}-{i}-post.jpg"
+                    huella = dib.jpg(hacer("post"), "post", os.path.join(SALIDA, archivo))
+                    piezas[tipo]["carrusel"].append(f"{base}{archivo}?v={huella}")
 
         if any(p for _, p, _ in horarios):
             fondo = fondo_de_la_semana(config["fondos"]["tablas"], prox_lunes)
@@ -361,6 +408,29 @@ def main():
             # sin él, y "faltan" dice cuál falta para que quien publica decida (n8n lo avisa por Telegram)
             if faltan_resultados and hoy >= ult_domingo + timedelta(days=2):
                 piezas["emaitzak"]["lista"] = True
+
+        # Clasificación tras el último fin de semana: los equipos que ya han empezado su liga, con la tabla
+        # al día (sus partidos jugados en la tabla = sus partidos con resultado; si no, la Federación aún no la ha puesto)
+        if resultados:
+            clasif, faltan_clasif = [], [f for f in faltan_resultados]
+            for c in config["categorias"]:
+                eq = equipos.get(c["id"])
+                tabla = (eq or {}).get("clasificacion") or []
+                nuestra = next((f for f in tabla if f["equipo"] == eq.get("nombreFederacion")), None) if eq else None
+                if not nuestra or not nuestra["pj"]:
+                    continue
+                jugados = [p for p in eq["partidos"] if p.get("gl") is not None and p["fecha"] <= f"{ult_domingo}"]
+                if nuestra["pj"] < len(jugados):
+                    faltan_clasif.append(f"{c['emaitzak']}: la Federación aún no ha actualizado la clasificación")
+                jornada = max((p["jornada"] for p in jugados), default=None)
+                clasif.append((c["emaitzak"], nuestra, tabla, jornada))
+            if clasif:
+                fondo_s = fondo_de_la_semana(config["fondos"]["tablas"], ult_lunes, 1)   # otra foto que EMAITZAK
+                guardar("sailkapena", "SAILKAPENA", lambda f: html_sailkapena_resumen(clasif, f, fondo_s), ult_lunes,
+                        faltan_clasif,
+                        [lambda f, c=c: html_sailkapena_tabla(c[0], c[2], c[1]["equipo"], c[3], config, f, fondo_s) for c in clasif])
+                if faltan_clasif and hoy >= ult_domingo + timedelta(days=2):
+                    piezas["sailkapena"]["lista"] = True
 
         # Un MATCH DAY por cada equipo de config["matchday"] que juegue ese fin de semana
         n = prox_lunes.isocalendar()[1]

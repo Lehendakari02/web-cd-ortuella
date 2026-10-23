@@ -8,6 +8,8 @@ generar_redes.py. Solo hay que volver a ejecutarlo si se cambia la plantilla en 
   plantillas/fondo-emaitzak-post.png  / -historia.png
   plantillas/capa-ordutegia-post.png / -historia.png    solo título + patrocinadores, con transparencia
   plantillas/capa-emaitzak-post.png  / -historia.png    (para ponerlos encima de una foto difuminada)
+  plantillas/fondo-sailkapena-*.png / capa-sailkapena-*.png   como EMAITZAK pero sin título (SAILKAPENA lo
+                                  escribe el generador)
   plantillas/fila-emaitzak.png    la cinta de un resultado (LOCAL ⚽ VISITANTE) con transparencia
   fondos/*.jpg                    fotos de MATCH DAY sacadas de Canva (ya llevan su velo)
   escudos/Ortuella.png            nuestro escudo en buena calidad
@@ -47,6 +49,8 @@ PIEZAS = {
     "emaitzak": {"origen": RESULTADOS, "titulo": (110, 262), "banda": (1165, 1350), "banda_y": (20, 167),
                  "post": (110, 1004), "historia": (360, 1580)},
 }
+# Clasificación: el fondo y los patrocinadores de EMAITZAK, sin título (no hay plantilla de Canva con «SAILKAPENA»)
+PIEZAS["sailkapena"] = {**PIEZAS["emaitzak"], "titulo": None}
 ALTO = {"post": 1350, "historia": 1920}
 
 
@@ -79,7 +83,10 @@ def lienzo(pieza, formato):
     origen = Image.open(p["origen"]).convert("RGB")
     fondo = fondo_continuo(ALTO[formato])
     y_titulo, y_banda = p[formato]
-    for (desde, hasta), y in ((p["titulo"], y_titulo), (p["banda"], y_banda)):
+    for franja, y in ((p["titulo"], y_titulo), (p["banda"], y_banda)):
+        if not franja:
+            continue
+        desde, hasta = franja
         trozo = origen.crop((0, desde, 1080, hasta))
         fondo.paste(trozo, (0, y), mascara_fundido(1080, trozo.height, abajo=y + trozo.height < ALTO[formato]))
     return fondo
@@ -92,11 +99,12 @@ def capa(pieza, formato):
     origen = Image.open(p["origen"]).convert("RGB")
     capa = Image.new("RGBA", (1080, ALTO[formato]), (0, 0, 0, 0))
     y_titulo, y_banda = p[formato]
-    titulo = origen.crop((0, p["titulo"][0], 1080, p["titulo"][1]))
-    brillo = titulo.convert("L").point(lambda v: max(0, min(255, (v - 110) * 255 // 120)))
-    blanco = Image.new("RGBA", titulo.size, (255, 255, 255, 0))
-    blanco.putalpha(brillo)
-    capa.alpha_composite(blanco, (0, y_titulo))
+    if p["titulo"]:
+        titulo = origen.crop((0, p["titulo"][0], 1080, p["titulo"][1]))
+        brillo = titulo.convert("L").point(lambda v: max(0, min(255, (v - 110) * 255 // 120)))
+        blanco = Image.new("RGBA", titulo.size, (255, 255, 255, 0))
+        blanco.putalpha(brillo)
+        capa.alpha_composite(blanco, (0, y_titulo))
     banda = origen.crop((0, p["banda"][0], 1080, p["banda"][1])).convert("RGBA")
     arriba, abajo = p["banda_y"]
     forma = Image.new("L", banda.size, 0)
