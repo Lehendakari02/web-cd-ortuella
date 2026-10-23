@@ -420,22 +420,47 @@ def guardar_escudos(pares, comun):
 
 
 def actualizar_equipo(eq, anterior, comun):
+    """Lee cada parte del equipo por separado. Si una página no llega (la Federación a veces contesta
+    vacío), esa parte se queda como estaba y el resto se actualiza igual. Devuelve (equipo, partes sin leer)."""
     print(f"- {eq['nombre']}")
+    sin_leer = []
+    hoy = datetime.now(timezone.utc).date().isoformat()
+    # Nombre con el que la Federación escribe al equipo (los partidos de antes se guardan con el nombre de la web)
+    a_fed = lambda n: eq.get("nombre_fed", n) if eq.get("nombre_web") and n == eq["nombre_web"] else n
+
     try:
         clasificacion = leer_clasificacion(descargar(url_clasificacion(eq)))
+        if not clasificacion and not eq.get("base"):
+            raise RuntimeError("clasificación vacía")
     except RuntimeError:
-        if not eq.get("base"):
-            raise
-        clasificacion = []   # fútbol base antes de empezar la liga: su clasificación llega siempre vacía
-    if not clasificacion and not eq.get("base"):
-        raise RuntimeError("clasificación vacía: puede que la Federación haya cambiado su web")
-    nuestra = next((f for f in clasificacion if f["codequipo"] == eq["codequipo"]), None)
-    nombre_fed = nuestra["equipo"] if nuestra else eq.get("nombre_fed", "Ortuella")
-    jugadas = max((f["pj"] for f in clasificacion), default=0)
+        if eq.get("base") and not anterior.get("clasificacion"):
+            clasificacion = []   # fútbol base antes de empezar la liga: no hay clasificación todavía
+        else:
+            sin_leer.append("clasificación")
+            clasificacion = None
+    if clasificacion is None:
+        filas = [{**f, "equipo": a_fed(f["equipo"])} for f in anterior.get("clasificacion", [])]
+        nombre_fed = a_fed(anterior.get("nombreFederacion") or eq.get("nombre_fed", "Ortuella"))
+    else:
+        filas = clasificacion
+        nuestra = next((f for f in clasificacion if f["codequipo"] == eq["codequipo"]), None)
+        nombre_fed = nuestra["equipo"] if nuestra else eq.get("nombre_fed", "Ortuella")
 
-    calendario = leer_calendario(descargar(
-        f"NFG_VisCalendario_Vis?cod_primaria=1000120&codtemporada={TEMPORADA}"
-        f"&codcompeticion={eq['codcompeticion']}&codgrupo={eq['codgrupo']}"))
+    try:
+        calendario = leer_calendario(descargar(
+            f"NFG_VisCalendario_Vis?cod_primaria=1000120&codtemporada={TEMPORADA}"
+            f"&codcompeticion={eq['codcompeticion']}&codgrupo={eq['codgrupo']}"))
+        if not calendario:
+            raise RuntimeError("calendario vacío")
+    except RuntimeError:
+        if not anterior.get("partidos"):
+            raise                # sin calendario de antes no hay nada que enseñar: el equipo falla
+        sin_leer.append("calendario")
+        calendario = [{k: v for k, v in p.items() if k not in ("gl", "gv", "acta")}
+                      | {"local": a_fed(p["local"]), "visitante": a_fed(p["visitante"])}
+                      for p in anterior["partidos"]]
+    # Jornadas jugadas: las de la clasificación o, si no se ha podido leer, las que ya han pasado
+    jugadas = max([f["pj"] for f in filas] + [p["jornada"] for p in calendario if p["fecha"] < hoy], default=0)
 
     # Resultados: reutilizamos los que ya teníamos y solo pedimos las jornadas nuevas
     resultados = {(r["jornada"], r["local"], r["visitante"]): r
@@ -444,8 +469,12 @@ def actualizar_equipo(eq, anterior, comun):
     for j in range(1, jugadas + 1):
         if j in ya and j < jugadas:   # la última jornada se vuelve a mirar por si hay correcciones
             continue
-        for r in leer_resultados_jornada(descargar(url_clasificacion(eq, j)), j):
-            resultados[(r["jornada"], r["local"], r["visitante"])] = r
+        try:
+            for r in leer_resultados_jornada(descargar(url_clasificacion(eq, j)), j):
+                resultados[(r["jornada"], r["local"], r["visitante"])] = r
+        except RuntimeError:
+            if j not in ya:
+                sin_leer.append(f"resultados de la jornada {j}")
 
     nuestros = lambda p: nombre_fed in (p["local"], p["visitante"])
     partidos = []
@@ -482,7 +511,6 @@ def actualizar_equipo(eq, anterior, comun):
 
     # Próximas 3 jornadas: la página de la jornada trae la hora (cuando ya está fijada), el campo
     # exacto y los escudos de todos los equipos del grupo. Así faltan pocos escudos tras un par de semanas.
-    hoy = datetime.now(timezone.utc).date().isoformat()
     proximas = [p for p in partidos if p["fecha"] >= hoy][:3]
     for p in proximas:
         try:
@@ -491,6 +519,7 @@ def actualizar_equipo(eq, anterior, comun):
                 f"&CodGrupo={eq['codgrupo']}&CodTemporada={TEMPORADA}&CodJornada={p['jornada']}"))
         except RuntimeError as e:
             print(f"  aviso: jornada {p['jornada']} sin leer ({e})", file=sys.stderr)
+            sin_leer.append(f"horario de la jornada {p['jornada']}")
             continue
         for x in jornada:
             guardar_escudos(zip((x["local"], x["visitante"]), x["escudos"]), comun)
@@ -516,34 +545,37 @@ def actualizar_equipo(eq, anterior, comun):
             f"&codtemporada={TEMPORADA}&codgrupo={eq['codgrupo']}"), nombre_fed.upper())
     except RuntimeError:
         porteros = anterior.get("porteros", [])
+        sin_leer.append("porteros")
 
     try:
         goleadores = leer_goleadores(descargar(
             f"NFG_CMP_Goleadores?cod_primaria=1000120&codcompeticion={eq['codcompeticion']}"
             f"&codtemporada={TEMPORADA}&codgrupo={eq['codgrupo']}"), nombre_fed.upper())
     except RuntimeError:
-        if not eq.get("base"):
-            raise
-        goleadores = anterior.get("goleadores", [])   # en el fútbol base la tabla llega vacía hasta que hay goles
+        goleadores = anterior.get("goleadores", [])
+        if not eq.get("base") or goleadores:   # en el fútbol base la tabla llega vacía hasta que hay goles
+            sin_leer.append("goleadores")
 
     # En la web se ve "Ortuella" aunque la Federación lo llame, por ejemplo, "Ortuella2013-14".
     # Los resultados internos se guardan con el nombre de la Federación, que es con el que se buscan.
     if eq.get("nombre_web"):
         web = lambda n: eq["nombre_web"] if n == nombre_fed else n
         partidos = [{**p, "local": web(p["local"]), "visitante": web(p["visitante"])} for p in partidos]
-        clasificacion = [{**f, "equipo": web(f["equipo"])} for f in clasificacion]
+        filas = [{**f, "equipo": web(f["equipo"])} for f in filas]
         nombre_fed = eq["nombre_web"]
 
+    if sin_leer:
+        print(f"  aviso: {eq['nombre']} actualizado salvo: {', '.join(sin_leer)} (se queda lo de antes)", file=sys.stderr)
     return {
         "id": eq["id"], "nombre": eq["nombre"], "categoria": eq["categoria"], "nombreFederacion": nombre_fed,
         **({"base": True} if eq.get("base") else {}),
-        "clasificacion": [{k: v for k, v in f.items() if k != "codequipo"} for f in clasificacion],
+        "clasificacion": [{k: v for k, v in f.items() if k != "codequipo"} for f in filas],
         "partidos": partidos,
         "goleadores": goleadores,
         "porteros": porteros,
         "resultados": list(resultados.values()),   # copia interna, para no volver a pedirlos
         "enlace": "https://www.fvf-bff.eus/pnfg/NPcd/" + url_clasificacion(eq),
-    }
+    }, sin_leer
 
 
 def main():
@@ -568,7 +600,11 @@ def main():
         fallidos = []
         for eq in pendientes:
             try:
-                leidos[eq["id"]] = actualizar_equipo(eq, previos.get(eq["id"], {}), comun)
+                # Si en la primera vuelta se leyó a medias, la segunda parte de lo ya leído
+                base = leidos.get(eq["id"], previos.get(eq["id"], {}))
+                leidos[eq["id"]], sin_leer = actualizar_equipo(eq, base, comun)
+                if sin_leer:
+                    fallidos.append((eq, "sin leer: " + ", ".join(sin_leer)))
             except Exception as e:
                 fallidos.append((eq, e))
                 print(f"  ERROR en {eq['nombre']}: {e}", file=sys.stderr)
