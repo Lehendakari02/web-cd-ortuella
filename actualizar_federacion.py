@@ -8,7 +8,7 @@ clasificación, calendario, resultados, goleadores y porteros del club, y las ac
 nuestros partidos (goles, tarjetas, alineaciones, cambios), el campo de cada rival y sus escudos.
 Después regenera los calendarios del móvil (carpeta calendario/).
 
-Uso:  python3 actualizar_federacion.py
+Uso:  python3 actualizar_federacion.py  (más opciones al principio de main())
 Solo usa la biblioteca estándar de Python, para que funcione en cualquier sitio.
 
 Para no cargar el servidor de la Federación:
@@ -586,18 +586,10 @@ def actualizar_equipo(eq, anterior, comun):
     }, sin_leer
 
 
-def main():
-    # Antes se hacía aquí una "primera visita" a NFG_VisClasificacion sin equipo para coger la
-    # cookie, pero esa página siempre llega vacía y paraba todo. La cookie se coge en la primera
-    # página de verdad.
-    anterior = cargar_anterior()
-    previos = {e["id"]: e for e in anterior.get("equipos", [])}
-    # Datos compartidos por todos los equipos: actas leídas, escudos de los rivales y su campo
-    comun = {"actas": anterior.get("actas", {}), "escudos": anterior.get("escudos", {}),
-             "campos": anterior.get("campos", {}), "mapas": anterior.get("mapas", {}),
-             "fichas_campo": anterior.get("fichas_campo", {})}
-    leidos, pendientes = {}, list(EQUIPOS)
-    # Si un equipo falla, se vuelve a intentar al final, tras una pausa larga
+def leer_equipos(lista, previos, comun):
+    """Lee los equipos de la lista. Si uno falla, se vuelve a intentar al final, tras una pausa larga.
+    Devuelve (equipos leídos por id, errores)."""
+    leidos, pendientes, fallidos = {}, list(lista), []
     for vuelta in range(2):
         if vuelta:
             if time.monotonic() - INICIO > LIMITE:
@@ -619,7 +611,14 @@ def main():
         pendientes = [eq for eq, _ in fallidos]
         if not pendientes:
             break
-    errores = [f"{eq['nombre']}: {e}" for eq, e in fallidos]
+    return leidos, [f"{eq['nombre']}: {e}" for eq, e in fallidos]
+
+
+COMUNES = ("actas", "escudos", "campos", "mapas", "fichas_campo")
+
+
+def guardar(leidos, previos, comun):
+    """Escribe datos-federacion.js y los calendarios. El equipo que no se ha leído conserva sus últimos datos buenos."""
     equipos = []
     for eq in EQUIPOS:                   # mismo orden de siempre
         if eq["id"] in leidos:
@@ -630,13 +629,54 @@ def main():
         sys.exit("No se ha podido leer nada de la Federación. No se cambia nada.")
     datos = {"temporada": TEMPORADA_TEXTO,
              "actualizado": datetime.now(timezone.utc).isoformat(timespec="minutes"),
-             "equipos": equipos, "actas": comun["actas"], "escudos": comun["escudos"],
-             "campos": comun["campos"], "mapas": comun["mapas"], "fichas_campo": comun["fichas_campo"]}
+             "equipos": equipos, **{k: comun[k] for k in COMUNES}}
     with open(SALIDA, "w", encoding="utf-8") as f:
         f.write("/* Archivo generado automáticamente por actualizar_federacion.py. No editar a mano. */\n")
         f.write("window.FEDERACION = " + json.dumps(datos, ensure_ascii=False, indent=1) + ";\n")
     print(f"Guardado {SALIDA}")
     generar_calendario.main()           # calendarios .ics para el móvil, con los datos recién guardados
+
+
+def main():
+    # Uso:
+    #   actualizar_federacion.py                         lee todos los equipos y guarda (a mano)
+    #   actualizar_federacion.py --lista                 ids de los equipos (para lanzar un robot por equipo)
+    #   actualizar_federacion.py --equipo ID PARCIAL     lee solo ese equipo y deja lo leído en el fichero PARCIAL
+    #   actualizar_federacion.py --juntar PARCIAL...     junta lo de cada robot con los datos de antes y guarda
+    # En GitHub se usa un robot (una máquina) por equipo: la Federación corta a cada máquina tras unas cuantas
+    # páginas, así que con una sola máquina los últimos equipos casi nunca se leían.
+    args = sys.argv[1:]
+    if args[:1] == ["--lista"]:
+        print(json.dumps([eq["id"] for eq in EQUIPOS]))
+        return
+    anterior = cargar_anterior()
+    previos = {e["id"]: e for e in anterior.get("equipos", [])}
+    # Datos compartidos por todos los equipos: actas leídas, escudos de los rivales y su campo
+    comun = {k: anterior.get(k, {}) for k in COMUNES}
+
+    if args[:1] == ["--equipo"]:
+        eq = next(e for e in EQUIPOS if e["id"] == args[1])
+        leidos, errores = leer_equipos([eq], previos, comun)
+        with open(args[2], "w", encoding="utf-8") as f:
+            json.dump({"id": eq["id"], "equipo": leidos.get(eq["id"]), "comun": comun, "errores": errores},
+                      f, ensure_ascii=False)
+        print(f"Guardado {args[2]}")
+    elif args[:1] == ["--juntar"]:
+        leidos, errores, recibidos = {}, [], set()
+        for ruta in args[1:]:
+            with open(ruta, encoding="utf-8") as f:
+                parte = json.load(f)
+            recibidos.add(parte["id"])
+            if parte["equipo"]:
+                leidos[parte["id"]] = parte["equipo"]
+            errores += parte["errores"]
+            for k in COMUNES:            # cada robot parte de lo de antes y añade lo suyo
+                comun[k].update(parte["comun"].get(k, {}))
+        errores += [f"{eq['nombre']}: el robot no terminó" for eq in EQUIPOS if eq["id"] not in recibidos]
+        guardar(leidos, previos, comun)
+    else:
+        leidos, errores = leer_equipos(EQUIPOS, previos, comun)
+        guardar(leidos, previos, comun)
     if errores:
         sys.exit("Algunos equipos no se pudieron actualizar:\n" + "\n".join(errores))
 

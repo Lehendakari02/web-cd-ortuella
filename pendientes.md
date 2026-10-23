@@ -6,8 +6,9 @@ la bitácora (`Lehendakari02/bitacora`). Cuando algo se hace, pasa a «Hecho».
 ## Próximos pasos
 1. **Leer la Federación sin que nos bloquee.** Comprobado el 23/10: la Federación bloquea a los centros de datos
    (desde Hetzner llega la página vacía; desde GitHub, casi siempre). Pedirle acceso no es posible.
-   - Hecho: el robot de GitHub pasa 7 veces al día; cada pasada guarda lo que lee. Ver en las comprobaciones del 26 y
-     29/10 si con eso basta.
+   - Probadas 7 pasadas al día con una máquina: los primeros equipos se leen y los últimos casi nunca (la Federación
+     corta a cada máquina tras unas cuantas páginas). Ahora: **un robot (máquina) por equipo** y otro que junta, 2
+     pasadas al día. Ver en las comprobaciones del 26 y 29/10 si con eso basta.
    - Alternativas a probar: **Google Apps Script** (gratis, servidores de Google, sin aparatos: primero una prueba de
      10 minutos) o un **aparato en casa** (móvil Android viejo con Termux, o Raspberry Pi ~60-80 €).
    - Descartado: el servidor de Hetzner (bloqueado) y los *proxies* residenciales (sería saltarse el bloqueo).
@@ -19,7 +20,8 @@ la bitácora (`Lehendakari02/bitacora`). Cuando algo se hace, pasa a «Hecho».
 ## Más adelante
 - Reimportar el flujo de n8n cuando toque otro cambio (lleva el mensaje «⏳ Apuntando…» de los amistosos).
 - Comprobaciones programadas del robot de la Federación: 26 y 29/10.
-- Alevín: añadir sus códigos al robot cuando la Federación publique su liga.
+- Alevín: añadir sus códigos a `EQUIPOS` en `actualizar_federacion.py` cuando la Federación publique su liga
+  (con eso sale solo un sexto robot).
 - Enlace a la web en todas las imágenes («Toda la info del club → enlace en el perfil») al lanzar `cdortuella.net`
   (ver `redes/IDEAS.md`).
 - Datos de la web que pone Julen: CIF, registro, precios, directiva, fotos de equipos, logos.
