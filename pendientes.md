@@ -31,13 +31,14 @@ la bitácora (`Lehendakari02/bitacora`). Cuando algo se hace, pasa a «Hecho».
   Console** (alta de la web y su mapa), para que al buscar «CD Ortuella» salga la web nueva y no la antigua.
 - **Temporada 2027/28** (y cada temporada nueva): revisar el primer MATCH DAY de cada rival nuevo, por si su escudo
   de la Federación viene raro (ver «escudos/» en `redes/README.md`).
-- Datos de la web que pone Julen: CIF, registro, precios, directiva, fotos de equipos, logos.
+- Datos de la web que pone Julen: n.º del Registro de Entidades Deportivas del País Vasco y confirmar el domicilio social (la web pone Catalina Gibaja 1; el membrete, Avda. de la Estación s/n) para aviso legal y privacidad, precios, directiva, fotos de equipos, logos.
 
 ## Aparcado
 - **Publicación automática con veto** (el bot publica solo a una hora salvo que se cancele). A la directiva le gusta
   como está ahora (se publica al pulsar «Publicar»); la idea se guarda por si se quiere más adelante.
 
 ## Hecho
+- 2026-10-24 — CIF (G48508485) y razón social (Club Deportivo Ortuella, según el membrete del club) puestos en el aviso legal, la privacidad y la ficha para buscadores.
 - 2026-10-24 — MATCH DAY: el escudo de La Arboleda salía encogido por una raya de 1 píxel en el borde; el recorte de escudos ya no cuenta las rayas sueltas, y en el MATCH DAY todos los escudos ocupan la misma superficie y dejan aire con el texto.
 - 2026-10-24 — Amistosos: el bot espera a que el robot de GitHub termine y entonces contesta «✅ Amistoso apuntado» (o avisa si falla).
 - 2026-10-24 — Flujo de n8n con memoria en la tabla `memoria_ortuella` (no repite lo publicado aunque se importe de nuevo) y botón «🚫 Esta semana no».

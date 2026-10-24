@@ -680,8 +680,8 @@ PAGES["aviso-legal"] = dict(
     <h2>Titular de la web</h2>
     <p>En cumplimiento del artículo 10 de la Ley 34/2002, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI), se informa de los datos del titular de esta web:</p>
     <dl class="legal-data">
-      <dt>Denominación</dt><dd>""" + PEND + """</dd>
-      <dt>CIF</dt><dd>""" + PEND + """</dd>
+      <dt>Denominación</dt><dd>Club Deportivo Ortuella</dd>
+      <dt>CIF</dt><dd>G48508485</dd>
       <dt>Domicilio social</dt><dd>Catalina Gibaja 1, 48530 Ortuella (Bizkaia)</dd>
       <dt>Inscripción</dt><dd>Registro de Entidades Deportivas del País Vasco, n.º """ + PEND + """</dd>
       <dt>Email</dt><dd>cdortuella@cdortuella.net</dd>
@@ -711,7 +711,7 @@ PAGES["privacidad"] = dict(
 <section class="block">
   <div class="wrap prose legal">
     <h2>Responsable del tratamiento</h2>
-    <p>""" + PEND + """ (Club Deportivo Ortuella), con CIF """ + PEND + """, domicilio en Catalina Gibaja 1, 48530 Ortuella (Bizkaia), y email cdortuella@cdortuella.net.</p>
+    <p>El responsable es el Club Deportivo Ortuella, con CIF G48508485, domicilio en Catalina Gibaja 1, 48530 Ortuella (Bizkaia), y email cdortuella@cdortuella.net.</p>
 
     <h2>Esta web no recoge datos</h2>
     <p>La web no tiene formularios ni zona de usuarios, y no pide ningún dato a quien la visita. Si escribes o llamas al club usando los datos de contacto, usaremos lo que nos envíes solo para responderte y atender lo que pidas: inscripciones, hacerte socio, patrocinio o cualquier consulta.</p>
@@ -865,7 +865,6 @@ PAGES["404"] = dict(
 })();""")
 
 # Ficha del club en el formato que entienden Google y otros buscadores (schema.org).
-# Pendiente: CIF y razón social.
 FICHA_GOOGLE = """<script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -874,6 +873,7 @@ FICHA_GOOGLE = """<script type="application/ld+json">
  "alternateName": "CD Ortuella",
  "sport": "Fútbol",
  "foundingDate": "1949",
+ "taxID": "G48508485",
  "url": "{sitio}/",
  "logo": "{sitio}/img/icono-512.png",
  "image": "{sitio}/img/compartir.jpg",
