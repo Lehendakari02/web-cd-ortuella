@@ -14,6 +14,7 @@ la bitácora (`Lehendakari02/bitacora`). Cuando algo se hace, pasa a «Hecho».
    - Descartado: el servidor de Hetzner (bloqueado) y los *proxies* residenciales (sería saltarse el bloqueo).
 
 ## Más adelante
+- **Revisar 2 ramas con arreglos del flujo de n8n sin fusionar** (24/10): `claude/arreglo-memoria-n8n` («Subir historia»/«No» valen una sola vez) y `claude/guia-n8n` (avisar si se responde a una foto que el bot no tiene en memoria). Ver si el `flujo.json` actual ya lo hace; si no, rehacerlo en una PR. Después se pueden borrar.
 - **Tests del lector de la Federación**: guardar páginas de ejemplo con datos conocidos y comprobar que el lector los saca bien; y antes de publicar, si lo leído sale vacío o raro, mantener los datos de ayer y avisar por Telegram.
 - **Entorno de pruebas**: flujo de n8n y grupo de Telegram de pruebas para probar cada cambio del flujo antes de importarlo en el real.
 - Comprobaciones programadas del robot de la Federación: 26 y 29/10.
