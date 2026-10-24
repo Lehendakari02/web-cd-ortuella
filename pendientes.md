@@ -14,7 +14,8 @@ la bitácora (`Lehendakari02/bitacora`). Cuando algo se hace, pasa a «Hecho».
    - Descartado: el servidor de Hetzner (bloqueado) y los *proxies* residenciales (sería saltarse el bloqueo).
 
 ## Más adelante
-- Reimportar el flujo de n8n cuando toque otro cambio (lleva el mensaje «⏳ Apuntando…» de los amistosos).
+- Importar el flujo de n8n con la memoria en la tabla `memoria_ortuella` (crear antes la tabla, ver
+  `redes/n8n/README.md`). Lleva también el mensaje «⏳ Apuntando…» de los amistosos.
 - Comprobaciones programadas del robot de la Federación: 26 y 29/10.
 - Alevín: comprobación semanal programada (lunes) de si la Federación ya publica su liga. Cuando salga: añadir sus
   códigos a `EQUIPOS` en `actualizar_federacion.py` (sale solo un sexto robot) y **comprobar toda la cadena** con él

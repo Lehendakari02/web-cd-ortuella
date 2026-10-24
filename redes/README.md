@@ -104,7 +104,8 @@ El pie de foto de cada publicación lo escribe una persona por Telegram, porque 
 Cómo funciona el flujo (un solo flujo para todo):
 
 - **Dos veces al día** (8:30 y 23:30) lee `ultimo.json` y manda al grupo de Telegram cada pieza con
-  `"lista": true` que aún no haya ofrecido esa semana (clave `tipo-semana`, guardada en la memoria del flujo).
+  `"lista": true` que aún no se haya publicado (ni descartado) esa semana (clave `pieza:tipo-semana`, en la
+  tabla de datos `memoria_ortuella` de n8n, ver `n8n/README.md`).
   Si `faltan` no está vacío (p. ej. un partido aplazado), lo dice en el mensaje.
 - **El texto del pie** se escribe **citando la foto** del bot (mantener pulsado → Responder). Lo que se
   escribe en el grupo sin citar una foto se ignora.
