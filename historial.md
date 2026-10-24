@@ -70,4 +70,4 @@ Las líneas hasta el 2026-10-24 se han sacado de los títulos de las PR ya fusio
 - **2026-10-24** — Pendientes: ficha de Google del club y Search Console (PR #62)
 - **2026-10-24** — Nuevo portero en el Senior B: Musa Keita (PR #63)
 - **2026-10-24** — MATCH DAY: escudo del rival encogido por una raya en el borde (PR #64)
-- **2026-10-24** — Se crea este historial con todas las PR anteriores (PR #65)
+- **2026-10-24** — Se crea este historial con todas las PR anteriores, y tests y entorno de pruebas a pendientes (PR #65)
