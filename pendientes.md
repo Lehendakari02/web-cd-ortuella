@@ -14,7 +14,6 @@ la bitácora (`Lehendakari02/bitacora`). Cuando algo se hace, pasa a «Hecho».
    - Descartado: el servidor de Hetzner (bloqueado) y los *proxies* residenciales (sería saltarse el bloqueo).
 
 ## Más adelante
-- Reimportar el flujo de n8n cuando toque otro cambio (lleva el mensaje «⏳ Apuntando…» de los amistosos).
 - Comprobaciones programadas del robot de la Federación: 26 y 29/10.
 - Alevín: comprobación semanal programada (lunes) de si la Federación ya publica su liga. Cuando salga: añadir sus
   códigos a `EQUIPOS` en `actualizar_federacion.py` (sale solo un sexto robot) y **comprobar toda la cadena** con él
@@ -29,6 +28,7 @@ la bitácora (`Lehendakari02/bitacora`). Cuando algo se hace, pasa a «Hecho».
   como está ahora (se publica al pulsar «Publicar»); la idea se guarda por si se quiere más adelante.
 
 ## Hecho
+- 2026-10-24 — Flujo de n8n con memoria en la tabla `memoria_ortuella` (no repite lo publicado aunque se importe de nuevo) y botón «🚫 Esta semana no»; incluye el «⏳ Apuntando…» de los amistosos.
 - 2026-10-23 — Un robot de GitHub por equipo y otro que junta (PR #55): primera pasada con los 5 equipos leídos sin fallos.
 - 2026-10-23 — Instagram conectado (token de usuario del sistema «Nunca»); flujo definitivo de n8n con publicación real.
 - 2026-10-23 — SAILKAPENA (clasificación) en carrusel + historia; ORDUTEGIA con diseño nuevo; los cinco patrocinadores en la clasificación.
