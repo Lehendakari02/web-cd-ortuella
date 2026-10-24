@@ -31,7 +31,7 @@ la bitácora (`Lehendakari02/bitacora`). Cuando algo se hace, pasa a «Hecho».
   Console** (alta de la web y su mapa), para que al buscar «CD Ortuella» salga la web nueva y no la antigua.
 - **Temporada 2027/28** (y cada temporada nueva): revisar el primer MATCH DAY de cada rival nuevo, por si su escudo
   de la Federación viene raro (ver «escudos/» en `redes/README.md`).
-- Datos de la web que pone Julen: n.º del Registro de Entidades Deportivas del País Vasco (aviso legal y privacidad), precios, directiva, fotos de equipos, logos.
+- Datos de la web que pone Julen: n.º del Registro de Entidades Deportivas del País Vasco y confirmar el domicilio social (la web pone Catalina Gibaja 1; el membrete, Avda. de la Estación s/n) para aviso legal y privacidad, precios, directiva, fotos de equipos, logos.
 
 ## Aparcado
 - **Publicación automática con veto** (el bot publica solo a una hora salvo que se cancele). A la directiva le gusta
