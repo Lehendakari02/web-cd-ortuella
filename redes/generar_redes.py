@@ -99,6 +99,22 @@ def sin_fondo_blanco(img):
     return img
 
 
+def recortar_escudo(img):
+    """Quita los márgenes vacíos para que todos los escudos se vean igual de grandes. Las rayas o puntos sueltos
+    del borde (algunos escudos de la Federación traen una línea de 1 píxel) no cuentan como escudo: se mide el
+    contorno sobre una copia sin detalles finos y se recorta la imagen original por ahí."""
+    from PIL import ImageFilter
+    img = img.convert("RGBA")
+    opaco = img.split()[3].point(lambda a: 255 if a > 40 else 0)
+    solido = opaco.filter(ImageFilter.MinFilter(7)).filter(ImageFilter.MaxFilter(7))   # las líneas finas desaparecen
+    caja = solido.getbbox() or opaco.getbbox()
+    if not caja:
+        return img
+    margen = 3
+    caja = (max(caja[0] - margen, 0), max(caja[1] - margen, 0), min(caja[2] + margen, img.width), min(caja[3] + margen, img.height))
+    return img.crop(caja)
+
+
 def escudo_rival(nombre, datos):
     """Escudo en la mejor calidad posible: primero redes/escudos/<nombre>.png (puesto a mano); si no,
     el "grande" de la Federación o el de la web, sin fondo blanco. Se guarda en redes/escudos/ la primera vez."""
@@ -126,7 +142,7 @@ def escudo_rival(nombre, datos):
         except Exception as e:
             print(f"  aviso: no se pudo bajar el escudo grande de {nombre} ({e})", file=sys.stderr)
     img = sin_fondo_blanco(img)
-    img = img.crop(img.getbbox() or (0, 0) + img.size)   # sin márgenes vacíos, para que todos los escudos se vean igual de grandes
+    img = recortar_escudo(img)
     img.thumbnail((500, 500))
     os.makedirs(ESCUDOS_GRANDES, exist_ok=True)
     img.save(listo, optimize=True)
@@ -292,6 +308,22 @@ def html_sailkapena_tabla(cat, tabla, nuestro, jornada, config, formato, fondo):
                   formato, "sailkapena tabla")
 
 
+def tamano_escudo(ruta, superficie=200 * 210, alto_max=225, ancho_max=235):
+    """Tamaño de cada escudo en el MATCH DAY: todos ocupan la misma superficie (la del nuestro, unos 200 × 210),
+    así uno alargado sale algo más estrecho y uno redondo algo más ancho, y a la vista pesan lo mismo. Con un hueco
+    fijo, un escudo alargado salía más alto que el nuestro y se acercaba al texto de encima."""
+    from PIL import Image
+    try:
+        with Image.open(ruta) as img:
+            proporcion = img.width / img.height
+    except Exception:
+        proporcion = 1
+    alto = min((superficie / proporcion) ** 0.5, alto_max)
+    ancho = min(alto * proporcion, ancho_max)
+    alto = ancho / proporcion
+    return f"width:{ancho:.0f}px;height:{alto:.0f}px"
+
+
 def html_matchday(p, equipo, datos, config, formato, variante, fondo, club):
     variante = fondo.get("diseno", variante)   # algunas fotos van mejor con un diseño concreto
     casa = en_casa(p, equipo)
@@ -299,7 +331,7 @@ def html_matchday(p, equipo, datos, config, formato, variante, fondo, club):
     escudos = [escudo_ortuella(), escudo_rival(otro, datos)]
     if not casa:
         escudos.reverse()
-    escudos_html = "".join(f'<img src="{uri(e)}">' for e in escudos if e)
+    escudos_html = "".join(f'<img src="{uri(e)}" style="{tamano_escudo(e)}">' for e in escudos if e)
     dia = DIAS[date.fromisoformat(p["fecha"]).weekday()]
     cuando = f"{dia} {p['hora']}" if p.get("hora") else dia
     # En casa, todos nuestros equipos juegan en Otxartaga, aunque la web solo lo apunte para "Ortuella"

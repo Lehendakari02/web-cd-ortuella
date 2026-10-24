@@ -72,7 +72,12 @@ Otros archivos:
   sustituir el archivo con el mismo nombre y ejecutar `python3 redes/preparar_fondos.py`: rehace los
   lienzos limpios de `plantillas/` (sin las filas de equipos, que las dibuja el generador).
 - `plantillas/estilos.css`: el diseño (tamaños, colores, posiciones).
-- `escudos/`: escudos de los rivales en buena calidad (se bajan solos de la Federación y se les quita el fondo blanco).
+- `escudos/`: escudos de los rivales en buena calidad (se bajan solos de la Federación, se les quita el fondo blanco
+  y se recortan los márgenes sin contar rayas o puntos sueltos del borde, para que todos salgan igual de grandes).
+  En el MATCH DAY todos ocupan la misma superficie (la del nuestro): uno alargado sale más estrecho y uno redondo
+  más ancho, para que pesen lo mismo a la vista. **Al empezar cada temporada** (rivales y escudos nuevos), revisar
+  el primer MATCH DAY de cada rival nuevo: algún escudo de la Federación puede venir raro (rayas, cuadrado de color).
+  Si uno sale mal, se pone a mano en `escudos/` y tiene prioridad.
   Si uno sale mal, se puede poner a mano como `escudos/<Nombre exacto de la Federación>.png`. El nuestro,
   `escudos/Ortuella.png`, sale del escudo de `canva/`.
 - `recursos/`: tipografía Montserrat e iconos (casa, avión, balón).

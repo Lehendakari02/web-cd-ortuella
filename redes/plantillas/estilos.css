@@ -80,7 +80,7 @@ main { position: relative; height: 100%; display: flex; flex-direction: column; 
 .v1 .club { margin-top: 30px; font-size: 56px; font-weight: 800; }
 .v1 .grande { white-space: nowrap; font-size: 140px; font-weight: 800; line-height: 1; letter-spacing: 2px; margin-left: -6px; }
 .v1 .donde { overflow: hidden; white-space: nowrap; text-align: right; font-size: 50px; font-weight: 800; margin-top: 10px; }
-.v1 .escudos { margin-top: -10px; }
+.v1 .escudos { margin-top: 14px; }   /* aire con el campo de encima */
 
 /* ------------------------------------------------ SAILKAPENA (fondo y patrocinadores de EMAITZAK; el título, aquí) */
 

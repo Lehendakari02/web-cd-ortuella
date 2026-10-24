@@ -25,6 +25,8 @@ la bitácora (`Lehendakari02/bitacora`). Cuando algo se hace, pasa a «Hecho».
   (`cdortuella1949@gmail.com`) y ponerla al día: web nueva, dirección y foto del campo (Otxartaga), teléfono,
   categoría, descripción, logo y fotos. La usan sobre todo los equipos de fuera para llegar. Junto con **Google Search
   Console** (alta de la web y su mapa), para que al buscar «CD Ortuella» salga la web nueva y no la antigua.
+- **Temporada 2027/28** (y cada temporada nueva): revisar el primer MATCH DAY de cada rival nuevo, por si su escudo
+  de la Federación viene raro (ver «escudos/» en `redes/README.md`).
 - Datos de la web que pone Julen: CIF, registro, precios, directiva, fotos de equipos, logos.
 
 ## Aparcado
@@ -32,6 +34,7 @@ la bitácora (`Lehendakari02/bitacora`). Cuando algo se hace, pasa a «Hecho».
   como está ahora (se publica al pulsar «Publicar»); la idea se guarda por si se quiere más adelante.
 
 ## Hecho
+- 2026-10-24 — MATCH DAY: el escudo de La Arboleda salía encogido por una raya de 1 píxel en el borde; el recorte de escudos ya no cuenta las rayas sueltas, y en el MATCH DAY todos los escudos ocupan la misma superficie y dejan aire con el texto.
 - 2026-10-24 — Amistosos: el bot espera a que el robot de GitHub termine y entonces contesta «✅ Amistoso apuntado» (o avisa si falla).
 - 2026-10-24 — Flujo de n8n con memoria en la tabla `memoria_ortuella` (no repite lo publicado aunque se importe de nuevo) y botón «🚫 Esta semana no».
 - 2026-10-23 — Un robot de GitHub por equipo y otro que junta (PR #55): primera pasada con los 5 equipos leídos sin fallos.
