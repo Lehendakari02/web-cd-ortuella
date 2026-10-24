@@ -99,6 +99,7 @@ window.CLUB = {
         [null, "Gonzalo Iglesias Tamayo", "Porteros"],
         [null, "Youssouf Jaiteh", "Jugadores"],
         [null, "Yusupha Janneh", "Jugadores"],
+        [null, "Musa Keita", "Porteros"],
         [null, "Maren Lafuente Ibinaga", "Jugadores"],
         [null, "Illan Martin Espino", "Jugadores"],
         [null, "Unai Martinez Lansorena", "Jugadores"],
