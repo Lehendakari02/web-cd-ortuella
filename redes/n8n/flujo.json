@@ -1652,7 +1652,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const fallo = $input.first().json.error;\nconst que = $('¿Amistoso a la web?').first().json.inputs.accion;\nif (fallo) return [{ json: { accion: 'mensaje', texto: `⚠️ No se ha podido guardar (${fallo.message || 'error de GitHub'}). Revisa la credencial de GitHub en n8n.` } }];\nconst hecho = { anadir: 'Apuntando', resultado: 'Apuntando el resultado', borrar: 'Borrando' }[que] || 'Guardando';\nreturn [{ json: { accion: 'mensaje', texto: `⏳ ${hecho}… En 3-5 minutos estará en las imágenes, la web y el calendario. Compruébalo con /amistosos.` } }];"
+        "jsCode": "// Si GitHub no acepta el encargo, se dice ya; si lo acepta, se espera a que el robot termine para confirmarlo\nconst fallo = $input.first().json.error;\nconst que = $('¿Amistoso a la web?').first().json.inputs.accion;\nif (fallo) return [{ json: { accion: 'mensaje', texto: `⚠️ No se ha podido guardar (${fallo.message || 'error de GitHub'}). Revisa la credencial de GitHub en n8n.` } }];\n// «desde»: un poco antes del encargo, para encontrar luego la ejecución del robot\nreturn [{ json: { accion: 'esperar_robot', espera: 90, que, desde: new Date(Date.now() - 30000).toISOString().slice(0, 19) + 'Z' } }];"
       },
       "id": "7fe78675-e33f-5cbf-a803-3a299f3f27dc",
       "name": "Resultado del amistoso",
@@ -1660,6 +1660,84 @@
       "typeVersion": 2,
       "position": [
         1120,
+        2600
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ad9d650c-b736-5528-8781-e9c4a166ab54",
+              "leftValue": "={{ $json.accion }}",
+              "rightValue": "esperar_robot",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1a282ace-8885-5352-bc6f-2dfdf4577f05",
+      "name": "¿Esperar al robot?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1360,
+        2600
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{ $json.espera }}",
+        "unit": "seconds"
+      },
+      "id": "73666c5e-5148-574e-bc81-8bd2d59058ea",
+      "name": "Esperar al robot",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1600,
+        2600
+      ],
+      "webhookId": "710d2dcf-3a72-5918-b89a-c310b02ffe93"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.github.com/repos/Lehendakari02/web-cd-ortuella/actions/workflows/amistoso.yml/runs?event=workflow_dispatch&per_page=5&created=%3E%3D{{ $('Resultado del amistoso').first().json.desde }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "da6d7e4e-db75-5f82-9f8e-8e5f367e5aa1",
+      "name": "¿Ha terminado el robot?",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1840,
+        2600
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// La ejecución del robot es la primera lanzada después del encargo (GitHub las da de la más nueva a la más vieja)\nconst { que } = $('Resultado del amistoso').first().json;\nconst robot = ($input.first().json.workflow_runs || []).slice(-1)[0];\nif (robot && robot.status === 'completed') {\n  if (robot.conclusion !== 'success') return [{ json: { accion: 'mensaje', texto: '⚠️ No se ha podido guardar: el robot de GitHub ha fallado. Prueba otra vez; si sigue fallando, mira GitHub → Actions → Amistoso.' } }];\n  const hecho = { anadir: 'Amistoso apuntado', resultado: 'Resultado apuntado', borrar: 'Amistoso borrado' }[que] || 'Hecho';\n  return [{ json: { accion: 'mensaje', texto: `✅ ${hecho}. En 1-2 minutos se verá en la web, las imágenes y el calendario (/amistosos para ver la lista).` } }];\n}\nif ($runIndex < 2) return [{ json: { accion: 'esperar_robot', espera: 45, que } }];   // aún no ha terminado: se espera otro poco\nreturn [{ json: { accion: 'mensaje', texto: '⏳ El robot de GitHub sigue guardando (va más lento de lo normal). Compruébalo en unos minutos con /amistosos.' } }];"
+      },
+      "id": "c2a0f929-5c79-569f-bc45-7886dfb5d6d4",
+      "name": "Amistoso guardado",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2080,
         2600
       ]
     },
@@ -2821,6 +2899,60 @@
         [
           {
             "node": "¿Mensaje?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "¿Esperar al robot?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Esperar al robot?": {
+      "main": [
+        [
+          {
+            "node": "Esperar al robot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Esperar al robot": {
+      "main": [
+        [
+          {
+            "node": "¿Ha terminado el robot?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Ha terminado el robot?": {
+      "main": [
+        [
+          {
+            "node": "Amistoso guardado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Amistoso guardado": {
+      "main": [
+        [
+          {
+            "node": "¿Mensaje?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "¿Esperar al robot?",
             "type": "main",
             "index": 0
           }
