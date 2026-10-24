@@ -21,6 +21,7 @@ la bitácora (`Lehendakari02/bitacora`). Cuando algo se hace, pasa a «Hecho».
   códigos a `EQUIPOS` en `actualizar_federacion.py` (sale solo un sexto robot) y **comprobar toda la cadena** con él
   (robot, web, calendario, imágenes, avisos, amistosos y bot de Telegram) antes de darlo por bueno.
 - Lanzamiento en Cloudflare Pages + `cdortuella.net` (el repositorio sigue público).
+- **Justo después del lanzamiento en Cloudflare: poner el repositorio privado** (regla de la bitácora: repos privados por defecto). En privado, GitHub Actions da 2.000 minutos gratis al mes. Medido el 24/10: el robot de la Federación gasta 7 minutos por pasada (7 máquinas de menos de 1 minuto), unos 420 al mes con 2 pasadas al día; amistosos y noticias, 1 minuto cada uno; y la publicación en GitHub Pages (unos 235 minutos en la última semana) desaparece al pasar a Cloudflare. Total esperado: unos 450 al mes, la cuarta parte del límite.
 - Enlace a la web en todas las imágenes («Toda la info del club → enlace en el perfil»): **justo después** del
   lanzamiento, nunca antes (ahora el enlace llevaría a GitHub). Ver `redes/IDEAS.md`.
 - **Ficha de Google del club** (Google Maps), el día del lanzamiento: reclamarla con el Gmail del club
