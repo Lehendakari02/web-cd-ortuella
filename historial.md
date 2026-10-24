@@ -71,3 +71,4 @@ Las líneas hasta el 2026-10-24 se han sacado de los títulos de las PR ya fusio
 - **2026-10-24** — Nuevo portero en el Senior B: Musa Keita (PR #63)
 - **2026-10-24** — MATCH DAY: escudo del rival encogido por una raya en el borde (PR #64)
 - **2026-10-24** — Se crea este historial con todas las PR anteriores (PR #65)
+- **2026-10-24** — Pendientes: tests del lector de la Federación y entorno de pruebas del flujo (PR #66)
