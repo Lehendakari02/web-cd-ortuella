@@ -17,6 +17,8 @@
    `/instagram` (comprobar la conexión), `/probar noticia`, `/ayuda` (y `/ayuda amistosos`, `ver`, `publicar`…).
    **Amistosos**: el bot pide confirmación y lanza el robot de GitHub **Amistoso** (`amistoso.yml`), que los guarda en
    `datos-amistosos.js` y rehace imágenes y calendario. Usa la misma credencial de GitHub que las noticias.
+   El bot espera a que el robot termine (lo mira a los 90 s y, si hace falta, cada 45 s, como mucho 3 veces) y
+   entonces contesta **✅ Amistoso apuntado** (o avisa si el robot ha fallado).
    La clasificación es un **carrusel**: el bot manda antes sus imágenes y, al final, la portada a la que se responde.
    El resto de mensajes del grupo se ignora (el bot puede tener la privacidad de grupo activada).
 
@@ -35,7 +37,8 @@
 - **GitHub** (se puede poner ya): en GitHub → Settings → Developer settings → *Fine-grained tokens* →
   *Generate new token*: solo el repositorio `web-cd-ortuella`, permiso **Actions: Read and write**.
   En n8n, nodo **Enviar a la web (GitHub)** → *Credential* → nueva **Header Auth** con
-  Name `Authorization` y Value `Bearer <el token>`.
+  Name `Authorization` y Value `Bearer <el token>`. La misma credencial va en **Enviar amistoso (GitHub)** y en
+  **¿Ha terminado el robot?** (este último mira si el robot de amistosos ha acabado).
 - **Instagram**: token de **usuario del sistema** del portfolio de empresa del club (Meta Business Suite →
   Usuarios del sistema → Generar token, caducidad **Nunca**, permisos `instagram_basic`,
   `instagram_content_publish`, `pages_show_list`, `pages_read_engagement`, `business_management`).
