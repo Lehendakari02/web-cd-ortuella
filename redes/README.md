@@ -17,7 +17,8 @@ Deja el resultado en `redes/salida/`:
 - `ultimo.json`: la dirección pública de cada imagen. Es lo que lee n8n.
 
 Generar no es publicar: las imágenes se rehacen cada vez que se actualiza la web, pero cada pieza lleva
-`"lista": true` solo cuando tiene todos sus datos, y n8n publica cada una **una sola vez por fin de semana**:
+`"lista": true` solo cuando tiene todos sus datos, y n8n publica cada una **una sola vez por semana** (la ofrece en cada revisión hasta que se publique o se
+descarte con «🚫 Esta semana no»):
 
 - ORDUTEGIA: cuando todos los equipos que juegan tienen fecha y hora. Un equipo sin partido (p. ej. el alevín
   sin liga) sale con "—" y no bloquea; un partido sin hora todavía, sí.
@@ -104,7 +105,8 @@ El pie de foto de cada publicación lo escribe una persona por Telegram, porque 
 Cómo funciona el flujo (un solo flujo para todo):
 
 - **Dos veces al día** (8:30 y 23:30) lee `ultimo.json` y manda al grupo de Telegram cada pieza con
-  `"lista": true` que aún no haya ofrecido esa semana (clave `tipo-semana`, guardada en la memoria del flujo).
+  `"lista": true` que aún no esté publicada ni descartada esa semana (clave `pieza:tipo-semana`, en la tabla de
+  datos `memoria_ortuella` de n8n, que no se borra al importar el flujo; ver `n8n/README.md`).
   Si `faltan` no está vacío (p. ej. un partido aplazado), lo dice en el mensaje.
 - **El texto del pie** se escribe **citando la foto** del bot (mantener pulsado → Responder). Lo que se
   escribe en el grupo sin citar una foto se ignora.
