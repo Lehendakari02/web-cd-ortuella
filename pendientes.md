@@ -14,11 +14,15 @@ la bitácora (`Lehendakari02/bitacora`). Cuando algo se hace, pasa a «Hecho».
    - Descartado: el servidor de Hetzner (bloqueado) y los *proxies* residenciales (sería saltarse el bloqueo).
 
 ## Más adelante
+- **Revisar 2 ramas con arreglos del flujo de n8n sin fusionar** (24/10): `claude/arreglo-memoria-n8n` («Subir historia»/«No» valen una sola vez) y `claude/guia-n8n` (avisar si se responde a una foto que el bot no tiene en memoria). Ver si el `flujo.json` actual ya lo hace; si no, rehacerlo en una PR. Después se pueden borrar.
+- **Tests del lector de la Federación**: guardar páginas de ejemplo con datos conocidos y comprobar que el lector los saca bien; y antes de publicar, si lo leído sale vacío o raro, mantener los datos de ayer y avisar por Telegram.
+- **Entorno de pruebas**: flujo de n8n y grupo de Telegram de pruebas para probar cada cambio del flujo antes de importarlo en el real.
 - Comprobaciones programadas del robot de la Federación: 26 y 29/10.
 - Alevín: comprobación semanal programada (lunes) de si la Federación ya publica su liga. Cuando salga: añadir sus
   códigos a `EQUIPOS` en `actualizar_federacion.py` (sale solo un sexto robot) y **comprobar toda la cadena** con él
   (robot, web, calendario, imágenes, avisos, amistosos y bot de Telegram) antes de darlo por bueno.
 - Lanzamiento en Cloudflare Pages + `cdortuella.net` (el repositorio sigue público).
+- **Justo después del lanzamiento en Cloudflare: poner el repositorio privado** (regla de la bitácora: repos privados por defecto). En privado, GitHub Actions da 2.000 minutos gratis al mes. Medido el 24/10: el robot de la Federación gasta 7 minutos por pasada (7 máquinas de menos de 1 minuto), unos 420 al mes con 2 pasadas al día; amistosos y noticias, 1 minuto cada uno; y la publicación en GitHub Pages (unos 235 minutos en la última semana) desaparece al pasar a Cloudflare. Total esperado: unos 450 al mes, la cuarta parte del límite.
 - Enlace a la web en todas las imágenes («Toda la info del club → enlace en el perfil»): **justo después** del
   lanzamiento, nunca antes (ahora el enlace llevaría a GitHub). Ver `redes/IDEAS.md`.
 - **Ficha de Google del club** (Google Maps), el día del lanzamiento: reclamarla con el Gmail del club

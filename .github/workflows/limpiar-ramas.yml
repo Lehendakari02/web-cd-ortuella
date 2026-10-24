@@ -1,0 +1,40 @@
+# Borra las ramas viejas cuyo trabajo ya está entero en main (ya fusionadas). No toca main, ni las ramas con
+# una PR abierta, ni las que tienen commits que no están en main. Solo se lanza a mano:
+# Actions → Limpiar ramas fusionadas → Run workflow. Con «borrar» en false solo enseña la lista (ensayo).
+name: Limpiar ramas fusionadas
+
+on:
+  workflow_dispatch:
+    inputs:
+      borrar:
+        description: "true para borrar de verdad; false solo enseña la lista"
+        required: true
+        default: "false"
+
+permissions:
+  contents: write
+
+jobs:
+  limpiar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Buscar y borrar ramas ya fusionadas
+        env:
+          BORRAR: ${{ inputs.borrar }}
+        run: |
+          git fetch --prune origin '+refs/heads/*:refs/remotes/origin/*'
+          for rama in $(git for-each-ref --format='%(refname:strip=3)' refs/remotes/origin); do
+            [ "$rama" = "main" ] || [ "$rama" = "HEAD" ] && continue
+            if git merge-base --is-ancestor "origin/$rama" origin/main; then
+              if [ "$BORRAR" = "true" ]; then
+                git push --quiet origin --delete "$rama" && echo "Borrada: $rama"
+              else
+                echo "Se borraría: $rama"
+              fi
+            else
+              echo "Se queda (tiene trabajo que no está en main): $rama"
+            fi
+          done
