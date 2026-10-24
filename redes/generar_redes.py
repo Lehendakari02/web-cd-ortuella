@@ -308,6 +308,22 @@ def html_sailkapena_tabla(cat, tabla, nuestro, jornada, config, formato, fondo):
                   formato, "sailkapena tabla")
 
 
+def tamano_escudo(ruta, superficie=200 * 210, alto_max=225, ancho_max=235):
+    """Tamaño de cada escudo en el MATCH DAY: todos ocupan la misma superficie (la del nuestro, unos 200 × 210),
+    así uno alargado sale algo más estrecho y uno redondo algo más ancho, y a la vista pesan lo mismo. Con un hueco
+    fijo, un escudo alargado salía más alto que el nuestro y se acercaba al texto de encima."""
+    from PIL import Image
+    try:
+        with Image.open(ruta) as img:
+            proporcion = img.width / img.height
+    except Exception:
+        proporcion = 1
+    alto = min((superficie / proporcion) ** 0.5, alto_max)
+    ancho = min(alto * proporcion, ancho_max)
+    alto = ancho / proporcion
+    return f"width:{ancho:.0f}px;height:{alto:.0f}px"
+
+
 def html_matchday(p, equipo, datos, config, formato, variante, fondo, club):
     variante = fondo.get("diseno", variante)   # algunas fotos van mejor con un diseño concreto
     casa = en_casa(p, equipo)
@@ -315,7 +331,7 @@ def html_matchday(p, equipo, datos, config, formato, variante, fondo, club):
     escudos = [escudo_ortuella(), escudo_rival(otro, datos)]
     if not casa:
         escudos.reverse()
-    escudos_html = "".join(f'<img src="{uri(e)}">' for e in escudos if e)
+    escudos_html = "".join(f'<img src="{uri(e)}" style="{tamano_escudo(e)}">' for e in escudos if e)
     dia = DIAS[date.fromisoformat(p["fecha"]).weekday()]
     cuando = f"{dia} {p['hora']}" if p.get("hora") else dia
     # En casa, todos nuestros equipos juegan en Otxartaga, aunque la web solo lo apunte para "Ortuella"
