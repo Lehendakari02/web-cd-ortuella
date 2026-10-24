@@ -21,6 +21,10 @@ la bitácora (`Lehendakari02/bitacora`). Cuando algo se hace, pasa a «Hecho».
 - Lanzamiento en Cloudflare Pages + `cdortuella.net` (el repositorio sigue público).
 - Enlace a la web en todas las imágenes («Toda la info del club → enlace en el perfil»): **justo después** del
   lanzamiento, nunca antes (ahora el enlace llevaría a GitHub). Ver `redes/IDEAS.md`.
+- **Ficha de Google del club** (Google Maps), el día del lanzamiento: reclamarla con el Gmail del club
+  (`cdortuella1949@gmail.com`) y ponerla al día: web nueva, dirección y foto del campo (Otxartaga), teléfono,
+  categoría, descripción, logo y fotos. La usan sobre todo los equipos de fuera para llegar. Junto con **Google Search
+  Console** (alta de la web y su mapa), para que al buscar «CD Ortuella» salga la web nueva y no la antigua.
 - Datos de la web que pone Julen: CIF, registro, precios, directiva, fotos de equipos, logos.
 
 ## Aparcado
