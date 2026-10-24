@@ -99,6 +99,22 @@ def sin_fondo_blanco(img):
     return img
 
 
+def recortar_escudo(img):
+    """Quita los márgenes vacíos para que todos los escudos se vean igual de grandes. Las rayas o puntos sueltos
+    del borde (algunos escudos de la Federación traen una línea de 1 píxel) no cuentan como escudo: se mide el
+    contorno sobre una copia sin detalles finos y se recorta la imagen original por ahí."""
+    from PIL import ImageFilter
+    img = img.convert("RGBA")
+    opaco = img.split()[3].point(lambda a: 255 if a > 40 else 0)
+    solido = opaco.filter(ImageFilter.MinFilter(7)).filter(ImageFilter.MaxFilter(7))   # las líneas finas desaparecen
+    caja = solido.getbbox() or opaco.getbbox()
+    if not caja:
+        return img
+    margen = 3
+    caja = (max(caja[0] - margen, 0), max(caja[1] - margen, 0), min(caja[2] + margen, img.width), min(caja[3] + margen, img.height))
+    return img.crop(caja)
+
+
 def escudo_rival(nombre, datos):
     """Escudo en la mejor calidad posible: primero redes/escudos/<nombre>.png (puesto a mano); si no,
     el "grande" de la Federación o el de la web, sin fondo blanco. Se guarda en redes/escudos/ la primera vez."""
@@ -126,7 +142,7 @@ def escudo_rival(nombre, datos):
         except Exception as e:
             print(f"  aviso: no se pudo bajar el escudo grande de {nombre} ({e})", file=sys.stderr)
     img = sin_fondo_blanco(img)
-    img = img.crop(img.getbbox() or (0, 0) + img.size)   # sin márgenes vacíos, para que todos los escudos se vean igual de grandes
+    img = recortar_escudo(img)
     img.thumbnail((500, 500))
     os.makedirs(ESCUDOS_GRANDES, exist_ok=True)
     img.save(listo, optimize=True)
