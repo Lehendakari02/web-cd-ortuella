@@ -99,7 +99,7 @@ que recuerda es lo de la tabla `memoria_ortuella`.
 
 ```
 ayuda - Qué sabe hacer el bot (y /ayuda amistosos, ver, publicar…)
-estado - Qué publicaciones están listas y qué falta
+estado - Qué publicaciones están listas, publicadas o descartadas
 horarios - Ver la imagen de horarios (ORDUTEGIA)
 resultados - Ver la imagen de resultados (EMAITZAK)
 matchday - Ver las imágenes de MATCH DAY A y B
